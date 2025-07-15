@@ -28,7 +28,7 @@ public class Account {
     public Long id;
 
     @Column(unique = true)
-    private int AccountNumber;
+    private int accountNumber;
 
     @NotNull
     private BigDecimal balance;
