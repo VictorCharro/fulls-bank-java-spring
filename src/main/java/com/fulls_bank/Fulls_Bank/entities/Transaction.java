@@ -27,7 +27,7 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Positive(message = "O valor deve ser positivo")
+    @Positive(message = "The value must be positive")
     private BigDecimal amount;
 
     private LocalDateTime timestamp = LocalDateTime.now();
