@@ -28,6 +28,7 @@ public class ClientService {
     }
 
     public void deleteClient(Long id) {
+        searchClient(id);
         clientRepository.deleteById(id);
     }
 
