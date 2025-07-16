@@ -2,11 +2,13 @@ package com.fulls_bank.Fulls_Bank.controllers;
 
 import com.fulls_bank.Fulls_Bank.entities.Client;
 import com.fulls_bank.Fulls_Bank.services.ClientService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,7 +23,7 @@ public class ClientController {
     private final ClientService clientService;
 
     @PostMapping
-    public Client createClient(@RequestBody Client client) {
+    public Client createClient(@Valid @RequestBody Client client) {
         return clientService.createClient(client);
     }
 
@@ -38,6 +40,11 @@ public class ClientController {
     @DeleteMapping("/{id}")
     public void deleteClient(@PathVariable Long id) {
         clientService.deleteClient(id);
+    }
+
+    @PutMapping("/{id}")
+    public Client updateClient(@PathVariable Long id, @Valid @RequestBody Client client) {
+        return clientService.updateClient(id, client);
     }
 
 }

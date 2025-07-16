@@ -29,5 +29,7 @@ public class Client {
 
     @NotBlank(message = "The name cannot be blank")
     private String name;
+
+    @NotBlank(message = "The Last name cannot be blank")
     private String lastName;
 }

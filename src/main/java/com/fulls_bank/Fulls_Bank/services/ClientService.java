@@ -34,4 +34,11 @@ public class ClientService {
     public List<Client> listClients() {
         return clientRepository.findAll();
     }
+
+    public Client updateClient(Long id, Client client) {
+        Client clientTemp = searchClient(id);
+        clientTemp.setName(client.getName());
+        clientTemp.setLastName(client.getLastName());
+        return clientRepository.save(clientTemp);
+    }
 }
