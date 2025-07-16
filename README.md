@@ -1,68 +1,47 @@
-# Fulls Bank - Banking System API 🏦
+# 🏦 Fulls Bank - API REST com Spring Boot
 
-## Current Implementation ✅
+Este é um projeto de estudo que simula um sistema bancário básico, desenvolvido em Java com Spring Boot. A aplicação permite o cadastro e gerenciamento de clientes e, futuramente, contas bancárias e transações financeiras.
 
-### Core Features
-- **Account Management**
-  - Create new bank accounts
-  - Deposit/withdraw funds
-  - Check account balance
-- **Client Management**
-  - Basic client registration
-  - Account-client relationship
+---
 
-### Technical Stack
-- Java 24 + Spring Boot 3
-- Spring Data JPA (Hibernate)
+## 🚀 Funcionalidades implementadas até agora
+
+- ✅ Cadastro de clientes
+- ✅ Listagem de todos os clientes
+- ✅ Busca de cliente por ID
+- ✅ Exclusão de cliente
+- ✅ Validação de CPF único
+- ✅ Tratamento de exceções personalizadas (`ClientNotFound`, `ExistingAccount`)
+
+---
+
+## 🛠️ Tecnologias utilizadas
+
+- Java 24
+- Spring Boot
+- Spring Data JPA
+- Hibernate
 - Lombok
-- Jakarta Validation
+- H2 Database (banco em memória para testes)
+- Maven
 
-### Key Components
-```java
-// Entities
-Account.java       // Handles balance operations
-Client.java        // Customer information
-Transaction.java   // Financial records
+---
 
-// Enums
-AccountType.java      // CHECKING, SAVINGS, SALARY
-TransactionType.java  // DEPOSIT, WITHDRAWAL, TRANSFER
+## 🔧 Como rodar o projeto
 
-// Exceptions
-AccountNotFound.java
-InsufficientBalance.java
-NegativeAmount.java
-IdNotFound.java
+1. **Clone o repositório:**
 
+```bash
+git clone https://github.com/VictorCharro/fulls-bank-java-spring.git
+cd fulls-bank-java-spring
 ```
-Coming Next 🚧
-1. REST Controllers:
-   - AccountController (@RestController)
-   - TransactionController
-   - ClientController
+---
 
-2. Enhanced Services:
-   - Transfer between accounts
-   - Transaction history
-   - Statement generation
+📌 Próximos passos
 
-3. API Improvements:
-   - Swagger documentation
-   - DTOs for requests/responses
-   - Proper status codes
-
-Future Plans 🛠️
-
-◇ Email notifications
-
-◇ PDF statements
-
-◇ Security layer (JWT)
-
-◇ Mobile integration
-
-How to run: 
-
-- git clone https://github.com/yourrepo/fulls-bank.git
-- cd fulls-bank
-- mvn spring-boot:run
+ - Atualização de dados do cliente (PUT)
+ - CRUD completo de contas bancárias
+ - Operações bancárias (depósito, saque, transferência)
+ - DTOs para entrada e saída de dados
+ - Documentação com Swagger
+ - Testes unitários e de integração
