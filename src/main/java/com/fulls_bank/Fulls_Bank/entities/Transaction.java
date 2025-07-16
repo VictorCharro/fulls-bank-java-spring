@@ -32,7 +32,8 @@ public class Transaction {
     @Positive(message = "The value must be positive")
     private BigDecimal amount;
 
-    private LocalDateTime timestamp = LocalDateTime.now();
+    private LocalDateTime timestamp;
+
     private String description;
 
     @Enumerated(EnumType.STRING)
