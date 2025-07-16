@@ -61,4 +61,9 @@ public class AccountService {
         account.setBalance(account.getBalance().subtract(amount));
         accountRepository.save(account);
     }
+
+    public void deleteAccount(Long id) {
+        findAccountById(id);
+        accountRepository.deleteById(id);
+    }
 }
