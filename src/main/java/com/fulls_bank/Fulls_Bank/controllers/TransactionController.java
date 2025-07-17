@@ -1,5 +1,6 @@
 package com.fulls_bank.Fulls_Bank.controllers;
 
+import com.fulls_bank.Fulls_Bank.dto.TransactionDTO;
 import com.fulls_bank.Fulls_Bank.entities.Transaction;
 import com.fulls_bank.Fulls_Bank.services.TransactionService;
 import jakarta.validation.Valid;
@@ -32,7 +33,7 @@ public class TransactionController {
     }
 
     @PostMapping
-    public Transaction createTransaction(@Valid @RequestBody Transaction transaction) {
-        return transactionService.createTransaction(transaction);
+    public Transaction createTransaction(@Valid @RequestBody TransactionDTO dto) {
+        return transactionService.createTransaction(dto);
     }
 }
