@@ -1,9 +1,13 @@
 package com.fulls_bank.Fulls_Bank.controllers;
 
+import com.fulls_bank.Fulls_Bank.dto.AccountRequestDTO;
+import com.fulls_bank.Fulls_Bank.dto.AccountResponseDTO;
 import com.fulls_bank.Fulls_Bank.entities.Account;
 import com.fulls_bank.Fulls_Bank.services.AccountService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,13 +26,15 @@ public class AccountController {
     private final AccountService accountService;
 
     @PostMapping
-    public Account createAccount(@Valid @RequestBody Account account) {
-        return accountService.createAccount(account);
+    public ResponseEntity<AccountResponseDTO> createAccount(@Valid @RequestBody AccountRequestDTO dto) {
+        AccountResponseDTO response = accountService.createAccount(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping("/{id}")
-    public Account searchAccountById(@PathVariable Long id) {
-        return accountService.findAccountById(id);
+    public AccountResponseDTO searchAccountById(@PathVariable Long id) {
+        Account account = accountService.findAccountById(id);
+        return accountService.toResponseDTO(account);
     }
 
     @GetMapping("/number/{num}")
