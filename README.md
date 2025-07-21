@@ -14,16 +14,24 @@ Este é um projeto de estudo que simula um sistema bancário básico, desenvolvi
 - Validação de CPF único
 - Validação com Jakarta Bean Validation (`@Valid`, `@NotBlank`, `@Size`)
 
+---
+
 ### 💳 Conta
-- Criar conta (`POST /account`)
+- Criar conta com número gerado automaticamente (`POST /account`)
 - Buscar conta por ID (`GET /account/{id}`)
 - Buscar conta por número da conta (`GET /account/number/{num}`)
 - Saque (`POST /account/withdrawal`)
+- Depósito (`POST /account/deposit`)
 - Excluir conta (`DELETE /account/{id}`)
-- Validação de saldo inicial positivo
+- Validação de saldo inicial
+- Associa cliente existente à conta (via ID)
+- Uso de DTOs (Request/Response)
+- Evita laços infinitos de serialização (loop) nas respostas com transações
+
+---
 
 ### 🔄 Transações
-- Criar transação (`POST /transaction`)
+- Transação registrada automaticamente no saque e depósito
 - Buscar transação por ID (`GET /transaction/{id}`)
 - Listar todas as transações (`GET /transaction`)
 
@@ -31,14 +39,15 @@ Este é um projeto de estudo que simula um sistema bancário básico, desenvolvi
 
 ## ❌ Tratamento de exceções
 
-Implementado com `@RestControllerAdvice` e `@ExceptionHandler`, retornando mensagens amigáveis com status HTTP e timestamp:
+Tratamento centralizado com `@RestControllerAdvice` e `@ExceptionHandler`, retornando mensagens amigáveis, HTTP status adequado e timestamp:
+
 - `ClientNotFound`
 - `AccountNotFound`
 - `ExistingAccount`
 - `IdNotFound`
 - `InsufficientBalance`
 - `NegativeAmount`
-- `MethodArgumentNotValidException` (validação de campos com mensagens específicas)
+- `MethodArgumentNotValidException`
 
 ---
 
@@ -49,6 +58,7 @@ Implementado com `@RestControllerAdvice` e `@ExceptionHandler`, retornando mensa
 - Spring Data JPA
 - Hibernate
 - Lombok
+- Jakarta Bean Validation
 - H2 Database (banco em memória)
 - Maven
 
@@ -58,8 +68,9 @@ Implementado com `@RestControllerAdvice` e `@ExceptionHandler`, retornando mensa
 
 - `entities/` → Entidades JPA: `Client`, `Account`, `Transaction`
 - `controllers/` → Endpoints REST
-- `services/` → Regras de negócio
+- `services/` → Regras de negócio (camada de serviço)
 - `repositories/` → Interfaces de persistência
+- `dto/` → Objetos de transferência de dados (Request/Response)
 - `exceptions/` → Exceções customizadas e handler global
 - `enums/` → Enumerações para tipo de conta e tipo de transação
 
@@ -76,18 +87,29 @@ cd fulls-bank-java-spring
 ```
 ---
 
-📌 Próximos passos
+## 📌 Próximos passos
+✅ Criar entidade e CRUD de transações
 
- - ✅ Criar entidade e CRUD de transações (finalizado)
+✅ Associar transações com saque e depósito automaticamente
 
-- 🔄 Associar transações com saque e depósito automaticamente
+✅ Implementar uso de DTOs (Request/Response)
 
-- 🔁 Implementar depósito e transferência com movimentação de saldo e gravação da transação
+✅ Resolver loops de serialização entre Account ↔ Transaction
 
-- 📦 Implementar uso de DTOs (Request/Response)
+---
 
-- 📄 Documentação com Swagger/OpenAPI
+## 🚧 Em desenvolvimento:
 
-- 🧪 Testes unitários e de integração com JUnit e Mockito
+🔁 Implementar transferência entre contas com movimentação de saldo e gravação da transação (POST /account/transfer)
 
-- 🗃️ Persistência com PostgreSQL (substituir H2 futuramente)
+📄 Documentação com Swagger/OpenAPI
+
+🧪 Testes unitários e de integração com JUnit e Mockito
+
+🗃️ Persistência com PostgreSQL (substituir H2 futuramente)
+
+🔐 Autenticação de usuários com Spring Security (login e permissões)
+
+📊 Filtros para extrato bancário por data (query param)
+
+🧠 Camada de mapeamento com ModelMapper ou MapStruct (refatorar DTOs)
