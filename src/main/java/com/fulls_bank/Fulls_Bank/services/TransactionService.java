@@ -1,6 +1,8 @@
 package com.fulls_bank.Fulls_Bank.services;
 
-import com.fulls_bank.Fulls_Bank.dto.TransactionDTO;
+import com.fulls_bank.Fulls_Bank.dto.AccountResponseDTO;
+import com.fulls_bank.Fulls_Bank.dto.TransactionRequestDTO;
+import com.fulls_bank.Fulls_Bank.dto.TransactionResponseDTO;
 import com.fulls_bank.Fulls_Bank.entities.Account;
 import com.fulls_bank.Fulls_Bank.entities.Transaction;
 import com.fulls_bank.Fulls_Bank.enums.TransactionType;
@@ -16,6 +18,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +36,7 @@ public class TransactionService {
     }
 
     @Transactional
-    public Transaction createTransaction(TransactionDTO dto) {
+    public Transaction createTransaction(TransactionRequestDTO dto) {
 
         Account sender = null;
         Account receiver = null;
@@ -94,5 +97,36 @@ public class TransactionService {
         transaction.setTimestamp(LocalDateTime.now());
 
         return transactionRepository.save(transaction);
+    }
+
+    public TransactionResponseDTO toResponseDTO(Transaction transaction) {
+        TransactionResponseDTO dto = new TransactionResponseDTO();
+
+        dto.setId(transaction.getId());
+        dto.setAmount(transaction.getAmount());
+        dto.setTimestamp(transaction.getTimestamp());
+        dto.setType(transaction.getType());
+
+        dto.setSenderId(transaction.getSender() != null ? transaction.getSender().getId() : null);
+        dto.setReceiverId(transaction.getReceiver() != null ? transaction.getReceiver().getId() : null);
+
+        return dto;
+    }
+
+    public AccountResponseDTO accountResponseDTOWithTransactions(Account account) {
+        AccountResponseDTO dto = new AccountResponseDTO();
+        dto.setAccountNumber(account.getAccountNumber());
+        dto.setType(account.getType());
+        dto.setBalance(account.getBalance());
+
+        dto.setSentTransactions(account.getSentTransactions().stream()
+                .map(tx -> new TransactionResponseDTO(tx.getId(), tx.getAmount(), tx.getTimestamp(), tx.getType()))
+                .collect(Collectors.toList()));
+
+        dto.setReceivedTransactions(account.getReceivedTransactions().stream()
+                .map(tx -> new TransactionResponseDTO(tx.getId(), tx.getAmount(), tx.getTimestamp(), tx.getType()))
+                .collect(Collectors.toList()));
+
+        return dto;
     }
 }
