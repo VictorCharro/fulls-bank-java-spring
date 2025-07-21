@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TransactionDTO {
+public class TransactionRequestDTO {
 
     @NotNull
     private Long senderId;
