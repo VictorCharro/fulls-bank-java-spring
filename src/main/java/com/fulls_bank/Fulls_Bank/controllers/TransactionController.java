@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,8 +27,11 @@ public class TransactionController {
     private final TransactionService transactionService;
 
     @GetMapping
-    public List<Transaction> transactionList() {
-        return transactionService.listTransactions();
+    public List<TransactionResponseDTO> transactionList() {
+        return transactionService.listTransactions()
+                .stream()
+                .map(transactionService::toResponseDTO)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")

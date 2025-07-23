@@ -17,10 +17,10 @@ import java.math.BigDecimal;
 public class TransactionRequestDTO {
 
     @NotNull
-    private Long senderId;
+    private Long senderId = 0L;
 
     @NotNull
-    private Long receiverId;
+    private Long receiverId = 0L;
 
     @Positive
     private BigDecimal amount;
