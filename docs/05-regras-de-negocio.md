@@ -38,4 +38,5 @@ Observações:
 
 - Em `TRANSFER`, a checagem de saldo vem **antes** da checagem de contas iguais.
 - Contas inexistentes lançam `AccountNotFound`.
+- Buscar transação por id inexistente lança `TransactionNotFound` (404).
 - Se qualquer regra falhar, nenhum saldo é alterado e nenhuma transação é gravada.

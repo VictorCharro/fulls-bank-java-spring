@@ -41,6 +41,15 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(409).body(errorResponse);
     }
 
+    @ExceptionHandler(TransactionNotFound.class)
+    public ResponseEntity<ErrorResponse> handleTransactionNotFound(TransactionNotFound e) {
+        LocalDateTime timestamp = LocalDateTime.now();
+        int status = 404;
+        String message = e.getMessage();
+        ErrorResponse errorResponse = new ErrorResponse(status, message, timestamp);
+        return ResponseEntity.status(404).body(errorResponse);
+    }
+
     @ExceptionHandler(AccountNumberUnavailable.class)
     public ResponseEntity<ErrorResponse> handleAccountNumberUnavailable(AccountNumberUnavailable e) {
         LocalDateTime timestamp = LocalDateTime.now();

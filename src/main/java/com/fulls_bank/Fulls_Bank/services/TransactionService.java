@@ -8,6 +8,7 @@ import com.fulls_bank.Fulls_Bank.entities.Transaction;
 import com.fulls_bank.Fulls_Bank.enums.TransactionType;
 import com.fulls_bank.Fulls_Bank.exceptions.AccountNotFound;
 import com.fulls_bank.Fulls_Bank.exceptions.InsufficientBalance;
+import com.fulls_bank.Fulls_Bank.exceptions.TransactionNotFound;
 import com.fulls_bank.Fulls_Bank.repositories.AccountRepository;
 import com.fulls_bank.Fulls_Bank.repositories.TransactionRepository;
 import jakarta.transaction.Transactional;
@@ -17,7 +18,6 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,8 +31,9 @@ public class TransactionService {
         return transactionRepository.findAll();
     }
 
-    public Optional<Transaction> findTransactionById(Long id) {
-        return transactionRepository.findById(id);
+    public Transaction findTransactionById(Long id) {
+        return transactionRepository.findById(id)
+                .orElseThrow(() -> new TransactionNotFound("Transaction not found"));
     }
 
     @Transactional
