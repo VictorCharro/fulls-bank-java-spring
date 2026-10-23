@@ -11,7 +11,7 @@ Arquitetura em camadas, com pacote raiz `com.fulls_bank.Fulls_Bank`.
 | `repositories` | Interfaces Spring Data JPA. |
 | `entities` | Entidades JPA: `Client`, `Account`, `Transaction`. |
 | `dto` | Objetos de entrada e saída da API. |
-| `mappers` | Interfaces MapStruct que convertem entidade em DTO de resposta (`AccountMapper`, `TransactionMapper`). |
+| `mappers` | Interfaces MapStruct que convertem entidade em DTO de resposta (`AccountMapper`, `ClientMapper`, `TransactionMapper`). |
 | `enums` | `AccountType`, `TransactionType`. |
 | `exceptions` | Exceções de negócio, `ErrorResponse` e `GlobalExceptionHandler`. |
 
@@ -25,7 +25,7 @@ HTTP → Controller (@Valid) → Service (regra + @Transactional) → Repository
 
 ## Dependências entre camadas
 
-- Controller depende de Service e dos mappers: a conversão entidade → DTO fica nos mappers, não em métodos dos services. Um service só usa mapper quando ele mesmo devolve DTO (hoje, `AccountService.createAccount`, que usa `AccountMapper`).
+- Controller depende de Service e dos mappers: a conversão entidade → DTO fica nos mappers, não em métodos dos services. Um service só usa mapper quando ele mesmo devolve DTO (`AccountService.createAccount`, com `AccountMapper`, e o `ClientService`, com `ClientMapper`).
 - `AccountService` usa `AccountRepository` e `ClientRepository`.
 - `TransactionService` usa `TransactionRepository` e `AccountRepository`.
 - Injeção por construtor com `@RequiredArgsConstructor` (Lombok).

@@ -1,9 +1,13 @@
 package com.fulls_bank.Fulls_Bank.services;
 
+import com.fulls_bank.Fulls_Bank.dto.ClientRequestDTO;
+import com.fulls_bank.Fulls_Bank.dto.ClientResponseDTO;
+import com.fulls_bank.Fulls_Bank.dto.ClientUpdateDTO;
 import com.fulls_bank.Fulls_Bank.entities.Client;
 import com.fulls_bank.Fulls_Bank.exceptions.ClientNotFound;
 import com.fulls_bank.Fulls_Bank.exceptions.ExistingAccount;
 import com.fulls_bank.Fulls_Bank.exceptions.ResourceInUse;
+import com.fulls_bank.Fulls_Bank.mappers.ClientMapper;
 import com.fulls_bank.Fulls_Bank.repositories.AccountRepository;
 import com.fulls_bank.Fulls_Bank.repositories.ClientRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,21 +22,26 @@ public class ClientService {
 
     public final ClientRepository clientRepository;
     private final AccountRepository accountRepository;
+    private final ClientMapper clientMapper;
 
-    public Client createClient(Client client) {
-        if (clientRepository.findClientByCpf(client.getCpf()).isPresent()){
+    public ClientResponseDTO createClient(ClientRequestDTO dto) {
+        if (clientRepository.findClientByCpf(dto.getCpf()).isPresent()){
             throw new ExistingAccount("An account with this CPF already exists");
         }
-        return clientRepository.save(client);
+        return clientMapper.toResponse(clientRepository.save(clientMapper.toEntity(dto)));
     }
 
-    public Client searchClient(Long id) {
+    public ClientResponseDTO searchClient(Long id) {
+        return clientMapper.toResponse(findClient(id));
+    }
+
+    private Client findClient(Long id) {
         return clientRepository.findClientById(id)
                 .orElseThrow(() -> new ClientNotFound("Client not found"));
     }
 
     public void deleteClient(Long id) {
-        searchClient(id);
+        findClient(id);
         if (accountRepository.existsByClientId(id)) {
             throw new ResourceInUse("Client has accounts and cannot be deleted");
         }
@@ -43,14 +52,14 @@ public class ClientService {
         }
     }
 
-    public List<Client> listClients() {
-        return clientRepository.findAll();
+    public List<ClientResponseDTO> listClients() {
+        return clientRepository.findAll().stream().map(clientMapper::toResponse).toList();
     }
 
-    public Client updateClient(Long id, Client client) {
-        Client clientTemp = searchClient(id);
-        clientTemp.setName(client.getName());
-        clientTemp.setLastName(client.getLastName());
-        return clientRepository.save(clientTemp);
+    public ClientResponseDTO updateClient(Long id, ClientUpdateDTO dto) {
+        Client client = findClient(id);
+        client.setName(dto.getName());
+        client.setLastName(dto.getLastName());
+        return clientMapper.toResponse(clientRepository.save(client));
     }
 }

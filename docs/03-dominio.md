@@ -16,7 +16,7 @@ Client 1 ──── N Account 1 ──── N Transaction (como sender)
 | Campo | Tipo | Restrições |
 |---|---|---|
 | `id` | Long | PK, identity |
-| `cpf` | String | único, exatamente 11 caracteres (`@Size`) |
+| `cpf` | String | único, exatamente 11 caracteres (`@Size`; o DTO de entrada exige 11 dígitos) |
 | `name` | String | `@NotBlank` |
 | `lastName` | String | `@NotBlank` |
 
@@ -62,11 +62,14 @@ Client 1 ──── N Account 1 ──── N Transaction (como sender)
 
 ## DTOs
 
-A conversão entidade → DTO de resposta é feita por MapStruct (`mappers/AccountMapper` e `mappers/TransactionMapper`, ver [02](02-arquitetura.md)). `AccountResponseDTO` não preenche `sentTransactions` e `receivedTransactions` (saem `null`): o histórico vem do extrato (`GET /account/{id}/statement`). Em `TransactionResponseDTO`, `senderId` e `receiverId` vêm de `sender.id` e `receiver.id` e ficam `null` quando a conta não existe (depósito não tem origem, saque não tem destino).
+A conversão entidade → DTO de resposta é feita por MapStruct (`mappers/AccountMapper`, `mappers/ClientMapper` e `mappers/TransactionMapper`, ver [02](02-arquitetura.md)). `AccountResponseDTO` não preenche `sentTransactions` e `receivedTransactions` (saem `null`): o histórico vem do extrato (`GET /account/{id}/statement`). Em `TransactionResponseDTO`, `senderId` e `receiverId` vêm de `sender.id` e `receiver.id` e ficam `null` quando a conta não existe (depósito não tem origem, saque não tem destino).
 
 | DTO | Campos | Validações |
 |---|---|---|
 | `AccountRequestDTO` | `type`, `clientId` | ambos `@NotNull` |
+| `ClientRequestDTO` | `cpf`, `name`, `lastName` | `cpf` `@NotBlank` e exatamente 11 dígitos (`@Pattern`); `name` e `lastName` `@NotBlank` |
+| `ClientUpdateDTO` | `name`, `lastName` | ambos `@NotBlank` (o CPF não faz parte do `PUT`) |
+| `ClientResponseDTO` | `id`, `cpf`, `name`, `lastName` | — |
 | `AccountResponseDTO` | `accountNumber`, `type`, `balance`, `sentTransactions`, `receivedTransactions` | — |
 | `TransactionRequestDTO` | `senderId`, `receiverId`, `amount`, `type` | `senderId`/`receiverId` `@NotNull` (padrão `0L`), `amount` `@Positive`, `type` `@NotNull` |
 | `RegisterRequestDTO` | `email`, `password` | `email` `@NotBlank` `@Email`, até 255 caracteres; `password` `@NotBlank`, mínimo de 8 caracteres e máximo de 72 **bytes** em UTF-8 (limite do BCrypt) |
@@ -75,4 +78,4 @@ A conversão entidade → DTO de resposta é feita por MapStruct (`mappers/Accou
 | `UserResponseDTO` | `id`, `email`, `role` | — |
 | `TransactionResponseDTO` | `id`, `amount`, `timestamp`, `type`, `senderId`, `receiverId` | — |
 
-`Client` ainda é usado diretamente como corpo e resposta nos endpoints de cliente (sem DTO).
+Os endpoints de cliente usam só DTOs; o `id` enviado no corpo é ignorado.

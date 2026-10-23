@@ -1,9 +1,14 @@
 package com.fulls_bank.Fulls_Bank.services;
 
+import com.fulls_bank.Fulls_Bank.dto.ClientRequestDTO;
+import com.fulls_bank.Fulls_Bank.dto.ClientResponseDTO;
+import com.fulls_bank.Fulls_Bank.dto.ClientUpdateDTO;
 import com.fulls_bank.Fulls_Bank.entities.Client;
 import com.fulls_bank.Fulls_Bank.exceptions.ClientNotFound;
 import com.fulls_bank.Fulls_Bank.exceptions.ExistingAccount;
 import com.fulls_bank.Fulls_Bank.exceptions.ResourceInUse;
+import com.fulls_bank.Fulls_Bank.mappers.ClientMapper;
+import com.fulls_bank.Fulls_Bank.mappers.ClientMapperImpl;
 import com.fulls_bank.Fulls_Bank.repositories.AccountRepository;
 import com.fulls_bank.Fulls_Bank.repositories.ClientRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 
@@ -18,9 +24,9 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -38,6 +44,9 @@ class ClientServiceTest {
     @Mock
     private AccountRepository accountRepository;
 
+    @Spy
+    private ClientMapper clientMapper = new ClientMapperImpl();
+
     @InjectMocks
     private ClientService clientService;
 
@@ -53,30 +62,37 @@ class ClientServiceTest {
     }
 
     @Test
-    void createClient_withNewCpf_shouldSaveAndReturnClient() {
+    void createClient_withNewCpf_shouldSaveAndReturnDto() {
         when(clientRepository.findClientByCpf(CPF)).thenReturn(Optional.empty());
-        when(clientRepository.save(client)).thenReturn(client);
+        when(clientRepository.save(any(Client.class))).thenReturn(client);
 
-        Client result = clientService.createClient(client);
+        ClientResponseDTO result = clientService.createClient(new ClientRequestDTO(CPF, "Maria", "Silva"));
 
-        assertSame(client, result);
-        verify(clientRepository).save(client);
+        assertEquals(CLIENT_ID, result.getId());
+        assertEquals(CPF, result.getCpf());
+        assertEquals("Maria", result.getName());
+        assertEquals("Silva", result.getLastName());
+        verify(clientRepository).save(argThat(saved -> saved.getId() == null && CPF.equals(saved.getCpf())));
     }
 
     @Test
     void createClient_withExistingCpf_shouldThrowAndNotSave() {
         when(clientRepository.findClientByCpf(CPF)).thenReturn(Optional.of(client));
 
-        assertThrows(ExistingAccount.class, () -> clientService.createClient(client));
+        assertThrows(ExistingAccount.class,
+                () -> clientService.createClient(new ClientRequestDTO(CPF, "Maria", "Silva")));
 
         verify(clientRepository, never()).save(any());
     }
 
     @Test
-    void searchClient_withExistingId_shouldReturnClient() {
+    void searchClient_withExistingId_shouldReturnDto() {
         when(clientRepository.findClientById(CLIENT_ID)).thenReturn(Optional.of(client));
 
-        assertSame(client, clientService.searchClient(CLIENT_ID));
+        ClientResponseDTO result = clientService.searchClient(CLIENT_ID);
+
+        assertEquals(CLIENT_ID, result.getId());
+        assertEquals(CPF, result.getCpf());
     }
 
     @Test
@@ -125,10 +141,13 @@ class ClientServiceTest {
     }
 
     @Test
-    void listClients_shouldReturnAllClients() {
+    void listClients_shouldReturnAllClientsAsDtos() {
         when(clientRepository.findAll()).thenReturn(List.of(client));
 
-        assertEquals(List.of(client), clientService.listClients());
+        List<ClientResponseDTO> result = clientService.listClients();
+
+        assertEquals(1, result.size());
+        assertEquals(CPF, result.get(0).getCpf());
     }
 
     @Test
@@ -136,12 +155,7 @@ class ClientServiceTest {
         when(clientRepository.findClientById(CLIENT_ID)).thenReturn(Optional.of(client));
         when(clientRepository.save(client)).thenReturn(client);
 
-        Client changes = new Client();
-        changes.setCpf("99999999999");
-        changes.setName("Ana");
-        changes.setLastName("Souza");
-
-        Client result = clientService.updateClient(CLIENT_ID, changes);
+        ClientResponseDTO result = clientService.updateClient(CLIENT_ID, new ClientUpdateDTO("Ana", "Souza"));
 
         assertEquals("Ana", result.getName());
         assertEquals("Souza", result.getLastName());
@@ -152,7 +166,7 @@ class ClientServiceTest {
     void updateClient_withUnknownId_shouldThrowAndNotSave() {
         when(clientRepository.findClientById(CLIENT_ID)).thenReturn(Optional.empty());
 
-        assertThrows(ClientNotFound.class, () -> clientService.updateClient(CLIENT_ID, client));
+        assertThrows(ClientNotFound.class, () -> clientService.updateClient(CLIENT_ID, new ClientUpdateDTO("Ana", "Souza")));
 
         verify(clientRepository, never()).save(any());
     }
