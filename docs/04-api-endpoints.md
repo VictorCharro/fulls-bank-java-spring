@@ -32,7 +32,7 @@ Somente `ADMIN`: todo `DELETE` e as listagens globais `GET /client` e `GET /tran
 | POST | `/account` | `AccountRequestDTO` | 201, `AccountResponseDTO`; 503 se não houver número de conta livre |
 | GET | `/account/{id}` | — | 200, `AccountResponseDTO` (listas de transações vêm nulas) ⚠️ |
 | GET | `/account/number/{number}` | — | 200, `AccountResponseDTO`; 404 se a conta não existir |
-| GET | `/account/{id}/statement` | Query: `from`, `to` (datas `yyyy-MM-dd`, opcionais), `page` (começa em 0), `size` (padrão 20, máximo 100) | 200, página de `TransactionResponseDTO`; 400 se `from` for depois de `to` ou a data tiver formato inválido; 404 se a conta não existir |
+| GET | `/account/{id}/statement` | Query: `from`, `to` (datas `yyyy-MM-dd`, opcionais), `page` (começa em 0), `size` (padrão 20, máximo 100) | 200, página de `TransactionResponseDTO`; 400 se `from` for depois de `to`, a data tiver formato inválido, `page` for negativo ou `size` for menor que 1; 404 se a conta não existir |
 | DELETE | `/account/{id}` | — | 200, sem corpo ⚠️; 409 se a conta tiver transações |
 
 Depósito, saque e transferência são feitos somente por `POST /transaction`.

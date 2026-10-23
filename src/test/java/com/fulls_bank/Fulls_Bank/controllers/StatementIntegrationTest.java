@@ -159,6 +159,14 @@ class StatementIntegrationTest extends AbstractIntegrationTest {
                 .andExpect(status().isNotFound());
     }
 
+    @Test
+    void statement_withNegativePageOrNonPositiveSize_shouldReturn400() throws Exception {
+        mockMvc.perform(get("/account/{id}/statement", accountA.getId()).param("page", "-1"))
+                .andExpect(status().isBadRequest());
+        mockMvc.perform(get("/account/{id}/statement", accountA.getId()).param("size", "0"))
+                .andExpect(status().isBadRequest());
+    }
+
     private Account saveAccount(Client client, int number) {
         Account account = new Account();
         account.setAccountNumber(number);

@@ -35,6 +35,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
@@ -183,6 +184,21 @@ class AccountControllerTest {
         ArgumentCaptor<Pageable> pageable = ArgumentCaptor.forClass(Pageable.class);
         verify(transactionService).getStatement(eq(7L), eq(null), eq(null), pageable.capture());
         assertEquals(100, pageable.getValue().getPageSize());
+    }
+
+    @Test
+    void statement_withNegativePageOrNonPositiveSize_shouldReturn400WithoutQuerying() throws Exception {
+        mockMvc.perform(get("/account/{id}/statement", 7L).param("page", "-1"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("page must be 0 or greater and size must be at least 1"));
+        mockMvc.perform(get("/account/{id}/statement", 7L).param("size", "0"))
+                .andExpect(status().isBadRequest());
+        mockMvc.perform(get("/account/{id}/statement", 7L).param("size", "-5"))
+                .andExpect(status().isBadRequest());
+        mockMvc.perform(get("/account/{id}/statement", 7L).param("page", "abc"))
+                .andExpect(status().isBadRequest());
+
+        verify(transactionService, never()).getStatement(any(), any(), any(), any());
     }
 
     @Test

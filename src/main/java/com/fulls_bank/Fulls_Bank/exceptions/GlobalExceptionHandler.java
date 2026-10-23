@@ -107,6 +107,15 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(400).body(errorResponse);
     }
 
+    @ExceptionHandler(InvalidPagination.class)
+    public ResponseEntity<ErrorResponse> handleInvalidPagination(InvalidPagination e) {
+        LocalDateTime timestamp = LocalDateTime.now();
+        int status = 400;
+        String message = e.getMessage();
+        ErrorResponse errorResponse = new ErrorResponse(status, message, timestamp);
+        return ResponseEntity.status(400).body(errorResponse);
+    }
+
     @ExceptionHandler(AccountNotFound.class)
     public ResponseEntity<ErrorResponse> handleAccountNotFound(AccountNotFound e) {
         LocalDateTime timestamp = LocalDateTime.now();

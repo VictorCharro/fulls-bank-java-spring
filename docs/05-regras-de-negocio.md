@@ -35,6 +35,7 @@ Código: `MAIN/services`. Erros lançados: [06](06-erros-e-excecoes.md).
 - Entram as transações em que a conta é origem ou destino, inclusive depósitos (sem origem) e saques (sem destino).
 - `from` e `to` (datas) são opcionais e inclusivos: `from` vale a partir de 00:00:00 do dia e `to` até 23:59:59.999 do dia. `from` depois de `to` lança `InvalidPeriod` (400); `from` igual a `to` é um período de um dia.
 - Ordem sempre por data decrescente, com o `id` como desempate para a paginação não repetir nem pular itens. O `sort` pedido pelo cliente é ignorado.
+- `page` negativo ou `size` menor que 1 lançam `InvalidPagination` (400); sem esses parâmetros valem os padrões (o Spring, sozinho, trocaria o valor inválido pelo padrão em silêncio).
 - Paginação: `size` padrão 20 e no máximo 100 (valores maiores são reduzidos); página além da última devolve lista vazia.
 
 ## Transação (`TransactionService.createTransaction`)
