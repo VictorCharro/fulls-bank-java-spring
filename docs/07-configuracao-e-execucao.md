@@ -84,6 +84,21 @@ export JWT_SECRET="$(openssl rand -base64 48)"
 
 A API sobe em `http://localhost:8080`.
 
+## Como rodar com Docker
+
+Arquivos: `Dockerfile`, `docker-compose.yml`, `.dockerignore`, `.env.example`.
+
+```bash
+cp .env.example .env   # preencha DB_PASSWORD e JWT_SECRET
+docker compose up --build
+```
+
+- `Dockerfile` multi-stage: o build usa `eclipse-temurin:21-jdk` e a imagem final `eclipse-temurin:21-jre`, rodando com um usuário sem privilégios. `JAVA_OPTS` (padrão `-XX:MaxRAMPercentage=75`) ajusta a JVM.
+- `docker-compose.yml`: serviço `postgres` (16, com healthcheck e volume `pgdata`) e serviço `app`, que só inicia depois que o banco está saudável. `DB_PASSWORD` e `JWT_SECRET` são obrigatórios (o compose recusa subir sem eles); `ADMIN_EMAIL`/`ADMIN_PASSWORD` são opcionais.
+- O `.env` real nunca é versionado nem entra na imagem (`.gitignore` e `.dockerignore`).
+- Healthcheck: `GET /actuator/health`, público e sem detalhes. É o único endpoint do Actuator exposto (`management.endpoints.web.exposure.include=health`). O container usa o mesmo endpoint no `HEALTHCHECK`.
+- O CI tem um job `docker` que sobe o compose com `--wait` e consulta o health.
+
 ## Como testar
 
 ```bash
@@ -100,7 +115,6 @@ A API sobe em `http://localhost:8080`.
 
 | Item | Issue |
 |---|---|
-| Docker e docker-compose | #19 |
 | Deploy AWS | #21 |
 
 Atualize esta página ao concluir cada item.

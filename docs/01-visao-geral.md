@@ -27,7 +27,7 @@ Detalhes: [API](04-api-endpoints.md) e [regras de negócio](05-regras-de-negocio
 ## Estado do projeto
 
 - Usuário ainda não está ligado a um cliente: sem isolamento de dados por usuário (ver [regras](05-regras-de-negocio.md)).
-- Sem Docker, CI ou deploy.
+- Sem deploy (Docker e CI já existem).
 - Cobertura de testes mínima (ver [testes](08-testes.md)).
 - Há bugs conhecidos: ver [problemas conhecidos](09-problemas-conhecidos.md).
 

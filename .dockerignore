@@ -1,0 +1,11 @@
+# Mantém o contexto de build pequeno e sem segredos
+.git
+.github
+.idea
+.vscode
+target
+docs
+.env
+*.md
+Dockerfile
+docker-compose.yml

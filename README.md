@@ -210,6 +210,17 @@ TOKEN=$(curl -s -X POST localhost:8080/auth/login -H 'Content-Type: application/
 curl localhost:8080/transaction/1 -H "Authorization: Bearer $TOKEN"
 ```
 
+### 🐳 Rodando com Docker
+
+Só precisa de Docker (sem JDK nem PostgreSQL local). O `docker compose` sobe a API e um PostgreSQL 16:
+
+```bash
+cp .env.example .env   # edite DB_PASSWORD e JWT_SECRET (ex.: openssl rand -base64 48)
+docker compose up --build
+```
+
+A API fica em `http://localhost:8080` (Swagger em `/swagger-ui.html`) e o healthcheck em `/actuator/health`. Os dados ficam no volume `pgdata`; `docker compose down -v` apaga tudo. O `.env` está no `.gitignore`.
+
 ---
 
 ## 🧪 Testes
@@ -223,7 +234,7 @@ curl localhost:8080/transaction/1 -H "Authorization: Bearer $TOKEN"
 - Teste de concorrência (threads reais, PostgreSQL real): saques simultâneos e transferências em sentidos opostos nunca perdem atualização.
 - Testes de integração dos controllers: fluxo completo (cliente → conta → depósito → saque → transferência) e respostas de erro, com PostgreSQL real em container.
 - Os testes que sobem o contexto completo usam um PostgreSQL em container (Testcontainers): precisam de Docker em execução, mas não de PostgreSQL instalado.
-- O CI (GitHub Actions) roda `./mvnw verify` em cada push e pull request.
+- O CI (GitHub Actions) roda `./mvnw verify` em cada push e pull request e, em um segundo job, sobe a aplicação com `docker compose` e consulta `/actuator/health`.
 
 ---
 
@@ -231,4 +242,4 @@ curl localhost:8080/transaction/1 -H "Authorization: Bearer $TOKEN"
 
 O planejamento completo está nas [issues](https://github.com/VictorCharro/fulls-bank-java-spring/issues) e no [roadmap](docs/10-roadmap.md). Em resumo:
 
-- 🐳 Docker e docker-compose, e deploy na AWS (RDS, CloudWatch)
+- ☁️ Deploy na AWS (RDS, CloudWatch)

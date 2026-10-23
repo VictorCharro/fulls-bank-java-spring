@@ -40,6 +40,8 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, "/auth/register", "/auth/login").permitAll()
+                        // Saúde da aplicação (usada pelo Docker e por balanceadores): só "UP" ou "DOWN", sem detalhes
+                        .requestMatchers(HttpMethod.GET, "/actuator/health", "/actuator/health/**").permitAll()
                         // Documentação da API (Swagger UI e JSON OpenAPI): pública, para quem for consumir a API
                         .requestMatchers(HttpMethod.GET, "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs",
                                 "/v3/api-docs/**").permitAll()

@@ -25,3 +25,28 @@ jobs:
 
       - name: Build e testes
         run: ./mvnw -B verify
+
+  docker:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Sobe a aplicação com docker compose
+        env:
+          DB_PASSWORD: ci-only-password
+          JWT_SECRET: ci-only-secret-with-at-least-32-bytes-long
+        run: docker compose up --build --wait --wait-timeout 180
+
+      - name: Healthcheck
+        run: curl --fail --silent http://localhost:8080/actuator/health
+
+      - name: Logs em caso de falha
+        if: failure()
+        run: docker compose logs
+
+      - name: Derruba os containers
+        if: always()
+        run: docker compose down -v
