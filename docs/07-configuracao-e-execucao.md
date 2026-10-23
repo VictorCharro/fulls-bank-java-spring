@@ -31,6 +31,13 @@ O perfil ativo vem da variável de ambiente `SPRING_PROFILES_ACTIVE` e, se ela n
 
 O esquema é criado e versionado por migrations do Flyway em `src/main/resources/db/migration` (`V1__create_initial_schema.sql` cria `client`, `account` e `transaction`). Elas rodam sozinhas ao subir a aplicação, em qualquer perfil. O Hibernate fica com `ddl-auto=validate`: se uma entidade divergir do esquema, a aplicação não sobe.
 
+**Banco de dev que já tinha tabelas** (criadas antes do Flyway, quando o Hibernate usava `ddl-auto=update`): o Flyway se recusa a subir em um esquema não vazio sem histórico. Há duas saídas:
+
+1. Se os dados não importam, recrie o banco (`DROP DATABASE fulls_bank; CREATE DATABASE fulls_bank;`) e suba a aplicação.
+2. Para manter os dados, confira que as tabelas batem com `V1__create_initial_schema.sql` e faça o baseline uma única vez, marcando a V1 como já aplicada: `SPRING_FLYWAY_BASELINE_ON_MIGRATE=true SPRING_FLYWAY_BASELINE_VERSION=1 ./mvnw spring-boot:run`. Depois disso, rode normalmente, sem essas variáveis.
+
+O `baselineOnMigrate` não fica ligado na configuração do projeto: em um banco vazio a V1 precisa rodar de fato, e com a opção ligada o Flyway poderia aceitar o banco errado sem avisar.
+
 Para mudar o esquema, crie uma nova migration (`V2__descricao.sql`, e assim por diante); nunca edite uma migration já aplicada.
 
 Exemplo: `SPRING_PROFILES_ACTIVE=test ./mvnw spring-boot:run`. Um perfil de produção virá com o deploy (issue #21).
