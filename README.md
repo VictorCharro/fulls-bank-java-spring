@@ -131,7 +131,7 @@ Mais detalhes em [`docs/02-arquitetura.md`](docs/02-arquitetura.md) e [`docs/03-
 
 ## 🔧 Como rodar o projeto
 
-**Pré-requisitos:** JDK 21 e um PostgreSQL local com o banco `fulls_bank` criado.
+**Pré-requisitos:** JDK 21 e um PostgreSQL local com o banco `fulls_bank` criado (e `fulls_bank_test` para rodar os testes que sobem o contexto).
 
 1. **Clone o repositório:**
 
@@ -144,6 +144,7 @@ cd fulls-bank-java-spring
 
 ```sql
 CREATE DATABASE fulls_bank;
+CREATE DATABASE fulls_bank_test; -- usado pelo perfil de testes
 ```
 
 3. **Defina as variáveis de ambiente** da conexão com o banco (a senha não fica no repositório):
@@ -153,12 +154,14 @@ CREATE DATABASE fulls_bank;
 | `DB_PASSWORD` | senha do PostgreSQL | nenhum (obrigatória) |
 | `DB_USER` | usuário | `postgres` |
 | `DB_URL` | URL JDBC | `jdbc:postgresql://localhost:5432/fulls_bank` |
+| `SPRING_PROFILES_ACTIVE` | perfil ativo: `dev` ou `test` | `dev` |
+| `TEST_DB_URL` | URL JDBC do banco do perfil `test` | `jdbc:postgresql://localhost:5432/fulls_bank_test` |
 
 ```bash
 export DB_PASSWORD='sua-senha'
 ```
 
-As tabelas são criadas automaticamente na primeira execução.
+Perfis: `dev` (padrão) atualiza o esquema e mostra os SQLs no log; `test` usa um banco separado (`fulls_bank_test`) e recria o esquema a cada execução. As tabelas são criadas automaticamente na primeira execução.
 
 4. **Suba a API:**
 
@@ -177,7 +180,7 @@ A API fica disponível em `http://localhost:8080`.
 ```
 
 - Testes unitários dos serviços (JUnit 5 e Mockito) e testes de camada web dos controllers (`@WebMvcTest`).
-- `FullsBankApplicationTests` carrega o contexto completo e exige o PostgreSQL rodando e `DB_PASSWORD` definida (a issue [#11](https://github.com/VictorCharro/fulls-bank-java-spring/issues/11) troca isso por Testcontainers).
+- `FullsBankApplicationTests` carrega o contexto completo e exige o PostgreSQL rodando, o banco `fulls_bank_test` criado e `DB_PASSWORD` definida (a issue [#11](https://github.com/VictorCharro/fulls-bank-java-spring/issues/11) troca isso por Testcontainers).
 - O CI (GitHub Actions) roda `./mvnw verify` em cada push e pull request, com um PostgreSQL de serviço.
 
 ---
