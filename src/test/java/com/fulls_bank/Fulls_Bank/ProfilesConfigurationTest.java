@@ -80,9 +80,9 @@ class ProfilesConfigurationTest {
     void allProfiles_shouldShareTheDatasourceFromEnvironmentVariables() {
         ConfigurableEnvironment environment = environmentFor(
                 "--spring.profiles.active=test",
-                "--TEST_DB_URL=jdbc:postgresql://db:5432/other_test");
+                "--DB_URL=jdbc:postgresql://db:5432/other");
 
-        assertEquals("jdbc:postgresql://db:5432/other_test", environment.getProperty("spring.datasource.url"));
+        assertEquals("jdbc:postgresql://db:5432/other", environment.getProperty("spring.datasource.url"));
         assertEquals("test-password", environment.getProperty("spring.datasource.password"));
         assertEquals("test-user", environment.getProperty("spring.datasource.username"));
     }

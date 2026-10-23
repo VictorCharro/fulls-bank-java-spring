@@ -40,4 +40,4 @@ HTTP → Controller (@Valid) → Service (regra + @Transactional) → Repository
 
 ## Evoluções planejadas
 
-Spring Security com JWT, Testcontainers, Docker, CI e deploy na AWS: ver [roadmap](10-roadmap.md).
+Spring Security com JWT, Docker, CI e deploy na AWS: ver [roadmap](10-roadmap.md).

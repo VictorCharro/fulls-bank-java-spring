@@ -108,6 +108,7 @@ Mais detalhes em [`docs/02-arquitetura.md`](docs/02-arquitetura.md) e [`docs/03-
 - Spring Boot
 - Spring Data JPA
 - Flyway (migrations)
+- Testcontainers
 - Hibernate
 - Lombok
 - Jakarta Bean Validation
@@ -132,7 +133,7 @@ Mais detalhes em [`docs/02-arquitetura.md`](docs/02-arquitetura.md) e [`docs/03-
 
 ## 🔧 Como rodar o projeto
 
-**Pré-requisitos:** JDK 21 e um PostgreSQL local com o banco `fulls_bank` criado (e `fulls_bank_test` para rodar os testes que sobem o contexto).
+**Pré-requisitos:** JDK 21 e um PostgreSQL local com o banco `fulls_bank` criado. Para os testes, Docker em execução.
 
 1. **Clone o repositório:**
 
@@ -145,7 +146,6 @@ cd fulls-bank-java-spring
 
 ```sql
 CREATE DATABASE fulls_bank;
-CREATE DATABASE fulls_bank_test; -- usado pelo perfil de testes
 ```
 
 3. **Defina as variáveis de ambiente** da conexão com o banco (a senha não fica no repositório):
@@ -156,13 +156,12 @@ CREATE DATABASE fulls_bank_test; -- usado pelo perfil de testes
 | `DB_USER` | usuário | `postgres` |
 | `DB_URL` | URL JDBC | `jdbc:postgresql://localhost:5432/fulls_bank` |
 | `SPRING_PROFILES_ACTIVE` | perfil ativo: `dev` ou `test` | `dev` |
-| `TEST_DB_URL` | URL JDBC do banco do perfil `test` | `jdbc:postgresql://localhost:5432/fulls_bank_test` |
 
 ```bash
 export DB_PASSWORD='sua-senha'
 ```
 
-Perfis: `dev` (padrão) mostra os SQLs no log; `test` usa um banco separado (`fulls_bank_test`). As tabelas são criadas pelas migrations do Flyway (`src/main/resources/db/migration`) na primeira execução.
+Perfis: `dev` (padrão) mostra os SQLs no log; `test` é usado pelos testes, com banco em container. As tabelas são criadas pelas migrations do Flyway (`src/main/resources/db/migration`) na primeira execução.
 
 4. **Suba a API:**
 
@@ -181,8 +180,8 @@ A API fica disponível em `http://localhost:8080`.
 ```
 
 - Testes unitários dos serviços (JUnit 5 e Mockito) e testes de camada web dos controllers (`@WebMvcTest`).
-- `FullsBankApplicationTests` carrega o contexto completo e exige o PostgreSQL rodando, o banco `fulls_bank_test` criado e `DB_PASSWORD` definida (a issue [#11](https://github.com/VictorCharro/fulls-bank-java-spring/issues/11) troca isso por Testcontainers).
-- O CI (GitHub Actions) roda `./mvnw verify` em cada push e pull request, com um PostgreSQL de serviço.
+- `FullsBankApplicationTests` carrega o contexto completo com um PostgreSQL em container (Testcontainers): precisa de Docker em execução, mas não de PostgreSQL instalado.
+- O CI (GitHub Actions) roda `./mvnw verify` em cada push e pull request.
 
 ---
 
@@ -190,7 +189,7 @@ A API fica disponível em `http://localhost:8080`.
 
 O planejamento completo está nas [issues](https://github.com/VictorCharro/fulls-bank-java-spring/issues) e no [roadmap](docs/10-roadmap.md). Em resumo:
 
-- 🧪 Testcontainers e testes de integração dos controllers
+- 🧪 Testes de integração dos controllers
 - 🔒 Lock otimista (`@Version`) e teste de concorrência para saque e transferência
 - 🔐 Autenticação com Spring Security e JWT
 - 📊 Extrato com filtro por data e paginação

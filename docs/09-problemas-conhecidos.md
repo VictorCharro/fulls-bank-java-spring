@@ -28,4 +28,3 @@ Legenda de issue: `#N` = já existe; "sem issue" = ainda precisa ser criada.
 | Q1 | Endpoints de cliente expõem a entidade `Client` (sem DTO). | sem issue |
 | Q5 | `Account.id` e `Account.type` públicos; `Transaction.description` sem uso; `senderId`/`receiverId` do DTO com padrão `0L` tornam `@NotNull` inócuo. | sem issue |
 | Q6 | Mapeamento manual de DTOs. | #18 |
-| Q7 | `FullsBankApplicationTests` depende de banco local. | #11 |

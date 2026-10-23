@@ -50,17 +50,6 @@ class ApplicationPropertiesTest {
     }
 
     @Test
-    void testProfile_shouldUseSeparateDatabaseFromDev() throws IOException {
-        Properties testProperties = PropertiesLoaderUtils
-                .loadProperties(new ClassPathResource("application-test.properties"));
-        MockEnvironment environment = new MockEnvironment();
-        environment.getPropertySources().addFirst(new PropertiesPropertySource("application-test", testProperties));
-
-        assertEquals("jdbc:postgresql://localhost:5432/fulls_bank_test",
-                environment.getProperty("spring.datasource.url"));
-    }
-
-    @Test
     void datasourceUrlAndUser_shouldBeOverriddenByDbUrlAndDbUser() {
         MockEnvironment environment = environment()
                 .withProperty("DB_URL", "jdbc:postgresql://db:5432/other")

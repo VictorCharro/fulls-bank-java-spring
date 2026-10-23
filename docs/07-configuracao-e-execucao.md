@@ -5,7 +5,8 @@ Arquivos: `src/main/resources/application.properties`, `application-dev.properti
 ## Pré-requisitos
 
 - JDK compatível com o `pom.xml` (Java 21 LTS).
-- PostgreSQL local com o banco `fulls_bank` criado e, para os testes que sobem o contexto, o banco `fulls_bank_test`.
+- PostgreSQL local com o banco `fulls_bank` criado, para rodar a aplicação.
+- Docker em execução, para os testes que sobem o contexto (Testcontainers).
 
 ## Configuração atual
 
@@ -25,7 +26,7 @@ O perfil ativo vem da variável de ambiente `SPRING_PROFILES_ACTIVE` e, se ela n
 | Perfil | Arquivo | `show-sql` / `format_sql` | Uso |
 |---|---|---|---|
 | `dev` (padrão) | `application-dev.properties` | `true` / `true` | rodar localmente |
-| `test` | `application-test.properties` | `false` | testes que sobem o contexto (`FullsBankApplicationTests` usa `@ActiveProfiles("test")`); usa um **banco separado**, `fulls_bank_test` (variável `TEST_DB_URL`), para não misturar dados com os do desenvolvimento |
+| `test` | `application-test.properties` | `false` | testes que sobem o contexto (`FullsBankApplicationTests` usa `@ActiveProfiles("test")`); o banco é um PostgreSQL descartável do Testcontainers, nunca o de desenvolvimento |
 
 ## Banco de dados (Flyway)
 
@@ -52,7 +53,6 @@ O H2 está no `pom.xml`, mas a aplicação usa PostgreSQL.
 | `DB_USER` | usuário do banco | `postgres` |
 | `DB_PASSWORD` | senha do banco | nenhum (obrigatória) |
 | `SPRING_PROFILES_ACTIVE` | perfil ativo (`dev` ou `test`) | `dev` |
-| `TEST_DB_URL` | URL JDBC do banco do perfil `test` | `jdbc:postgresql://localhost:5432/fulls_bank_test` |
 
 Nunca coloque a senha em arquivo versionado. A senha usada antes desta mudança continua no histórico do Git: troque-a no seu PostgreSQL local.
 
@@ -73,7 +73,7 @@ A API sobe em `http://localhost:8080`.
 ./mvnw test
 ```
 
-Atenção: `FullsBankApplicationTests` carrega o contexto completo com o perfil `test` e hoje exige o PostgreSQL local rodando, o banco `fulls_bank_test` criado e `DB_PASSWORD` definida (issue #11 resolve com Testcontainers). Para rodar só testes unitários:
+`FullsBankApplicationTests` carrega o contexto completo com o perfil `test` e sobe um PostgreSQL 16 em container (Testcontainers), então precisa de Docker em execução, mas não de PostgreSQL instalado nem de `DB_PASSWORD`. Para rodar só testes unitários, sem Docker:
 
 ```bash
 ./mvnw test -Dtest=TransactionServiceTest
