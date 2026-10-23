@@ -80,6 +80,24 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(400).body(errorResponse);
     }
 
+    @ExceptionHandler(EmailAlreadyRegistered.class)
+    public ResponseEntity<ErrorResponse> handleEmailAlreadyRegistered(EmailAlreadyRegistered e) {
+        LocalDateTime timestamp = LocalDateTime.now();
+        int status = 400;
+        String message = e.getMessage();
+        ErrorResponse errorResponse = new ErrorResponse(status, message, timestamp);
+        return ResponseEntity.status(400).body(errorResponse);
+    }
+
+    @ExceptionHandler(InvalidCredentials.class)
+    public ResponseEntity<ErrorResponse> handleInvalidCredentials(InvalidCredentials e) {
+        LocalDateTime timestamp = LocalDateTime.now();
+        int status = 401;
+        String message = e.getMessage();
+        ErrorResponse errorResponse = new ErrorResponse(status, message, timestamp);
+        return ResponseEntity.status(401).body(errorResponse);
+    }
+
     @ExceptionHandler(AccountNotFound.class)
     public ResponseEntity<ErrorResponse> handleAccountNotFound(AccountNotFound e) {
         LocalDateTime timestamp = LocalDateTime.now();

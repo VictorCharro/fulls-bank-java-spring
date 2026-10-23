@@ -15,6 +15,9 @@ Arquivos: `src/main/resources/application.properties`, `application-dev.properti
 | `spring.datasource.url` | `${DB_URL}`; padrão `jdbc:postgresql://localhost:5432/fulls_bank` |
 | `spring.datasource.username` | `${DB_USER}`; padrão `postgres` |
 | `spring.datasource.password` | `${DB_PASSWORD}`, **obrigatória** (sem padrão; se faltar, o Spring usa o texto `${DB_PASSWORD}` como senha e a conexão falha na autenticação) |
+| `app.jwt.secret` | `${JWT_SECRET}`, **obrigatória** (mínimo de 32 bytes; se faltar ou for curta, a aplicação não sobe) |
+| `app.jwt.expiration-minutes` | `${JWT_EXPIRATION_MINUTES:60}` |
+| `app.admin.email`, `app.admin.password` | `${ADMIN_EMAIL:}`, `${ADMIN_PASSWORD:}`; primeiro administrador, opcional |
 | `spring.profiles.active` | `${SPRING_PROFILES_ACTIVE}`; padrão `dev` |
 
 As propriedades de JPA ficam nos perfis (abaixo).
@@ -53,8 +56,11 @@ O H2 está no `pom.xml`, mas a aplicação usa PostgreSQL.
 | `DB_USER` | usuário do banco | `postgres` |
 | `DB_PASSWORD` | senha do banco | nenhum (obrigatória) |
 | `SPRING_PROFILES_ACTIVE` | perfil ativo (`dev` ou `test`) | `dev` |
+| `JWT_SECRET` | segredo para assinar os tokens (HS256), mínimo de 32 bytes | nenhum (obrigatória; sem ela a aplicação não sobe) |
+| `JWT_EXPIRATION_MINUTES` | validade do token | `60` |
+| `ADMIN_EMAIL`, `ADMIN_PASSWORD` | cria o primeiro administrador na inicialização, se as duas existirem e o e-mail ainda não estiver cadastrado; a senha tem no máximo 72 bytes em UTF-8 (a aplicação não sobe se passar disso) | vazias (nenhum administrador é criado) |
 
-Nunca coloque a senha em arquivo versionado. A senha usada antes desta mudança continua no histórico do Git: troque-a no seu PostgreSQL local.
+Nunca coloque senha ou segredo em arquivo versionado. Os testes usam um segredo próprio, só do perfil `test`. A senha usada antes desta mudança continua no histórico do Git: troque-a no seu PostgreSQL local.
 
 ## Como rodar
 
@@ -62,6 +68,7 @@ Nunca coloque a senha em arquivo versionado. A senha usada antes desta mudança 
 git clone https://github.com/VictorCharro/fulls-bank-java-spring.git
 cd fulls-bank-java-spring
 export DB_PASSWORD='sua-senha'
+export JWT_SECRET="$(openssl rand -base64 48)"
 ./mvnw spring-boot:run
 ```
 
@@ -84,7 +91,6 @@ A API sobe em `http://localhost:8080`.
 | Item | Issue |
 |---|---|
 | Docker e docker-compose | #19 |
-| CI | #20 |
 | Deploy AWS | #21 |
 
 Atualize esta página ao concluir cada item.
