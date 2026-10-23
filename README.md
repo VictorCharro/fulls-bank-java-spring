@@ -153,12 +153,13 @@ CREATE DATABASE fulls_bank;
 | `DB_PASSWORD` | senha do PostgreSQL | nenhum (obrigatória) |
 | `DB_USER` | usuário | `postgres` |
 | `DB_URL` | URL JDBC | `jdbc:postgresql://localhost:5432/fulls_bank` |
+| `SPRING_PROFILES_ACTIVE` | perfil ativo: `dev` ou `test` | `dev` |
 
 ```bash
 export DB_PASSWORD='sua-senha'
 ```
 
-As tabelas são criadas automaticamente na primeira execução.
+Perfis: `dev` (padrão) atualiza o esquema e mostra os SQLs no log; `test` recria o esquema a cada execução. As tabelas são criadas automaticamente na primeira execução.
 
 4. **Suba a API:**
 
