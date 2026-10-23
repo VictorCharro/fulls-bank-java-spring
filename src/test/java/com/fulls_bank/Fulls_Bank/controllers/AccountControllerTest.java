@@ -4,6 +4,7 @@ import com.fulls_bank.Fulls_Bank.dto.AccountResponseDTO;
 import com.fulls_bank.Fulls_Bank.entities.Account;
 import com.fulls_bank.Fulls_Bank.enums.AccountType;
 import com.fulls_bank.Fulls_Bank.exceptions.AccountNotFound;
+import com.fulls_bank.Fulls_Bank.exceptions.IdNotFound;
 import com.fulls_bank.Fulls_Bank.services.AccountService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,9 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
 
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -55,5 +58,24 @@ class AccountControllerTest {
         mockMvc.perform(get("/account/number/{number}", ACCOUNT_NUMBER))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message").value("Account not found"));
+    }
+
+    @Test
+    void searchAccountById_withUnknownId_shouldReturn404() throws Exception {
+        when(accountService.findAccountById(99L)).thenThrow(new IdNotFound("ID not found"));
+
+        mockMvc.perform(get("/account/{id}", 99L))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.status").value(404))
+                .andExpect(jsonPath("$.message").value("ID not found"));
+    }
+
+    @Test
+    void deleteAccount_withUnknownId_shouldReturn404() throws Exception {
+        doThrow(new IdNotFound("ID not found")).when(accountService).deleteAccount(99L);
+
+        mockMvc.perform(delete("/account/{id}", 99L))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("ID not found"));
     }
 }
