@@ -42,4 +42,4 @@ HTTP → Controller (@Valid) → Service (regra + @Transactional) → Repository
 
 ## Evoluções planejadas
 
-Docker e deploy na AWS: ver [roadmap](10-roadmap.md).
+Deploy na AWS: ver [roadmap](10-roadmap.md). Docker já está disponível: ver [configuração](07-configuracao-e-execucao.md).
