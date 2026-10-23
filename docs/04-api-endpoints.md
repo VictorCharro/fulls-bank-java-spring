@@ -10,7 +10,7 @@ Código: `MAIN/controllers`. Formato de erro: [06](06-erros-e-excecoes.md). Iten
 | GET | `/client` | — | 200, lista de `Client` ⚠️ |
 | GET | `/client/{id}` | — | 200, `Client` ⚠️ |
 | PUT | `/client/{id}` | `Client` (só `name` e `lastName` são atualizados) | 200, `Client` ⚠️ |
-| DELETE | `/client/{id}` | — | 200, sem corpo |
+| DELETE | `/client/{id}` | — | 200, sem corpo; 409 se o cliente tiver contas |
 
 ## Contas — `/account` (`AccountController`)
 
@@ -19,7 +19,7 @@ Código: `MAIN/controllers`. Formato de erro: [06](06-erros-e-excecoes.md). Iten
 | POST | `/account` | `AccountRequestDTO` | 201, `AccountResponseDTO` |
 | GET | `/account/{id}` | — | 200, `AccountResponseDTO` (listas de transações vêm nulas) ⚠️ |
 | GET | `/account/number/{number}` | — | 200, `AccountResponseDTO`; 404 se a conta não existir |
-| DELETE | `/account/{id}` | — | 200, sem corpo ⚠️ |
+| DELETE | `/account/{id}` | — | 200, sem corpo ⚠️; 409 se a conta tiver transações |
 
 Depósito, saque e transferência são feitos somente por `POST /transaction`.
 

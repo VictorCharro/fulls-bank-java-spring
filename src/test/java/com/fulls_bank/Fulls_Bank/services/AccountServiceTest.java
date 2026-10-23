@@ -8,8 +8,10 @@ import com.fulls_bank.Fulls_Bank.enums.AccountType;
 import com.fulls_bank.Fulls_Bank.exceptions.AccountNotFound;
 import com.fulls_bank.Fulls_Bank.exceptions.ClientNotFound;
 import com.fulls_bank.Fulls_Bank.exceptions.IdNotFound;
+import com.fulls_bank.Fulls_Bank.exceptions.ResourceInUse;
 import com.fulls_bank.Fulls_Bank.repositories.AccountRepository;
 import com.fulls_bank.Fulls_Bank.repositories.ClientRepository;
+import com.fulls_bank.Fulls_Bank.repositories.TransactionRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,6 +19,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -28,6 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -45,6 +49,9 @@ class AccountServiceTest {
 
     @Mock
     private ClientRepository clientRepository;
+
+    @Mock
+    private TransactionRepository transactionRepository;
 
     @InjectMocks
     private AccountService accountService;
@@ -116,10 +123,30 @@ class AccountServiceTest {
     @Test
     void deleteAccount_withExistingId_shouldDelete() {
         when(accountRepository.findAccountById(ACCOUNT_ID)).thenReturn(Optional.of(account));
+        when(transactionRepository.existsBySenderIdOrReceiverId(ACCOUNT_ID, ACCOUNT_ID)).thenReturn(false);
 
         accountService.deleteAccount(ACCOUNT_ID);
 
         verify(accountRepository).deleteById(ACCOUNT_ID);
+    }
+
+    @Test
+    void deleteAccount_withTransactions_shouldThrowResourceInUseAndNotDelete() {
+        when(accountRepository.findAccountById(ACCOUNT_ID)).thenReturn(Optional.of(account));
+        when(transactionRepository.existsBySenderIdOrReceiverId(ACCOUNT_ID, ACCOUNT_ID)).thenReturn(true);
+
+        assertThrows(ResourceInUse.class, () -> accountService.deleteAccount(ACCOUNT_ID));
+
+        verify(accountRepository, never()).deleteById(any());
+    }
+
+    @Test
+    void deleteAccount_whenForeignKeyViolationOnDelete_shouldThrowResourceInUse() {
+        when(accountRepository.findAccountById(ACCOUNT_ID)).thenReturn(Optional.of(account));
+        when(transactionRepository.existsBySenderIdOrReceiverId(ACCOUNT_ID, ACCOUNT_ID)).thenReturn(false);
+        doThrow(new DataIntegrityViolationException("fk")).when(accountRepository).deleteById(ACCOUNT_ID);
+
+        assertThrows(ResourceInUse.class, () -> accountService.deleteAccount(ACCOUNT_ID));
     }
 
     @Test

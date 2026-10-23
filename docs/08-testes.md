@@ -7,7 +7,8 @@ Código: `TEST/*`. Ferramentas: JUnit 5 e Mockito (`spring-boot-starter-test`).
 | Teste | Tipo | Observação |
 |---|---|---|
 | `FullsBankApplicationTests` | Contexto Spring | Exige PostgreSQL local (issue #11) |
-| `controllers/AccountControllerTest` | Web (`@WebMvcTest`, MockMvc) | Issues #25 e #27; `GET /account/number/{number}` e 404 por id |
+| `controllers/AccountControllerTest` | Web (`@WebMvcTest`, MockMvc) | Issues #25, #27 e #28; `GET /account/number/{number}`, 404 por id e 409 ao excluir conta com transações |
+| `controllers/ClientControllerTest` | Web (`@WebMvcTest`, MockMvc) | Issue #28; 409 ao excluir cliente com contas |
 | `controllers/TransactionControllerTest` | Web (`@WebMvcTest`, MockMvc) | Issue #30; validação de `amount` em `POST /transaction` |
 | `services/TransactionServiceTest` | Unitário (Mockito) | Issue #1 |
 | `services/AccountServiceTest` | Unitário (Mockito) | Issue #2 |

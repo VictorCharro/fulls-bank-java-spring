@@ -5,6 +5,7 @@ import com.fulls_bank.Fulls_Bank.entities.Account;
 import com.fulls_bank.Fulls_Bank.enums.AccountType;
 import com.fulls_bank.Fulls_Bank.exceptions.AccountNotFound;
 import com.fulls_bank.Fulls_Bank.exceptions.IdNotFound;
+import com.fulls_bank.Fulls_Bank.exceptions.ResourceInUse;
 import com.fulls_bank.Fulls_Bank.services.AccountService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,5 +78,16 @@ class AccountControllerTest {
         mockMvc.perform(delete("/account/{id}", 99L))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message").value("ID not found"));
+    }
+
+    @Test
+    void deleteAccount_withTransactions_shouldReturn409() throws Exception {
+        doThrow(new ResourceInUse("Account has transactions and cannot be deleted"))
+                .when(accountService).deleteAccount(1L);
+
+        mockMvc.perform(delete("/account/{id}", 1L))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.status").value(409))
+                .andExpect(jsonPath("$.message").value("Account has transactions and cannot be deleted"));
     }
 }

@@ -3,6 +3,8 @@ package com.fulls_bank.Fulls_Bank.services;
 import com.fulls_bank.Fulls_Bank.entities.Client;
 import com.fulls_bank.Fulls_Bank.exceptions.ClientNotFound;
 import com.fulls_bank.Fulls_Bank.exceptions.ExistingAccount;
+import com.fulls_bank.Fulls_Bank.exceptions.ResourceInUse;
+import com.fulls_bank.Fulls_Bank.repositories.AccountRepository;
 import com.fulls_bank.Fulls_Bank.repositories.ClientRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,6 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -30,6 +34,9 @@ class ClientServiceTest {
 
     @Mock
     private ClientRepository clientRepository;
+
+    @Mock
+    private AccountRepository accountRepository;
 
     @InjectMocks
     private ClientService clientService;
@@ -82,6 +89,7 @@ class ClientServiceTest {
     @Test
     void deleteClient_withExistingId_shouldDelete() {
         when(clientRepository.findClientById(CLIENT_ID)).thenReturn(Optional.of(client));
+        when(accountRepository.existsByClientId(CLIENT_ID)).thenReturn(false);
 
         clientService.deleteClient(CLIENT_ID);
 
@@ -95,6 +103,25 @@ class ClientServiceTest {
         assertThrows(ClientNotFound.class, () -> clientService.deleteClient(CLIENT_ID));
 
         verify(clientRepository, never()).deleteById(any());
+    }
+
+    @Test
+    void deleteClient_withLinkedAccounts_shouldThrowResourceInUseAndNotDelete() {
+        when(clientRepository.findClientById(CLIENT_ID)).thenReturn(Optional.of(client));
+        when(accountRepository.existsByClientId(CLIENT_ID)).thenReturn(true);
+
+        assertThrows(ResourceInUse.class, () -> clientService.deleteClient(CLIENT_ID));
+
+        verify(clientRepository, never()).deleteById(any());
+    }
+
+    @Test
+    void deleteClient_whenForeignKeyViolationOnDelete_shouldThrowResourceInUse() {
+        when(clientRepository.findClientById(CLIENT_ID)).thenReturn(Optional.of(client));
+        when(accountRepository.existsByClientId(CLIENT_ID)).thenReturn(false);
+        doThrow(new DataIntegrityViolationException("fk")).when(clientRepository).deleteById(CLIENT_ID);
+
+        assertThrows(ResourceInUse.class, () -> clientService.deleteClient(CLIENT_ID));
     }
 
     @Test

@@ -9,6 +9,7 @@ Código: `MAIN/services`. Erros lançados: [06](06-erros-e-excecoes.md).
 - CPF duplicado lança `ExistingAccount`.
 - Atualização altera somente `name` e `lastName`; o CPF nunca é alterado.
 - Buscar, atualizar ou excluir cliente inexistente lança `ClientNotFound`.
+- Excluir cliente que possui contas lança `ResourceInUse` (409); o cliente só pode ser excluído depois das contas. Se uma conta for criada entre a checagem e a exclusão, a violação de chave estrangeira também vira `ResourceInUse`.
 
 ## Conta (`AccountService`)
 
@@ -16,6 +17,7 @@ Código: `MAIN/services`. Erros lançados: [06](06-erros-e-excecoes.md).
 - Nova conta começa com saldo `0`.
 - O número da conta é gerado aleatoriamente entre **1000 e 9999**, sem repetir.
 - Busca por número inexistente lança `AccountNotFound`; busca ou exclusão por id inexistente lança `IdNotFound`.
+- Excluir conta que participa de alguma transação (como origem ou destino) lança `ResourceInUse` (409).
 - O `AccountService` não altera saldo: depósito, saque e transferência ficam só no `TransactionService`.
 
 ## Transação (`TransactionService.createTransaction`)
