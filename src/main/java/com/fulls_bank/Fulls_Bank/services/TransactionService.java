@@ -13,9 +13,9 @@ import com.fulls_bank.Fulls_Bank.exceptions.SameAccountTransfer;
 import com.fulls_bank.Fulls_Bank.exceptions.TransactionNotFound;
 import com.fulls_bank.Fulls_Bank.repositories.AccountRepository;
 import com.fulls_bank.Fulls_Bank.repositories.TransactionRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
