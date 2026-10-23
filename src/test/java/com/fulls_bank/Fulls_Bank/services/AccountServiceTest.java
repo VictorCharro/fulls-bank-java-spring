@@ -209,6 +209,6 @@ class AccountServiceTest {
     }
 
     private static boolean isInRange(int number) {
-        return number >= AccountService.MIN_ACCOUNT_NUMBER && number <= AccountService.MAX_ACCOUNT_NUMBER;
+        return number >= 100_000 && number <= 999_999;
     }
 }
