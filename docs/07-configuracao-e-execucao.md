@@ -17,6 +17,7 @@ Arquivos: `src/main/resources/application.properties`, `application-dev.properti
 | `spring.datasource.password` | `${DB_PASSWORD}`, **obrigatória** (sem padrão; se faltar, o Spring usa o texto `${DB_PASSWORD}` como senha e a conexão falha na autenticação) |
 | `app.jwt.secret` | `${JWT_SECRET}`, **obrigatória** (mínimo de 32 bytes; se faltar ou for curta, a aplicação não sobe) |
 | `app.jwt.expiration-minutes` | `${JWT_EXPIRATION_MINUTES:60}` |
+| `spring.data.web.pageable.*` | página padrão de 20 itens, máximo de 100 e JSON de página estável (`serialization-mode=via_dto`) |
 | `app.admin.email`, `app.admin.password` | `${ADMIN_EMAIL:}`, `${ADMIN_PASSWORD:}`; primeiro administrador, opcional |
 | `spring.profiles.active` | `${SPRING_PROFILES_ACTIVE}`; padrão `dev` |
 

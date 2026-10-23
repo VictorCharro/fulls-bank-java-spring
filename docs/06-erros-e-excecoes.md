@@ -27,6 +27,8 @@ Código: `MAIN/exceptions`. Tratamento central em `GlobalExceptionHandler` (`@Re
 | `EmailAlreadyRegistered` | 400 | E-mail já cadastrado em `POST /auth/register` |
 | `InvalidCredentials` | 401 | E-mail ou senha incorretos em `POST /auth/login` |
 | `InsufficientBalance` | 400 | Saldo insuficiente |
+| `InvalidPeriod` | 400 | Extrato com `from` depois de `to` |
+| `InvalidPagination` | 400 | Extrato com `page` negativo ou `size` menor que 1 |
 | `InvalidAmount` | 400 | `amount` nulo, zero ou negativo em `TransactionService.createTransaction` |
 | `SameAccountTransfer` | 400 | Transferência com origem e destino iguais |
 | `MethodArgumentNotValidException` | 400 | Falha de `@Valid`; mensagem no formato `campo: mensagem`, separadas por vírgula |
