@@ -16,8 +16,7 @@ Código: `MAIN/services`. Erros lançados: [06](06-erros-e-excecoes.md).
 - Nova conta começa com saldo `0`.
 - O número da conta é gerado aleatoriamente entre **1000 e 9999**, sem repetir.
 - Busca por número inexistente lança `AccountNotFound`; busca ou exclusão por id inexistente lança `IdNotFound`.
-- `deposit` e `withdrawal` rejeitam valor nulo, zero ou negativo com `NegativeAmount` (400).
-- `withdrawal` com saldo menor que o valor lança `InsufficientBalance`.
+- O `AccountService` não altera saldo: depósito, saque e transferência ficam só no `TransactionService`.
 
 ## Transação (`TransactionService.createTransaction`)
 

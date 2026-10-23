@@ -8,7 +8,6 @@ Legenda de issue: `#N` = já existe; "sem issue" = ainda precisa ser criada.
 
 | # | Problema | Onde | Issue |
 |---|---|---|---|
-| B2 | `POST /account/withdrawal`: parâmetros sem `@RequestParam`, não registra `Transaction` e não existe endpoint de depósito equivalente. Duplica a função de `POST /transaction`. | `AccountController`, `AccountService` | sem issue |
 | B3 | `IllegalArgumentException` não tem handler e retorna 500. | `MAIN/exceptions/GlobalExceptionHandler` | #4 |
 | B4 | `GET /transaction/{id}` retorna a entidade, sem 404 explícito. | `TransactionController` | #3 |
 | B5 | Excluir conta com transações, ou cliente com contas, viola chave estrangeira e retorna 500. | `AccountService`, `ClientService` | sem issue |
@@ -40,4 +39,3 @@ Legenda de issue: `#N` = já existe; "sem issue" = ainda precisa ser criada.
 | Q6 | Mapeamento manual de DTOs. | #18 |
 | Q7 | `FullsBankApplicationTests` depende de banco local. | #11 |
 | Q8 | README raiz desatualizado. | #7 |
-| Q9 | Duplicidade de lógica de saldo entre `AccountService` e `TransactionService`. | sem issue |
