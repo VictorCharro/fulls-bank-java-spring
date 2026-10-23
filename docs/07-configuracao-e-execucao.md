@@ -22,10 +22,16 @@ As propriedades de JPA ficam nos perfis (abaixo).
 
 O perfil ativo vem da variável de ambiente `SPRING_PROFILES_ACTIVE` e, se ela não existir, é `dev`.
 
-| Perfil | Arquivo | `ddl-auto` | `show-sql` / `format_sql` | Uso |
-|---|---|---|---|---|
-| `dev` (padrão) | `application-dev.properties` | `update` (issue #10: Flyway) | `true` / `true` | rodar localmente |
-| `test` | `application-test.properties` | `create-drop` | `false` | testes que sobem o contexto (`FullsBankApplicationTests` usa `@ActiveProfiles("test")`); usa um **banco separado**, `fulls_bank_test` (variável `TEST_DB_URL`), porque o esquema é apagado e recriado |
+| Perfil | Arquivo | `show-sql` / `format_sql` | Uso |
+|---|---|---|---|
+| `dev` (padrão) | `application-dev.properties` | `true` / `true` | rodar localmente |
+| `test` | `application-test.properties` | `false` | testes que sobem o contexto (`FullsBankApplicationTests` usa `@ActiveProfiles("test")`); usa um **banco separado**, `fulls_bank_test` (variável `TEST_DB_URL`), para não misturar dados com os do desenvolvimento |
+
+## Banco de dados (Flyway)
+
+O esquema é criado e versionado por migrations do Flyway em `src/main/resources/db/migration` (`V1__create_initial_schema.sql` cria `client`, `account` e `transaction`). Elas rodam sozinhas ao subir a aplicação, em qualquer perfil. O Hibernate fica com `ddl-auto=validate`: se uma entidade divergir do esquema, a aplicação não sobe.
+
+Para mudar o esquema, crie uma nova migration (`V2__descricao.sql`, e assim por diante); nunca edite uma migration já aplicada.
 
 Exemplo: `SPRING_PROFILES_ACTIVE=test ./mvnw spring-boot:run`. Um perfil de produção virá com o deploy (issue #21).
 
@@ -70,7 +76,6 @@ Atenção: `FullsBankApplicationTests` carrega o contexto completo com o perfil 
 
 | Item | Issue |
 |---|---|
-| Flyway | #10 |
 | Docker e docker-compose | #19 |
 | CI | #20 |
 | Deploy AWS | #21 |

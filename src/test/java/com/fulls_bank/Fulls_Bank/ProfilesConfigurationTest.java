@@ -53,20 +53,27 @@ class ProfilesConfigurationTest {
     }
 
     @Test
-    void devProfile_shouldUpdateSchemaAndShowSql() {
+    void devProfile_shouldShowSql() {
         ConfigurableEnvironment environment = environmentFor("--spring.profiles.active=dev");
 
-        assertEquals("update", environment.getProperty("spring.jpa.hibernate.ddl-auto"));
         assertEquals("true", environment.getProperty("spring.jpa.show-sql"));
         assertEquals("true", environment.getProperty("spring.jpa.properties.hibernate.format_sql"));
     }
 
     @Test
-    void testProfile_shouldRecreateSchemaAndKeepLogQuiet() {
+    void testProfile_shouldKeepLogQuiet() {
         ConfigurableEnvironment environment = environmentFor("--spring.profiles.active=test");
 
-        assertEquals("create-drop", environment.getProperty("spring.jpa.hibernate.ddl-auto"));
         assertEquals("false", environment.getProperty("spring.jpa.show-sql"));
+    }
+
+    @Test
+    void allProfiles_shouldOnlyValidateSchemaCreatedByFlyway() {
+        for (String profile : new String[]{"dev", "test"}) {
+            ConfigurableEnvironment environment = environmentFor("--spring.profiles.active=" + profile);
+
+            assertEquals("validate", environment.getProperty("spring.jpa.hibernate.ddl-auto"));
+        }
     }
 
     @Test

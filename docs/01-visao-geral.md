@@ -25,7 +25,6 @@ Detalhes: [API](04-api-endpoints.md) e [regras de negócio](05-regras-de-negocio
 ## Estado do projeto
 
 - Sem autenticação: todos os endpoints são públicos.
-- Sem migrations: o esquema é gerado pelo Hibernate (`ddl-auto=update`).
 - Sem Docker, CI ou deploy.
 - Cobertura de testes mínima (ver [testes](08-testes.md)).
 - Há bugs conhecidos: ver [problemas conhecidos](09-problemas-conhecidos.md).
