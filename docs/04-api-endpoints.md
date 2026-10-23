@@ -1,0 +1,55 @@
+# 04 — API
+
+Código: `MAIN/controllers`. Formato de erro: [06](06-erros-e-excecoes.md). Itens marcados com ⚠️ têm problema descrito em [09](09-problemas-conhecidos.md).
+
+## Clientes — `/client` (`ClientController`)
+
+| Método | Rota | Corpo | Resposta |
+|---|---|---|---|
+| POST | `/client` | `Client` (`cpf`, `name`, `lastName`) | 200, `Client` ⚠️ |
+| GET | `/client` | — | 200, lista de `Client` ⚠️ |
+| GET | `/client/{id}` | — | 200, `Client` ⚠️ |
+| PUT | `/client/{id}` | `Client` (só `name` e `lastName` são atualizados) | 200, `Client` ⚠️ |
+| DELETE | `/client/{id}` | — | 200, sem corpo |
+
+## Contas — `/account` (`AccountController`)
+
+| Método | Rota | Entrada | Resposta |
+|---|---|---|---|
+| POST | `/account` | `AccountRequestDTO` | 201, `AccountResponseDTO` |
+| GET | `/account/{id}` | — | 200, `AccountResponseDTO` (listas de transações vêm nulas) ⚠️ |
+| GET | `/account/number/{num}` | — | `Account` (entidade) ⚠️ não funciona hoje |
+| POST | `/account/withdrawal` | parâmetros `accountNumber` e `amount` | 200, sem corpo ⚠️ |
+| DELETE | `/account/{id}` | — | 200, sem corpo ⚠️ |
+
+Não há endpoint de depósito em `/account`. O método `AccountService.deposit` existe, mas não é exposto.
+
+## Transações — `/transaction` (`TransactionController`)
+
+| Método | Rota | Corpo | Resposta |
+|---|---|---|---|
+| POST | `/transaction` | `TransactionRequestDTO` | 201, `TransactionResponseDTO` |
+| GET | `/transaction` | — | 200, lista de `TransactionResponseDTO` |
+| GET | `/transaction/{id}` | — | `Transaction` (entidade) ⚠️ |
+
+### Exemplos de `POST /transaction`
+
+Depósito (usa só `receiverId`):
+
+```json
+{ "type": "DEPOSIT", "receiverId": 1, "amount": 100.00 }
+```
+
+Saque (usa só `senderId`):
+
+```json
+{ "type": "WITHDRAWAL", "senderId": 1, "amount": 30.00 }
+```
+
+Transferência (usa os dois):
+
+```json
+{ "type": "TRANSFER", "senderId": 1, "receiverId": 2, "amount": 50.00 }
+```
+
+Regras: [05](05-regras-de-negocio.md).

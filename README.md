@@ -1,5 +1,7 @@
 # 🏦 Fulls Bank - API REST com Spring Boot
 
+> 📚 Documentação técnica completa em [docs/README.md](docs/README.md).
+
 Este é um projeto de estudo que simula um sistema bancário básico, desenvolvido em Java com Spring Boot. A aplicação permite o cadastro e gerenciamento de clientes, contas bancárias e transações financeiras, com foco em boas práticas de back-end corporativo.
 
 ---
