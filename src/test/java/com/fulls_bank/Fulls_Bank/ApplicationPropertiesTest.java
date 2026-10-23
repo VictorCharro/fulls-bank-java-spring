@@ -1,14 +1,15 @@
 package com.fulls_bank.Fulls_Bank;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.core.env.PropertiesPropertySource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
+import org.springframework.mock.env.MockEnvironment;
 
 import java.io.IOException;
 import java.util.Properties;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ApplicationPropertiesTest {
 
@@ -22,14 +23,39 @@ class ApplicationPropertiesTest {
         }
     }
 
+    private MockEnvironment environment() {
+        MockEnvironment environment = new MockEnvironment();
+        environment.getPropertySources().addFirst(new PropertiesPropertySource("application", properties));
+        return environment;
+    }
+
     @Test
-    void datasourcePassword_shouldComeFromEnvironmentVariable() {
+    void datasourcePassword_shouldNotBeHardcoded() {
         assertEquals("${DB_PASSWORD}", properties.getProperty("spring.datasource.password"));
     }
 
     @Test
-    void datasourceUrlAndUser_shouldBeOverridableByEnvironmentVariables() {
-        assertTrue(properties.getProperty("spring.datasource.url").startsWith("${DB_URL:"));
-        assertTrue(properties.getProperty("spring.datasource.username").startsWith("${DB_USER:"));
+    void datasourcePassword_shouldResolveFromDbPasswordVariable() {
+        MockEnvironment environment = environment().withProperty("DB_PASSWORD", "test-password");
+
+        assertEquals("test-password", environment.getProperty("spring.datasource.password"));
+    }
+
+    @Test
+    void datasourceUrlAndUser_shouldResolveDocumentedDefaults() {
+        MockEnvironment environment = environment();
+
+        assertEquals("jdbc:postgresql://localhost:5432/fulls_bank", environment.getProperty("spring.datasource.url"));
+        assertEquals("postgres", environment.getProperty("spring.datasource.username"));
+    }
+
+    @Test
+    void datasourceUrlAndUser_shouldBeOverriddenByDbUrlAndDbUser() {
+        MockEnvironment environment = environment()
+                .withProperty("DB_URL", "jdbc:postgresql://db:5432/other")
+                .withProperty("DB_USER", "app");
+
+        assertEquals("jdbc:postgresql://db:5432/other", environment.getProperty("spring.datasource.url"));
+        assertEquals("app", environment.getProperty("spring.datasource.username"));
     }
 }
