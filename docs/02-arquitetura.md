@@ -25,7 +25,7 @@ HTTP → Controller (@Valid) → Service (regra + @Transactional) → Repository
 
 ## Dependências entre camadas
 
-- Controller depende de Service e dos mappers (a conversão entidade → DTO fica nos mappers, não nos services).
+- Controller depende de Service e dos mappers: a conversão entidade → DTO fica nos mappers, não em métodos dos services. Um service só usa mapper quando ele mesmo devolve DTO (hoje, `AccountService.createAccount`, que usa `AccountMapper`).
 - `AccountService` usa `AccountRepository` e `ClientRepository`.
 - `TransactionService` usa `TransactionRepository` e `AccountRepository`.
 - Injeção por construtor com `@RequiredArgsConstructor` (Lombok).
