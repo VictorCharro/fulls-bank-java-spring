@@ -67,7 +67,7 @@ Client 1 ──── N Account 1 ──── N Transaction (como sender)
 | `AccountRequestDTO` | `type`, `clientId` | ambos `@NotNull` |
 | `AccountResponseDTO` | `accountNumber`, `type`, `balance`, `sentTransactions`, `receivedTransactions` | — |
 | `TransactionRequestDTO` | `senderId`, `receiverId`, `amount`, `type` | `senderId`/`receiverId` `@NotNull` (padrão `0L`), `amount` `@Positive`, `type` `@NotNull` |
-| `RegisterRequestDTO` | `email`, `password` | `email` `@NotBlank` `@Email`; `password` `@NotBlank`, mínimo de 8 caracteres e máximo de 72 **bytes** em UTF-8 (limite do BCrypt) |
+| `RegisterRequestDTO` | `email`, `password` | `email` `@NotBlank` `@Email`, até 255 caracteres; `password` `@NotBlank`, mínimo de 8 caracteres e máximo de 72 **bytes** em UTF-8 (limite do BCrypt) |
 | `LoginRequestDTO` | `email`, `password` | ambos `@NotBlank` |
 | `TokenResponseDTO` | `accessToken`, `tokenType`, `expiresIn` | — |
 | `UserResponseDTO` | `id`, `email`, `role` | — |

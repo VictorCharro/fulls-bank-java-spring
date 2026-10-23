@@ -58,6 +58,17 @@ class AuthControllerTest {
     }
 
     @Test
+    void register_withEmailLongerThanTheColumn_shouldReturn400() throws Exception {
+        String email = "a".repeat(250) + "@example.com";
+
+        mockMvc.perform(post("/auth/register").contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"email\":\"" + email + "\",\"password\":\"secret-123\"}"))
+                .andExpect(status().isBadRequest());
+
+        verify(authService, never()).register(any());
+    }
+
+    @Test
     void register_withMultibytePasswordOver72Bytes_shouldReturn400() throws Exception {
         // 40 caracteres, mas 80 bytes em UTF-8: passaria em @Size e quebraria o BCrypt
         String password = "é".repeat(40);

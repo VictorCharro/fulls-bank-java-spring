@@ -18,8 +18,10 @@ import java.nio.charset.StandardCharsets;
 @AllArgsConstructor
 public class RegisterRequestDTO {
 
+    // 255 = tamanho da coluna app_user.email; acima disso o banco rejeitaria o cadastro
     @NotBlank
     @Email
+    @Size(max = 255)
     private String email;
 
     // O limite do BCrypt é de 72 bytes (não caracteres); a checagem em bytes está em isPasswordWithinBcryptLimit
