@@ -16,8 +16,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.math.BigDecimal;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/account")
@@ -41,11 +39,6 @@ public class AccountController {
     public AccountResponseDTO searchAccountByNumber(@PathVariable int number) {
         Account account = accountService.findAccountByAccountNumber(number);
         return accountService.toResponseDTO(account);
-    }
-
-    @PostMapping("/withdrawal")
-    public void withdrawal(int accountNumber, BigDecimal amount) {
-        accountService.withdrawal(accountNumber, amount);
     }
 
     @DeleteMapping("/{id}")

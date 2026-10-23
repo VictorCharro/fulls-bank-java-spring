@@ -8,8 +8,6 @@ import com.fulls_bank.Fulls_Bank.enums.AccountType;
 import com.fulls_bank.Fulls_Bank.exceptions.AccountNotFound;
 import com.fulls_bank.Fulls_Bank.exceptions.ClientNotFound;
 import com.fulls_bank.Fulls_Bank.exceptions.IdNotFound;
-import com.fulls_bank.Fulls_Bank.exceptions.InsufficientBalance;
-import com.fulls_bank.Fulls_Bank.exceptions.NegativeAmount;
 import com.fulls_bank.Fulls_Bank.repositories.AccountRepository;
 import com.fulls_bank.Fulls_Bank.repositories.ClientRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -111,111 +109,6 @@ class AccountServiceTest {
         when(accountRepository.findAccountById(ACCOUNT_ID)).thenReturn(Optional.empty());
 
         assertThrows(IdNotFound.class, () -> accountService.findAccountById(ACCOUNT_ID));
-    }
-
-    // deposit
-
-    @Test
-    void deposit_withValidAmount_shouldIncreaseBalanceAndSave() {
-        when(accountRepository.findAccountByAccountNumber(ACCOUNT_NUMBER)).thenReturn(Optional.of(account));
-
-        accountService.deposit(ACCOUNT_NUMBER, new BigDecimal("25"));
-
-        assertEquals(new BigDecimal("125"), account.getBalance());
-        verify(accountRepository).save(account);
-    }
-
-    @Test
-    void deposit_withNegativeAmount_shouldThrowAndNotSave() {
-        assertThrows(NegativeAmount.class, () -> accountService.deposit(ACCOUNT_NUMBER, new BigDecimal("-1")));
-
-        verify(accountRepository, never()).save(any());
-    }
-
-    @Test
-    void deposit_withZeroAmount_shouldThrowAndNotSave() {
-        assertThrows(NegativeAmount.class, () -> accountService.deposit(ACCOUNT_NUMBER, BigDecimal.ZERO));
-
-        verify(accountRepository, never()).save(any());
-    }
-
-    @Test
-    void deposit_withNullAmount_shouldThrowAndNotSave() {
-        assertThrows(NegativeAmount.class, () -> accountService.deposit(ACCOUNT_NUMBER, null));
-
-        verify(accountRepository, never()).save(any());
-    }
-
-    @Test
-    void deposit_withUnknownAccount_shouldThrowAndNotSave() {
-        when(accountRepository.findAccountByAccountNumber(ACCOUNT_NUMBER)).thenReturn(Optional.empty());
-
-        assertThrows(AccountNotFound.class, () -> accountService.deposit(ACCOUNT_NUMBER, new BigDecimal("10")));
-
-        verify(accountRepository, never()).save(any());
-    }
-
-    // withdrawal
-
-    @Test
-    void withdrawal_withEnoughBalance_shouldDecreaseBalanceAndSave() {
-        when(accountRepository.findAccountByAccountNumber(ACCOUNT_NUMBER)).thenReturn(Optional.of(account));
-
-        accountService.withdrawal(ACCOUNT_NUMBER, new BigDecimal("40"));
-
-        assertEquals(new BigDecimal("60"), account.getBalance());
-        verify(accountRepository).save(account);
-    }
-
-    @Test
-    void withdrawal_withExactBalance_shouldLeaveBalanceZero() {
-        when(accountRepository.findAccountByAccountNumber(ACCOUNT_NUMBER)).thenReturn(Optional.of(account));
-
-        accountService.withdrawal(ACCOUNT_NUMBER, new BigDecimal("100"));
-
-        assertEquals(0, BigDecimal.ZERO.compareTo(account.getBalance()));
-        verify(accountRepository).save(account);
-    }
-
-    @Test
-    void withdrawal_withInsufficientBalance_shouldThrowAndNotSave() {
-        when(accountRepository.findAccountByAccountNumber(ACCOUNT_NUMBER)).thenReturn(Optional.of(account));
-
-        assertThrows(InsufficientBalance.class,
-                () -> accountService.withdrawal(ACCOUNT_NUMBER, new BigDecimal("100.01")));
-
-        assertEquals(new BigDecimal("100"), account.getBalance());
-        verify(accountRepository, never()).save(any());
-    }
-
-    @Test
-    void withdrawal_withNegativeAmount_shouldThrowAndNotSave() {
-        assertThrows(NegativeAmount.class, () -> accountService.withdrawal(ACCOUNT_NUMBER, new BigDecimal("-1")));
-
-        verify(accountRepository, never()).save(any());
-    }
-
-    @Test
-    void withdrawal_withZeroAmount_shouldThrowAndNotSave() {
-        assertThrows(NegativeAmount.class, () -> accountService.withdrawal(ACCOUNT_NUMBER, BigDecimal.ZERO));
-
-        verify(accountRepository, never()).save(any());
-    }
-
-    @Test
-    void withdrawal_withNullAmount_shouldThrowAndNotSave() {
-        assertThrows(NegativeAmount.class, () -> accountService.withdrawal(ACCOUNT_NUMBER, null));
-
-        verify(accountRepository, never()).save(any());
-    }
-
-    @Test
-    void withdrawal_withUnknownAccount_shouldThrowAndNotSave() {
-        when(accountRepository.findAccountByAccountNumber(ACCOUNT_NUMBER)).thenReturn(Optional.empty());
-
-        assertThrows(AccountNotFound.class, () -> accountService.withdrawal(ACCOUNT_NUMBER, new BigDecimal("10")));
-
-        verify(accountRepository, never()).save(any());
     }
 
     // deleteAccount

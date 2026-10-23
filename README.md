@@ -21,9 +21,7 @@ Este é um projeto de estudo que simula um sistema bancário básico, desenvolvi
 ### 💳 Conta
 - Criar conta com número gerado automaticamente (`POST /account`)
 - Buscar conta por ID (`GET /account/{id}`)
-- Buscar conta por número da conta (`GET /account/number/{num}`)
-- Saque (`POST /account/withdrawal`)
-- Depósito (`POST /account/deposit`)
+- Buscar conta por número da conta (`GET /account/number/{number}`)
 - Excluir conta (`DELETE /account/{id}`)
 - Validação de saldo inicial
 - Associa cliente existente à conta (via ID)
@@ -33,7 +31,7 @@ Este é um projeto de estudo que simula um sistema bancário básico, desenvolvi
 ---
 
 ### 🔄 Transações
-- Transação registrada automaticamente no saque e depósito
+- Depósito, saque e transferência feitos somente por `POST /transaction`, com a transação registrada automaticamente
 - Buscar transação por ID (`GET /transaction/{id}`)
 - Listar todas as transações (`GET /transaction`)
 
@@ -101,8 +99,6 @@ cd fulls-bank-java-spring
 ---
 
 ## 🚧 Em desenvolvimento:
-
-🔁 Implementar transferência entre contas com movimentação de saldo e gravação da transação (POST /account/transfer)
 
 📄 Documentação com Swagger/OpenAPI
 

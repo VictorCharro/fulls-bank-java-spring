@@ -8,11 +8,8 @@ import com.fulls_bank.Fulls_Bank.entities.Client;
 import com.fulls_bank.Fulls_Bank.exceptions.AccountNotFound;
 import com.fulls_bank.Fulls_Bank.exceptions.ClientNotFound;
 import com.fulls_bank.Fulls_Bank.exceptions.IdNotFound;
-import com.fulls_bank.Fulls_Bank.exceptions.InsufficientBalance;
-import com.fulls_bank.Fulls_Bank.exceptions.NegativeAmount;
 import com.fulls_bank.Fulls_Bank.repositories.AccountRepository;
 import com.fulls_bank.Fulls_Bank.repositories.ClientRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -44,30 +41,6 @@ public class AccountService {
     public Account findAccountById (Long id) {
         return accountRepository.findAccountById(id)
                 .orElseThrow(() -> new IdNotFound("ID not found"));
-    }
-
-    @Transactional
-    public void deposit(int accountNumber, BigDecimal amount) {
-        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new NegativeAmount("The amount must be greater than zero");
-        }
-        Account account = findAccountByAccountNumber(accountNumber);
-        account.setBalance(account.getBalance().add(amount));
-        accountRepository.save(account);
-    }
-
-    @Transactional
-    public void withdrawal(int accountNumber, BigDecimal amount) {
-        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new NegativeAmount("The amount must be greater than zero");
-        }
-        Account account = findAccountByAccountNumber(accountNumber);
-
-        if (account.getBalance().compareTo(amount) < 0) {
-            throw new InsufficientBalance("Insufficient balance");
-        }
-        account.setBalance(account.getBalance().subtract(amount));
-        accountRepository.save(account);
     }
 
     public void deleteAccount(Long id) {
