@@ -22,7 +22,7 @@ class ProfilesConfigurationTest {
     private ConfigurableEnvironment environmentFor(String profile) {
         ConfigurableApplicationContext context = new SpringApplicationBuilder(EmptyConfig.class)
                 .web(WebApplicationType.NONE)
-                .run("--spring.profiles.active=" + profile, "--DB_PASSWORD=test-password");
+                .run("--spring.profiles.active=" + profile, "--DB_PASSWORD=test-password", "--DB_USER=test-user");
         try {
             return context.getEnvironment();
         } finally {
@@ -61,6 +61,6 @@ class ProfilesConfigurationTest {
         ConfigurableEnvironment environment = environmentFor("test");
 
         assertEquals("test-password", environment.getProperty("spring.datasource.password"));
-        assertEquals("postgres", environment.getProperty("spring.datasource.username"));
+        assertEquals("test-user", environment.getProperty("spring.datasource.username"));
     }
 }

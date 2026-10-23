@@ -5,7 +5,7 @@ Arquivos: `src/main/resources/application.properties`, `application-dev.properti
 ## Pré-requisitos
 
 - JDK compatível com o `pom.xml` (Java 21 LTS).
-- PostgreSQL local com o banco `fulls_bank` criado.
+- PostgreSQL local com o banco `fulls_bank` criado e, para os testes que sobem o contexto, o banco `fulls_bank_test`.
 
 ## Configuração atual
 
@@ -25,7 +25,7 @@ O perfil ativo vem da variável de ambiente `SPRING_PROFILES_ACTIVE` e, se ela n
 | Perfil | Arquivo | `ddl-auto` | `show-sql` / `format_sql` | Uso |
 |---|---|---|---|---|
 | `dev` (padrão) | `application-dev.properties` | `update` (issue #10: Flyway) | `true` / `true` | rodar localmente |
-| `test` | `application-test.properties` | `create-drop` | `false` | testes que sobem o contexto (`FullsBankApplicationTests` usa `@ActiveProfiles("test")`) |
+| `test` | `application-test.properties` | `create-drop` | `false` | testes que sobem o contexto (`FullsBankApplicationTests` usa `@ActiveProfiles("test")`); usa um **banco separado**, `fulls_bank_test` (variável `TEST_DB_URL`), porque o esquema é apagado e recriado |
 
 Exemplo: `SPRING_PROFILES_ACTIVE=test ./mvnw spring-boot:run`. Um perfil de produção virá com o deploy (issue #21).
 
@@ -39,6 +39,7 @@ O H2 está no `pom.xml`, mas a aplicação usa PostgreSQL.
 | `DB_USER` | usuário do banco | `postgres` |
 | `DB_PASSWORD` | senha do banco | nenhum (obrigatória) |
 | `SPRING_PROFILES_ACTIVE` | perfil ativo (`dev` ou `test`) | `dev` |
+| `TEST_DB_URL` | URL JDBC do banco do perfil `test` | `jdbc:postgresql://localhost:5432/fulls_bank_test` |
 
 Nunca coloque a senha em arquivo versionado. A senha usada antes desta mudança continua no histórico do Git: troque-a no seu PostgreSQL local.
 
@@ -59,7 +60,7 @@ A API sobe em `http://localhost:8080`.
 ./mvnw test
 ```
 
-Atenção: `FullsBankApplicationTests` carrega o contexto completo e hoje exige o PostgreSQL local rodando e `DB_PASSWORD` definida (issue #11 resolve com Testcontainers). Para rodar só testes unitários:
+Atenção: `FullsBankApplicationTests` carrega o contexto completo com o perfil `test` e hoje exige o PostgreSQL local rodando, o banco `fulls_bank_test` criado e `DB_PASSWORD` definida (issue #11 resolve com Testcontainers). Para rodar só testes unitários:
 
 ```bash
 ./mvnw test -Dtest=TransactionServiceTest
