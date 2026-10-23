@@ -146,7 +146,19 @@ cd fulls-bank-java-spring
 CREATE DATABASE fulls_bank;
 ```
 
-3. **Confira a conexão** em `src/main/resources/application.properties` (URL, usuário e senha do seu PostgreSQL). As tabelas são criadas automaticamente na primeira execução. A leitura desses dados por variáveis de ambiente está planejada na issue [#8](https://github.com/VictorCharro/fulls-bank-java-spring/issues/8).
+3. **Defina as variáveis de ambiente** da conexão com o banco (a senha não fica no repositório):
+
+| Variável | Uso | Padrão |
+|---|---|---|
+| `DB_PASSWORD` | senha do PostgreSQL | nenhum (obrigatória) |
+| `DB_USER` | usuário | `postgres` |
+| `DB_URL` | URL JDBC | `jdbc:postgresql://localhost:5432/fulls_bank` |
+
+```bash
+export DB_PASSWORD='sua-senha'
+```
+
+As tabelas são criadas automaticamente na primeira execução.
 
 4. **Suba a API:**
 
@@ -165,7 +177,7 @@ A API fica disponível em `http://localhost:8080`.
 ```
 
 - Testes unitários dos serviços (JUnit 5 e Mockito) e testes de camada web dos controllers (`@WebMvcTest`).
-- `FullsBankApplicationTests` carrega o contexto completo e exige o PostgreSQL rodando (a issue [#11](https://github.com/VictorCharro/fulls-bank-java-spring/issues/11) troca isso por Testcontainers).
+- `FullsBankApplicationTests` carrega o contexto completo e exige o PostgreSQL rodando e `DB_PASSWORD` definida (a issue [#11](https://github.com/VictorCharro/fulls-bank-java-spring/issues/11) troca isso por Testcontainers).
 - O CI (GitHub Actions) roda `./mvnw verify` em cada push e pull request, com um PostgreSQL de serviço.
 
 ---

@@ -13,7 +13,6 @@ Legenda de issue: `#N` = já existe; "sem issue" = ainda precisa ser criada.
 
 | # | Problema | Issue |
 |---|---|---|
-| S1 | Senha do banco commitada em `application.properties`. | #8 |
 | S2 | Sem autenticação nem autorização. | #15 |
 | S3 | `ddl-auto=update` em vez de migrations. | #10 |
 
