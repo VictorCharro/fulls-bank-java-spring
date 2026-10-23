@@ -126,7 +126,8 @@ class ConcurrencyIntegrationTest extends AbstractIntegrationTest {
                     return task.call();
                 }));
             }
-            ready.await(10, TimeUnit.SECONDS);
+            assertTrue(ready.await(10, TimeUnit.SECONDS),
+                    "todas as tarefas devem estar prontas antes do início");
             start.countDown();
 
             List<Boolean> results = new ArrayList<>();
