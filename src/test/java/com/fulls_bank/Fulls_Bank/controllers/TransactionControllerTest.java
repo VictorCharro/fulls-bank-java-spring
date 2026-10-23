@@ -7,12 +7,14 @@ import com.fulls_bank.Fulls_Bank.exceptions.InvalidAmount;
 import com.fulls_bank.Fulls_Bank.exceptions.SameAccountTransfer;
 import com.fulls_bank.Fulls_Bank.exceptions.TransactionNotFound;
 import com.fulls_bank.Fulls_Bank.services.TransactionService;
+import com.fulls_bank.Fulls_Bank.security.ApiSecurityTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -33,6 +35,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(TransactionController.class)
+@ApiSecurityTest
+@WithMockUser(roles = "ADMIN")
 class TransactionControllerTest {
 
     @Autowired

@@ -2,6 +2,15 @@
 
 Código: `MAIN/services`. Erros lançados: [06](06-erros-e-excecoes.md).
 
+## Autenticação (`AuthService`)
+
+- Cadastro público (`POST /auth/register`) sempre cria usuário com papel `USER`. Administradores nascem da configuração `ADMIN_EMAIL`/`ADMIN_PASSWORD` (ver [07](07-configuracao-e-execucao.md)), nunca da API.
+- E-mail é normalizado (sem espaços e em minúsculas) e é único. Duplicado lança `EmailAlreadyRegistered`.
+- A senha é guardada com hash BCrypt; nunca em texto e nunca devolvida pela API.
+- Login com e-mail desconhecido ou senha errada lança a mesma `InvalidCredentials`, para não revelar quais e-mails existem.
+- O token é um JWT assinado (HS256) com `sub` (e-mail), `role`, `iss`, `iat` e `exp`; vale por `JWT_EXPIRATION_MINUTES` (padrão 60).
+- Limitação conhecida: o usuário ainda não está ligado a um cliente. Qualquer usuário autenticado enxerga as contas e transações pelos endpoints liberados para `USER`.
+
 ## Cliente (`ClientService`)
 
 - CPF deve ter 11 caracteres (apenas tamanho, sem validar dígitos).

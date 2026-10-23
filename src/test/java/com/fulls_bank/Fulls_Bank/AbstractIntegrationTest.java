@@ -1,6 +1,7 @@
 package com.fulls_bank.Fulls_Bank;
 
 import com.fulls_bank.Fulls_Bank.repositories.AccountRepository;
+import com.fulls_bank.Fulls_Bank.repositories.AppUserRepository;
 import com.fulls_bank.Fulls_Bank.repositories.ClientRepository;
 import com.fulls_bank.Fulls_Bank.repositories.TransactionRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.containers.PostgreSQLContainer;
 
@@ -20,6 +22,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
+@WithMockUser(roles = "ADMIN")
 public abstract class AbstractIntegrationTest {
 
     @ServiceConnection
@@ -38,8 +41,12 @@ public abstract class AbstractIntegrationTest {
     @Autowired
     protected ClientRepository clientRepository;
 
+    @Autowired
+    protected AppUserRepository appUserRepository;
+
     @BeforeEach
     void cleanDatabase() {
+        appUserRepository.deleteAll();
         transactionRepository.deleteAll();
         accountRepository.deleteAll();
         clientRepository.deleteAll();

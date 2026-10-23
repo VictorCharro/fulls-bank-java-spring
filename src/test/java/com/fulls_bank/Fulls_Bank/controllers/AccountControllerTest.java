@@ -8,10 +8,12 @@ import com.fulls_bank.Fulls_Bank.exceptions.AccountNumberUnavailable;
 import com.fulls_bank.Fulls_Bank.exceptions.IdNotFound;
 import com.fulls_bank.Fulls_Bank.exceptions.ResourceInUse;
 import com.fulls_bank.Fulls_Bank.services.AccountService;
+import com.fulls_bank.Fulls_Bank.security.ApiSecurityTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -27,6 +29,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(AccountController.class)
+@ApiSecurityTest
+@WithMockUser(roles = "ADMIN")
 class AccountControllerTest {
 
     private static final int ACCOUNT_NUMBER = 1234;

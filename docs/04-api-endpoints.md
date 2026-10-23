@@ -2,6 +2,19 @@
 
 Código: `MAIN/controllers`. Formato de erro: [06](06-erros-e-excecoes.md). Itens marcados com ⚠️ têm problema descrito em [09](09-problemas-conhecidos.md).
 
+## Autenticação
+
+Todos os endpoints exigem o cabeçalho `Authorization: Bearer <token>`, exceto `POST /auth/register` e `POST /auth/login`. Sem token (ou com token inválido ou expirado) a resposta é `401`; sem permissão, `403`. Ambas no [formato de erro](06-erros-e-excecoes.md) da API.
+
+Somente `ADMIN`: todo `DELETE` e as listagens globais `GET /client` e `GET /transaction`. O papel `USER` acessa os demais endpoints.
+
+## Autenticação — `/auth` (`AuthController`)
+
+| Método | Rota | Corpo | Resposta |
+|---|---|---|---|
+| POST | `/auth/register` | `RegisterRequestDTO` (`email`, `password` de 8 a 72 caracteres) | 201, `UserResponseDTO` (`id`, `email`, `role`); 400 se o e-mail já existir |
+| POST | `/auth/login` | `LoginRequestDTO` (`email`, `password`) | 200, `TokenResponseDTO` (`accessToken`, `tokenType` `Bearer`, `expiresIn` em segundos); 401 se e-mail ou senha estiverem errados |
+
 ## Clientes — `/client` (`ClientController`)
 
 | Método | Rota | Corpo | Resposta |

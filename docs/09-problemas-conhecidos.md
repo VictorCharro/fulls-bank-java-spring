@@ -9,12 +9,6 @@ Legenda de issue: `#N` = já existe; "sem issue" = ainda precisa ser criada.
 | # | Problema | Onde | Issue |
 |---|---|---|---|
 
-## Segurança e configuração
-
-| # | Problema | Issue |
-|---|---|---|
-| S2 | Sem autenticação nem autorização. | #15 |
-
 ## Qualidade de código
 
 | # | Problema | Issue |

@@ -21,6 +21,14 @@ Este é um projeto de estudo que simula um sistema bancário básico, desenvolvi
 
 ---
 
+### 🔐 Autenticação
+- Cadastro (`POST /auth/register`) e login (`POST /auth/login`) com e-mail e senha; a senha é guardada com hash BCrypt
+- O login devolve um JWT (HS256) que vai no cabeçalho `Authorization: Bearer <token>`
+- Papéis `USER` e `ADMIN`: todo `DELETE` e as listagens globais (`GET /client`, `GET /transaction`) são só do `ADMIN`
+- `401` (sem token ou token inválido) e `403` (sem permissão) no mesmo formato de erro da API
+
+---
+
 ### 💳 Conta
 - Criar conta (corrente, poupança ou salário) com número de 6 dígitos gerado automaticamente (`POST /account`)
 - Buscar conta por ID (`GET /account/{id}`)
@@ -71,6 +79,9 @@ Tratamento centralizado com `@RestControllerAdvice` e `@ExceptionHandler`, retor
 | `ClientNotFound`, `AccountNotFound`, `IdNotFound`, `TransactionNotFound` | 404 |
 | `ExistingAccount` (CPF já cadastrado), `InsufficientBalance`, `InvalidAmount`, `SameAccountTransfer` | 400 |
 | `MethodArgumentNotValidException` (falha de `@Valid`) | 400 |
+| `EmailAlreadyRegistered` (e-mail já cadastrado) | 400 |
+| `InvalidCredentials` (login com e-mail ou senha errados), token ausente ou inválido | 401 |
+| Papel sem permissão para o endpoint | 403 |
 | `ResourceInUse` (excluir cliente com contas ou conta com transações) | 409 |
 | `ConcurrencyFailureException` (conta alterada por outra operação ao mesmo tempo: lock otimista ou deadlock) | 409 |
 | `AccountNumberUnavailable` (sem número de conta livre) | 503 |
@@ -110,6 +121,7 @@ Mais detalhes em [`docs/02-arquitetura.md`](docs/02-arquitetura.md) e [`docs/03-
 - Spring Boot
 - Spring Data JPA
 - Flyway (migrations)
+- Spring Security com JWT (OAuth2 Resource Server)
 - Testcontainers
 - Hibernate
 - Lombok
@@ -158,9 +170,15 @@ CREATE DATABASE fulls_bank;
 | `DB_USER` | usuário | `postgres` |
 | `DB_URL` | URL JDBC | `jdbc:postgresql://localhost:5432/fulls_bank` |
 | `SPRING_PROFILES_ACTIVE` | perfil ativo: `dev` ou `test` | `dev` |
+| `JWT_SECRET` | segredo dos tokens (HS256), mínimo de 32 bytes | nenhum (obrigatória) |
+| `JWT_EXPIRATION_MINUTES` | validade do token | `60` |
+| `ADMIN_EMAIL`, `ADMIN_PASSWORD` | criam o primeiro administrador na inicialização (opcionais) | vazias |
 
 ```bash
 export DB_PASSWORD='sua-senha'
+export JWT_SECRET="$(openssl rand -base64 48)"
+# opcional: cria o primeiro administrador
+export ADMIN_EMAIL='admin@example.com' ADMIN_PASSWORD='uma-senha-forte'
 ```
 
 Perfis: `dev` (padrão) mostra os SQLs no log; `test` é usado pelos testes, com banco em container. As tabelas são criadas pelas migrations do Flyway (`src/main/resources/db/migration`) na primeira execução.
@@ -171,7 +189,17 @@ Perfis: `dev` (padrão) mostra os SQLs no log; `test` é usado pelos testes, com
 ./mvnw spring-boot:run
 ```
 
-A API fica disponível em `http://localhost:8080`.
+A API fica disponível em `http://localhost:8080`. Exemplo de uso:
+
+```bash
+curl -X POST localhost:8080/auth/register -H 'Content-Type: application/json' \
+  -d '{"email":"ana@example.com","password":"senha-forte-123"}'
+
+TOKEN=$(curl -s -X POST localhost:8080/auth/login -H 'Content-Type: application/json' \
+  -d '{"email":"ana@example.com","password":"senha-forte-123"}' | jq -r .accessToken)
+
+curl localhost:8080/transaction/1 -H "Authorization: Bearer $TOKEN"
+```
 
 ---
 
@@ -182,6 +210,7 @@ A API fica disponível em `http://localhost:8080`.
 ```
 
 - Testes unitários dos serviços (JUnit 5 e Mockito) e testes de camada web dos controllers (`@WebMvcTest`).
+- Testes de autenticação: cadastro, login, JWT (inválido, expirado, outra chave) e regras por papel.
 - Teste de concorrência (threads reais, PostgreSQL real): saques simultâneos e transferências em sentidos opostos nunca perdem atualização.
 - Testes de integração dos controllers: fluxo completo (cliente → conta → depósito → saque → transferência) e respostas de erro, com PostgreSQL real em container.
 - Os testes que sobem o contexto completo usam um PostgreSQL em container (Testcontainers): precisam de Docker em execução, mas não de PostgreSQL instalado.
@@ -193,7 +222,6 @@ A API fica disponível em `http://localhost:8080`.
 
 O planejamento completo está nas [issues](https://github.com/VictorCharro/fulls-bank-java-spring/issues) e no [roadmap](docs/10-roadmap.md). Em resumo:
 
-- 🔐 Autenticação com Spring Security e JWT
 - 📊 Extrato com filtro por data e paginação
 - 📄 Documentação com Swagger/OpenAPI
 - 🧠 Mapeamento de DTOs com MapStruct
