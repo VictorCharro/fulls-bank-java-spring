@@ -8,6 +8,7 @@ Código: `TEST/*`. Ferramentas: JUnit 5 e Mockito (`spring-boot-starter-test`).
 |---|---|---|
 | `FullsBankApplicationTests` | Contexto Spring | Exige PostgreSQL local (issue #11) |
 | `controllers/AccountControllerTest` | Web (`@WebMvcTest`, MockMvc) | Issues #25 e #27; `GET /account/number/{number}` e 404 por id |
+| `controllers/TransactionControllerTest` | Web (`@WebMvcTest`, MockMvc) | Issue #30; validação de `amount` em `POST /transaction` |
 | `services/TransactionServiceTest` | Unitário (Mockito) | Issue #1 |
 | `services/AccountServiceTest` | Unitário (Mockito) | Issue #2 |
 | `services/ClientServiceTest` | Unitário (Mockito) | Issue #2 |

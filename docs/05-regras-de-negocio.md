@@ -16,14 +16,14 @@ Código: `MAIN/services`. Erros lançados: [06](06-erros-e-excecoes.md).
 - Nova conta começa com saldo `0`.
 - O número da conta é gerado aleatoriamente entre **1000 e 9999**, sem repetir.
 - Busca por número inexistente lança `AccountNotFound`; busca ou exclusão por id inexistente lança `IdNotFound`.
-- `deposit` e `withdrawal` rejeitam valor **negativo** com `NegativeAmount` (zero é aceito hoje).
+- `deposit` e `withdrawal` rejeitam valor nulo, zero ou negativo com `NegativeAmount` (400).
 - `withdrawal` com saldo menor que o valor lança `InsufficientBalance`.
 
 ## Transação (`TransactionService.createTransaction`)
 
 Executa em uma única transação de banco (`@Transactional`).
 
-Regra geral: valor nulo ou menor ou igual a zero lança `IllegalArgumentException`.
+Regra geral: `amount` nulo, zero ou negativo é rejeitado já na validação do DTO (`@NotNull` e `@Positive`), com 400. Chamado direto, o service ainda lança `IllegalArgumentException` (issue #4).
 
 | Tipo | Campos usados | Regras | Efeito |
 |---|---|---|---|

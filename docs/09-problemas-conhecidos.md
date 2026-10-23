@@ -13,8 +13,6 @@ Legenda de issue: `#N` = já existe; "sem issue" = ainda precisa ser criada.
 | B4 | `GET /transaction/{id}` retorna a entidade, sem 404 explícito. | `TransactionController` | #3 |
 | B5 | Excluir conta com transações, ou cliente com contas, viola chave estrangeira e retorna 500. | `AccountService`, `ClientService` | sem issue |
 | B6 | Número da conta tem só 9000 valores possíveis (1000–9999); ao esgotar, o loop de geração não termina. | `AccountService.generateUniqueAccountNumber` | sem issue |
-| B7 | `deposit` e `withdrawal` do `AccountService` aceitam valor zero. | `AccountService` | sem issue |
-| B8 | `amount` nulo passa pela validação do DTO (`@Positive` aceita nulo) e cai no 500 do B3. | `TransactionRequestDTO` | sem issue |
 
 ## Segurança e configuração
 

@@ -22,7 +22,8 @@ public class TransactionRequestDTO {
     @NotNull
     private Long receiverId = 0L;
 
-    @Positive
+    @NotNull(message = "The amount cannot be null")
+    @Positive(message = "The amount must be greater than zero")
     private BigDecimal amount;
 
     @NotNull

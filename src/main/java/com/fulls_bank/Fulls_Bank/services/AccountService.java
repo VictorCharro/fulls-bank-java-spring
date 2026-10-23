@@ -48,8 +48,8 @@ public class AccountService {
 
     @Transactional
     public void deposit(int accountNumber, BigDecimal amount) {
-        if (amount.compareTo(BigDecimal.ZERO) < 0) {
-            throw new NegativeAmount("The amount cannot be negative");
+        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new NegativeAmount("The amount must be greater than zero");
         }
         Account account = findAccountByAccountNumber(accountNumber);
         account.setBalance(account.getBalance().add(amount));
@@ -58,8 +58,8 @@ public class AccountService {
 
     @Transactional
     public void withdrawal(int accountNumber, BigDecimal amount) {
-        if (amount.compareTo(BigDecimal.ZERO) < 0) {
-            throw new NegativeAmount("The amount cannot be negative");
+        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new NegativeAmount("The amount must be greater than zero");
         }
         Account account = findAccountByAccountNumber(accountNumber);
 
