@@ -1,6 +1,6 @@
 # 03 — Domínio
 
-Código: `MAIN/entities`, `MAIN/enums`, `MAIN/dto`.
+Código: `MAIN/entities`, `MAIN/enums`, `MAIN/dto`, `MAIN/mappers`.
 
 ## Modelo
 
@@ -61,6 +61,8 @@ Client 1 ──── N Account 1 ──── N Transaction (como sender)
 - `Role`: `USER`, `ADMIN`.
 
 ## DTOs
+
+A conversão entidade → DTO de resposta é feita por MapStruct (`mappers/AccountMapper` e `mappers/TransactionMapper`, ver [02](02-arquitetura.md)). `AccountResponseDTO` não preenche `sentTransactions` e `receivedTransactions` (saem `null`): o histórico vem do extrato (`GET /account/{id}/statement`). Em `TransactionResponseDTO`, `senderId` e `receiverId` vêm de `sender.id` e `receiver.id` e ficam `null` quando a conta não existe (depósito não tem origem, saque não tem destino).
 
 | DTO | Campos | Validações |
 |---|---|---|

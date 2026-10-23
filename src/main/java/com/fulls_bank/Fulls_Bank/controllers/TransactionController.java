@@ -3,6 +3,7 @@ package com.fulls_bank.Fulls_Bank.controllers;
 import com.fulls_bank.Fulls_Bank.dto.TransactionRequestDTO;
 import com.fulls_bank.Fulls_Bank.dto.TransactionResponseDTO;
 import com.fulls_bank.Fulls_Bank.entities.Transaction;
+import com.fulls_bank.Fulls_Bank.mappers.TransactionMapper;
 import com.fulls_bank.Fulls_Bank.services.TransactionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -28,6 +29,7 @@ import java.util.stream.Collectors;
 public class TransactionController {
 
     private final TransactionService transactionService;
+    private final TransactionMapper transactionMapper;
 
     @Operation(summary = "Listar todas as transações", description = "Somente ADMIN. Para o histórico de uma conta, use o extrato.")
     @ApiResponse(responseCode = "200", description = "Lista de transações")
@@ -36,7 +38,7 @@ public class TransactionController {
     public List<TransactionResponseDTO> transactionList() {
         return transactionService.listTransactions()
                 .stream()
-                .map(transactionService::toResponseDTO)
+                .map(transactionMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
@@ -46,7 +48,7 @@ public class TransactionController {
     @GetMapping("/{id}")
     public TransactionResponseDTO getTransactionById(@PathVariable Long id) {
         Transaction transaction = transactionService.findTransactionById(id);
-        return transactionService.toResponseDTO(transaction);
+        return transactionMapper.toResponse(transaction);
     }
 
     @Operation(summary = "Criar transação (depósito, saque ou transferência)",
@@ -60,7 +62,7 @@ public class TransactionController {
     @PostMapping
     public ResponseEntity<TransactionResponseDTO> createTransaction(@Valid @RequestBody TransactionRequestDTO dto) {
         Transaction transaction = transactionService.createTransaction(dto);
-        TransactionResponseDTO responseDTO = transactionService.toResponseDTO(transaction);
+        TransactionResponseDTO responseDTO = transactionMapper.toResponse(transaction);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
     }
 }

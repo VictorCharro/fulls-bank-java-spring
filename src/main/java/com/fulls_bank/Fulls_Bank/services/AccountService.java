@@ -2,7 +2,6 @@ package com.fulls_bank.Fulls_Bank.services;
 
 import com.fulls_bank.Fulls_Bank.dto.AccountRequestDTO;
 import com.fulls_bank.Fulls_Bank.dto.AccountResponseDTO;
-import com.fulls_bank.Fulls_Bank.dto.TransactionResponseDTO;
 import com.fulls_bank.Fulls_Bank.entities.Account;
 import com.fulls_bank.Fulls_Bank.entities.Client;
 import com.fulls_bank.Fulls_Bank.exceptions.AccountNotFound;
@@ -10,6 +9,7 @@ import com.fulls_bank.Fulls_Bank.exceptions.AccountNumberUnavailable;
 import com.fulls_bank.Fulls_Bank.exceptions.ClientNotFound;
 import com.fulls_bank.Fulls_Bank.exceptions.IdNotFound;
 import com.fulls_bank.Fulls_Bank.exceptions.ResourceInUse;
+import com.fulls_bank.Fulls_Bank.mappers.AccountMapper;
 import com.fulls_bank.Fulls_Bank.repositories.AccountRepository;
 import com.fulls_bank.Fulls_Bank.repositories.ClientRepository;
 import com.fulls_bank.Fulls_Bank.repositories.TransactionRepository;
@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -32,6 +31,7 @@ public class AccountService {
     public final AccountRepository accountRepository;
     private final ClientRepository clientRepository;
     private final TransactionRepository transactionRepository;
+    private final AccountMapper accountMapper;
 
     public Integer generateUniqueAccountNumber() {
         Random random = new Random();
@@ -77,15 +77,7 @@ public class AccountService {
         account.setBalance(BigDecimal.ZERO);
 
         Account saved = accountRepository.save(account);
-        return toResponseDTO(saved);
-    }
-
-    public AccountResponseDTO toResponseDTO(Account account) {
-        AccountResponseDTO dto = new AccountResponseDTO();
-        dto.setAccountNumber(account.getAccountNumber());
-        dto.setType(account.getType());
-        dto.setBalance(account.getBalance());
-        return dto;
+        return accountMapper.toResponse(saved);
     }
 
 }

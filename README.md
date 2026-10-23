@@ -128,6 +128,7 @@ Mais detalhes em [`docs/02-arquitetura.md`](docs/02-arquitetura.md) e [`docs/03-
 - Spring Data JPA
 - Flyway (migrations)
 - Spring Security com JWT (OAuth2 Resource Server)
+- MapStruct (mapeamento entidade → DTO)
 - Swagger/OpenAPI (springdoc)
 - Testcontainers
 - Hibernate
@@ -147,6 +148,7 @@ Mais detalhes em [`docs/02-arquitetura.md`](docs/02-arquitetura.md) e [`docs/03-
 - `services/` → Regras de negócio (camada de serviço)
 - `repositories/` → Interfaces de persistência
 - `dto/` → Objetos de transferência de dados (Request/Response)
+- `mappers/` → Conversão entidade → DTO com MapStruct
 - `exceptions/` → Exceções customizadas e handler global
 - `enums/` → Enumerações para tipo de conta e tipo de transação
 
@@ -229,5 +231,4 @@ curl localhost:8080/transaction/1 -H "Authorization: Bearer $TOKEN"
 
 O planejamento completo está nas [issues](https://github.com/VictorCharro/fulls-bank-java-spring/issues) e no [roadmap](docs/10-roadmap.md). Em resumo:
 
-- 🧠 Mapeamento de DTOs com MapStruct
 - 🐳 Docker e docker-compose, e deploy na AWS (RDS, CloudWatch)
