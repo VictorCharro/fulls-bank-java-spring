@@ -18,6 +18,9 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
 
+import com.fulls_bank.Fulls_Bank.entities.Account;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
+
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
@@ -118,5 +121,18 @@ class TransactionControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.status").value(400))
                 .andExpect(jsonPath("$.message").value("Sender and receiver must be different accounts"));
+    }
+
+    @Test
+    void createTransaction_whenAccountWasChangedConcurrently_shouldReturn409() throws Exception {
+        when(transactionService.createTransaction(any()))
+                .thenThrow(new ObjectOptimisticLockingFailureException(Account.class, 1L));
+
+        mockMvc.perform(post("/transaction")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"type\":\"WITHDRAWAL\",\"senderId\":1,\"amount\":10}"))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.status").value(409))
+                .andExpect(jsonPath("$.message").value("The account was changed by another operation, please try again"));
     }
 }

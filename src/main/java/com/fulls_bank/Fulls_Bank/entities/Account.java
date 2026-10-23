@@ -11,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,6 +37,10 @@ public class Account {
 
     @NotNull
     private BigDecimal balance;
+
+    // Lock otimista: duas atualizações concorrentes do saldo não se sobrescrevem
+    @Version
+    private Long version;
 
     @Enumerated(EnumType.STRING)
     public AccountType type;

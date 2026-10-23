@@ -23,6 +23,7 @@ Código: `MAIN/exceptions`. Tratamento central em `GlobalExceptionHandler` (`@Re
 | `TransactionNotFound` | 404 | Transação não encontrada por id |
 | `AccountNumberUnavailable` | 503 | Não foi possível gerar um número de conta livre após 20 tentativas |
 | `ResourceInUse` | 409 | Exclusão de cliente com contas ou de conta com transações |
+| `OptimisticLockingFailureException` | 409 | Conta alterada por outra operação ao mesmo tempo (lock otimista); o cliente pode repetir a requisição |
 | `InsufficientBalance` | 400 | Saldo insuficiente |
 | `InvalidAmount` | 400 | `amount` nulo, zero ou negativo em `TransactionService.createTransaction` |
 | `SameAccountTransfer` | 400 | Transferência com origem e destino iguais |
