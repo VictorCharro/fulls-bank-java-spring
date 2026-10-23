@@ -18,11 +18,14 @@ import java.math.BigDecimal;
 public class TransactionRequestDTO {
 
     @NotNull
-    @Schema(description = "Conta de origem (saque e transferência)", example = "1")
+    // Fora do OpenAPI como obrigatório: depósito não usa senderId e saque não usa receiverId (o padrão 0L satisfaz o @NotNull)
+    @Schema(description = "Conta de origem (saque e transferência)", example = "1",
+            requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private Long senderId = 0L;
 
     @NotNull
-    @Schema(description = "Conta de destino (depósito e transferência)", example = "2")
+    @Schema(description = "Conta de destino (depósito e transferência)", example = "2",
+            requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private Long receiverId = 0L;
 
     @NotNull(message = "The amount cannot be null")

@@ -127,6 +127,17 @@ class OpenApiIntegrationTest extends AbstractIntegrationTest {
         assertTrue(docs.at("/components/schemas/" + schemaName + "/properties/page/$ref").asText().contains("PageMetadata"));
     }
 
+    @Test
+    void docs_transactionRequestShouldRequireOnlyAmountAndType() throws Exception {
+        JsonNode required = apiDocs().at("/components/schemas/TransactionRequestDTO/required");
+
+        List<String> names = new ArrayList<>();
+        required.forEach(name -> names.add(name.asText()));
+        assertTrue(names.containsAll(List.of("amount", "type")), names.toString());
+        assertFalse(names.contains("senderId") || names.contains("receiverId"),
+                "depósito e saque não usam os dois ids: " + names);
+    }
+
     private static String firstSuccessCode(JsonNode responses) {
         Iterator<String> codes = responses.fieldNames();
         while (codes.hasNext()) {
