@@ -21,7 +21,7 @@ Detalhes: [API](04-api-endpoints.md) e [regras de negócio](05-regras-de-negocio
 | Spring Boot | 3.5.3 (Web, Data JPA, Validation, Security com OAuth2 Resource Server) |
 | Banco | PostgreSQL (driver 42.7.2); H2 presente no classpath, mas sem uso |
 | Build | Maven (wrapper `mvnw`) |
-| Utilitários | Lombok |
+| Utilitários | Lombok, MapStruct 1.6 (mapeamento entidade → DTO) |
 | Testes | JUnit 5, Mockito (via `spring-boot-starter-test`) |
 
 ## Estado do projeto

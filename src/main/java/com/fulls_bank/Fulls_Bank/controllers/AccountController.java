@@ -5,6 +5,8 @@ import com.fulls_bank.Fulls_Bank.dto.AccountResponseDTO;
 import com.fulls_bank.Fulls_Bank.dto.TransactionResponseDTO;
 import com.fulls_bank.Fulls_Bank.entities.Account;
 import com.fulls_bank.Fulls_Bank.exceptions.InvalidPagination;
+import com.fulls_bank.Fulls_Bank.mappers.AccountMapper;
+import com.fulls_bank.Fulls_Bank.mappers.TransactionMapper;
 import com.fulls_bank.Fulls_Bank.services.AccountService;
 import com.fulls_bank.Fulls_Bank.services.TransactionService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -37,6 +39,8 @@ public class AccountController {
 
     private final AccountService accountService;
     private final TransactionService transactionService;
+    private final AccountMapper accountMapper;
+    private final TransactionMapper transactionMapper;
 
     @Operation(summary = "Abrir conta",
             description = "A conta nasce com saldo zero e um número de 6 dígitos gerado automaticamente.")
@@ -56,7 +60,7 @@ public class AccountController {
     @GetMapping("/{id}")
     public AccountResponseDTO searchAccountById(@PathVariable Long id) {
         Account account = accountService.findAccountById(id);
-        return accountService.toResponseDTO(account);
+        return accountMapper.toResponse(account);
     }
 
     @Operation(summary = "Buscar conta pelo número")
@@ -65,7 +69,7 @@ public class AccountController {
     @GetMapping("/number/{number}")
     public AccountResponseDTO searchAccountByNumber(@PathVariable int number) {
         Account account = accountService.findAccountByAccountNumber(number);
-        return accountService.toResponseDTO(account);
+        return accountMapper.toResponse(account);
     }
 
     @Operation(summary = "Extrato da conta",
@@ -93,7 +97,7 @@ public class AccountController {
             throw new InvalidPagination("page must be 0 or greater and size must be at least 1");
         }
         Page<TransactionResponseDTO> result = transactionService.getStatement(id, from, to, pageable)
-                .map(transactionService::toResponseDTO);
+                .map(transactionMapper::toResponse);
         return new PagedModel<>(result);
     }
 

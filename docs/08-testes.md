@@ -22,6 +22,7 @@ Código: `TEST/*`. Ferramentas: JUnit 5 e Mockito (`spring-boot-starter-test`).
 | `controllers/ClientControllerTest` | Web (`@WebMvcTest`, MockMvc) | Issue #28; 409 ao excluir cliente com contas |
 | `controllers/TransactionControllerTest` | Web (`@WebMvcTest`, MockMvc) | Issues #30, #3 e #4; validação de `amount`, 400 do service e `GET /transaction/{id}` (200 e 404) |
 | `services/TransactionServiceTest` | Unitário (Mockito) | Issue #1 |
+| `mappers/AccountMapperTest`, `mappers/TransactionMapperTest` | Unitário | Issue #18; campos copiados, ids de origem/destino nulos em depósito e saque, listas de transações da conta não tocadas |
 | `services/AccountServiceTest` | Unitário (Mockito) | Issue #2 |
 | `services/ClientServiceTest` | Unitário (Mockito) | Issue #2 |
 
@@ -30,7 +31,7 @@ Código: `TEST/*`. Ferramentas: JUnit 5 e Mockito (`spring-boot-starter-test`).
 - Pacote de teste espelha o pacote do código testado.
 - Nome da classe: `<Classe>Test`.
 - Nome do método: `<acao>_<condicao>_<resultado>`, por exemplo `withdrawal_withInsufficientBalance_shouldThrowAndNotSave`.
-- `@WebMvcTest` de controller: usar `@ApiSecurityTest` (regras de segurança reais e segredo de teste) e `@WithMockUser(roles = "ADMIN")`; para testar o 401 ou 403, trocar o usuário no teste.
+- `@WebMvcTest` de controller: importar os mappers reais (`@Import(XxxMapperImpl.class)`, classes geradas pelo MapStruct) e usar entidades de verdade no teste, em vez de simular o DTO; usar `@ApiSecurityTest` (regras de segurança reais e segredo de teste) e `@WithMockUser(roles = "ADMIN")`; para testar o 401 ou 403, trocar o usuário no teste.
 - Integração: estender `AbstractIntegrationTest` (contexto, banco em container e limpeza das tabelas já prontos) e chamar a API via `MockMvc`.
 - Unitários: `@ExtendWith(MockitoExtension.class)`, `@Mock` nos repositórios, `@InjectMocks` no service. Sem subir o Spring.
 - Para erros, conferir o tipo da exceção **e** que nada foi persistido (`verify(..., never())`).

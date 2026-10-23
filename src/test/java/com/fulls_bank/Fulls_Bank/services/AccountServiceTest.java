@@ -10,6 +10,8 @@ import com.fulls_bank.Fulls_Bank.exceptions.AccountNumberUnavailable;
 import com.fulls_bank.Fulls_Bank.exceptions.ClientNotFound;
 import com.fulls_bank.Fulls_Bank.exceptions.IdNotFound;
 import com.fulls_bank.Fulls_Bank.exceptions.ResourceInUse;
+import com.fulls_bank.Fulls_Bank.mappers.AccountMapper;
+import com.fulls_bank.Fulls_Bank.mappers.AccountMapperImpl;
 import com.fulls_bank.Fulls_Bank.repositories.AccountRepository;
 import com.fulls_bank.Fulls_Bank.repositories.ClientRepository;
 import com.fulls_bank.Fulls_Bank.repositories.TransactionRepository;
@@ -19,6 +21,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 
@@ -53,6 +56,10 @@ class AccountServiceTest {
 
     @Mock
     private TransactionRepository transactionRepository;
+
+    // Mapeador real (gerado pelo MapStruct), para o teste conferir a resposta de verdade
+    @Spy
+    private AccountMapper accountMapper = new AccountMapperImpl();
 
     @InjectMocks
     private AccountService accountService;

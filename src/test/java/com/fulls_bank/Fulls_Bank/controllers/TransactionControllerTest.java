@@ -1,18 +1,19 @@
 package com.fulls_bank.Fulls_Bank.controllers;
 
-import com.fulls_bank.Fulls_Bank.dto.TransactionResponseDTO;
 import com.fulls_bank.Fulls_Bank.entities.Transaction;
 import com.fulls_bank.Fulls_Bank.enums.TransactionType;
 import com.fulls_bank.Fulls_Bank.exceptions.InvalidAmount;
 import com.fulls_bank.Fulls_Bank.exceptions.SameAccountTransfer;
 import com.fulls_bank.Fulls_Bank.exceptions.TransactionNotFound;
 import com.fulls_bank.Fulls_Bank.services.TransactionService;
+import com.fulls_bank.Fulls_Bank.mappers.TransactionMapperImpl;
 import com.fulls_bank.Fulls_Bank.security.ApiSecurityTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -36,6 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(TransactionController.class)
 @ApiSecurityTest
+@Import(TransactionMapperImpl.class)
 @WithMockUser(roles = "ADMIN")
 class TransactionControllerTest {
 
@@ -61,11 +63,9 @@ class TransactionControllerTest {
     @Test
     void createTransaction_withPositiveAmount_shouldReturn201() throws Exception {
         Transaction transaction = new Transaction();
-        TransactionResponseDTO response = new TransactionResponseDTO();
-        response.setType(TransactionType.DEPOSIT);
-        response.setAmount(new BigDecimal("10.50"));
+        transaction.setType(TransactionType.DEPOSIT);
+        transaction.setAmount(new BigDecimal("10.50"));
         when(transactionService.createTransaction(any())).thenReturn(transaction);
-        when(transactionService.toResponseDTO(transaction)).thenReturn(response);
 
         String body = "{\"type\":\"DEPOSIT\",\"receiverId\":1,\"amount\":10.50}";
 
@@ -77,12 +77,10 @@ class TransactionControllerTest {
     @Test
     void getTransactionById_withExistingId_shouldReturnDto() throws Exception {
         Transaction transaction = new Transaction();
-        TransactionResponseDTO response = new TransactionResponseDTO();
-        response.setId(10L);
-        response.setType(TransactionType.DEPOSIT);
-        response.setAmount(new BigDecimal("10.50"));
+        transaction.setId(10L);
+        transaction.setType(TransactionType.DEPOSIT);
+        transaction.setAmount(new BigDecimal("10.50"));
         when(transactionService.findTransactionById(10L)).thenReturn(transaction);
-        when(transactionService.toResponseDTO(transaction)).thenReturn(response);
 
         mockMvc.perform(get("/transaction/{id}", 10L))
                 .andExpect(status().isOk())

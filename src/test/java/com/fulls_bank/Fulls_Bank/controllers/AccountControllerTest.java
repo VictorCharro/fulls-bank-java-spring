@@ -1,6 +1,5 @@
 package com.fulls_bank.Fulls_Bank.controllers;
 
-import com.fulls_bank.Fulls_Bank.dto.AccountResponseDTO;
 import com.fulls_bank.Fulls_Bank.entities.Account;
 import com.fulls_bank.Fulls_Bank.enums.AccountType;
 import com.fulls_bank.Fulls_Bank.exceptions.AccountNotFound;
@@ -10,7 +9,8 @@ import com.fulls_bank.Fulls_Bank.exceptions.ResourceInUse;
 import com.fulls_bank.Fulls_Bank.entities.Transaction;
 import com.fulls_bank.Fulls_Bank.enums.TransactionType;
 import com.fulls_bank.Fulls_Bank.exceptions.InvalidPeriod;
-import com.fulls_bank.Fulls_Bank.dto.TransactionResponseDTO;
+import com.fulls_bank.Fulls_Bank.mappers.AccountMapperImpl;
+import com.fulls_bank.Fulls_Bank.mappers.TransactionMapperImpl;
 import com.fulls_bank.Fulls_Bank.services.AccountService;
 import com.fulls_bank.Fulls_Bank.services.TransactionService;
 import com.fulls_bank.Fulls_Bank.security.ApiSecurityTest;
@@ -22,6 +22,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -47,6 +48,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(AccountController.class)
 @ApiSecurityTest
+@Import({AccountMapperImpl.class, TransactionMapperImpl.class})
 @WithMockUser(roles = "ADMIN")
 class AccountControllerTest {
 
@@ -65,12 +67,9 @@ class AccountControllerTest {
     void searchAccountByNumber_withExistingNumber_shouldReturnAccountDto() throws Exception {
         Account account = new Account();
         account.setAccountNumber(ACCOUNT_NUMBER);
-        AccountResponseDTO dto = new AccountResponseDTO();
-        dto.setAccountNumber(ACCOUNT_NUMBER);
-        dto.setType(AccountType.CHECKING);
-        dto.setBalance(new BigDecimal("100"));
+        account.setType(AccountType.CHECKING);
+        account.setBalance(new BigDecimal("100"));
         when(accountService.findAccountByAccountNumber(ACCOUNT_NUMBER)).thenReturn(account);
-        when(accountService.toResponseDTO(account)).thenReturn(dto);
 
         mockMvc.perform(get("/account/number/{number}", ACCOUNT_NUMBER))
                 .andExpect(status().isOk())
@@ -136,12 +135,13 @@ class AccountControllerTest {
     @Test
     void statement_withPeriodAndPaging_shouldPassParametersAndReturnPage() throws Exception {
         Transaction transaction = new Transaction();
-        TransactionResponseDTO dto = new TransactionResponseDTO(9L, new BigDecimal("10.00"),
-                LocalDateTime.of(2026, 3, 10, 12, 0), TransactionType.DEPOSIT);
+        transaction.setId(9L);
+        transaction.setAmount(new BigDecimal("10.00"));
+        transaction.setTimestamp(LocalDateTime.of(2026, 3, 10, 12, 0));
+        transaction.setType(TransactionType.DEPOSIT);
         Page<Transaction> page = new PageImpl<>(List.of(transaction), PageRequest.of(1, 5), 11);
         when(transactionService.getStatement(eq(7L), eq(LocalDate.of(2026, 3, 1)), eq(LocalDate.of(2026, 3, 31)), any()))
                 .thenReturn(page);
-        when(transactionService.toResponseDTO(transaction)).thenReturn(dto);
 
         mockMvc.perform(get("/account/{id}/statement", 7L)
                         .param("from", "2026-03-01").param("to", "2026-03-31")
