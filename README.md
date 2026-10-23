@@ -107,6 +107,7 @@ Mais detalhes em [`docs/02-arquitetura.md`](docs/02-arquitetura.md) e [`docs/03-
 - Java 21 (LTS)
 - Spring Boot
 - Spring Data JPA
+- Flyway (migrations)
 - Hibernate
 - Lombok
 - Jakarta Bean Validation
@@ -161,7 +162,7 @@ CREATE DATABASE fulls_bank_test; -- usado pelo perfil de testes
 export DB_PASSWORD='sua-senha'
 ```
 
-Perfis: `dev` (padrão) atualiza o esquema e mostra os SQLs no log; `test` usa um banco separado (`fulls_bank_test`) e recria o esquema a cada execução. As tabelas são criadas automaticamente na primeira execução.
+Perfis: `dev` (padrão) mostra os SQLs no log; `test` usa um banco separado (`fulls_bank_test`). As tabelas são criadas pelas migrations do Flyway (`src/main/resources/db/migration`) na primeira execução.
 
 4. **Suba a API:**
 
@@ -189,7 +190,6 @@ A API fica disponível em `http://localhost:8080`.
 
 O planejamento completo está nas [issues](https://github.com/VictorCharro/fulls-bank-java-spring/issues) e no [roadmap](docs/10-roadmap.md). Em resumo:
 
-- 🔑 Segredos fora do código, perfis `dev`/`test` e migrations com Flyway
 - 🧪 Testcontainers e testes de integração dos controllers
 - 🔒 Lock otimista (`@Version`) e teste de concorrência para saque e transferência
 - 🔐 Autenticação com Spring Security e JWT
