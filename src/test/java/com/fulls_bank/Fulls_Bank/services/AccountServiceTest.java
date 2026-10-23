@@ -8,8 +8,10 @@ import com.fulls_bank.Fulls_Bank.enums.AccountType;
 import com.fulls_bank.Fulls_Bank.exceptions.AccountNotFound;
 import com.fulls_bank.Fulls_Bank.exceptions.ClientNotFound;
 import com.fulls_bank.Fulls_Bank.exceptions.IdNotFound;
+import com.fulls_bank.Fulls_Bank.exceptions.ResourceInUse;
 import com.fulls_bank.Fulls_Bank.repositories.AccountRepository;
 import com.fulls_bank.Fulls_Bank.repositories.ClientRepository;
+import com.fulls_bank.Fulls_Bank.repositories.TransactionRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -45,6 +47,9 @@ class AccountServiceTest {
 
     @Mock
     private ClientRepository clientRepository;
+
+    @Mock
+    private TransactionRepository transactionRepository;
 
     @InjectMocks
     private AccountService accountService;
@@ -116,10 +121,21 @@ class AccountServiceTest {
     @Test
     void deleteAccount_withExistingId_shouldDelete() {
         when(accountRepository.findAccountById(ACCOUNT_ID)).thenReturn(Optional.of(account));
+        when(transactionRepository.existsBySenderIdOrReceiverId(ACCOUNT_ID, ACCOUNT_ID)).thenReturn(false);
 
         accountService.deleteAccount(ACCOUNT_ID);
 
         verify(accountRepository).deleteById(ACCOUNT_ID);
+    }
+
+    @Test
+    void deleteAccount_withTransactions_shouldThrowResourceInUseAndNotDelete() {
+        when(accountRepository.findAccountById(ACCOUNT_ID)).thenReturn(Optional.of(account));
+        when(transactionRepository.existsBySenderIdOrReceiverId(ACCOUNT_ID, ACCOUNT_ID)).thenReturn(true);
+
+        assertThrows(ResourceInUse.class, () -> accountService.deleteAccount(ACCOUNT_ID));
+
+        verify(accountRepository, never()).deleteById(any());
     }
 
     @Test

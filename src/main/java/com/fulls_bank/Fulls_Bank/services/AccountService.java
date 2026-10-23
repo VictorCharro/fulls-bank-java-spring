@@ -8,8 +8,10 @@ import com.fulls_bank.Fulls_Bank.entities.Client;
 import com.fulls_bank.Fulls_Bank.exceptions.AccountNotFound;
 import com.fulls_bank.Fulls_Bank.exceptions.ClientNotFound;
 import com.fulls_bank.Fulls_Bank.exceptions.IdNotFound;
+import com.fulls_bank.Fulls_Bank.exceptions.ResourceInUse;
 import com.fulls_bank.Fulls_Bank.repositories.AccountRepository;
 import com.fulls_bank.Fulls_Bank.repositories.ClientRepository;
+import com.fulls_bank.Fulls_Bank.repositories.TransactionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +25,7 @@ public class AccountService {
 
     public final AccountRepository accountRepository;
     private final ClientRepository clientRepository;
+    private final TransactionRepository transactionRepository;
 
     public Integer generateUniqueAccountNumber() {
         Random random = new Random();
@@ -45,6 +48,9 @@ public class AccountService {
 
     public void deleteAccount(Long id) {
         findAccountById(id);
+        if (transactionRepository.existsBySenderIdOrReceiverId(id, id)) {
+            throw new ResourceInUse("Account has transactions and cannot be deleted");
+        }
         accountRepository.deleteById(id);
     }
 

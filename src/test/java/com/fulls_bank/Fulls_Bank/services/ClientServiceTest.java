@@ -3,6 +3,8 @@ package com.fulls_bank.Fulls_Bank.services;
 import com.fulls_bank.Fulls_Bank.entities.Client;
 import com.fulls_bank.Fulls_Bank.exceptions.ClientNotFound;
 import com.fulls_bank.Fulls_Bank.exceptions.ExistingAccount;
+import com.fulls_bank.Fulls_Bank.exceptions.ResourceInUse;
+import com.fulls_bank.Fulls_Bank.repositories.AccountRepository;
 import com.fulls_bank.Fulls_Bank.repositories.ClientRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,6 +32,9 @@ class ClientServiceTest {
 
     @Mock
     private ClientRepository clientRepository;
+
+    @Mock
+    private AccountRepository accountRepository;
 
     @InjectMocks
     private ClientService clientService;
@@ -82,6 +87,7 @@ class ClientServiceTest {
     @Test
     void deleteClient_withExistingId_shouldDelete() {
         when(clientRepository.findClientById(CLIENT_ID)).thenReturn(Optional.of(client));
+        when(accountRepository.existsByClientId(CLIENT_ID)).thenReturn(false);
 
         clientService.deleteClient(CLIENT_ID);
 
@@ -93,6 +99,16 @@ class ClientServiceTest {
         when(clientRepository.findClientById(CLIENT_ID)).thenReturn(Optional.empty());
 
         assertThrows(ClientNotFound.class, () -> clientService.deleteClient(CLIENT_ID));
+
+        verify(clientRepository, never()).deleteById(any());
+    }
+
+    @Test
+    void deleteClient_withLinkedAccounts_shouldThrowResourceInUseAndNotDelete() {
+        when(clientRepository.findClientById(CLIENT_ID)).thenReturn(Optional.of(client));
+        when(accountRepository.existsByClientId(CLIENT_ID)).thenReturn(true);
+
+        assertThrows(ResourceInUse.class, () -> clientService.deleteClient(CLIENT_ID));
 
         verify(clientRepository, never()).deleteById(any());
     }

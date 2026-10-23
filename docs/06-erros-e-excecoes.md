@@ -20,6 +20,7 @@ Código: `MAIN/exceptions`. Tratamento central em `GlobalExceptionHandler` (`@Re
 | `AccountNotFound` | 404 | Conta não encontrada (por número ou em transação) |
 | `IdNotFound` | 404 | Conta não encontrada por id (`GET` e `DELETE /account/{id}`) |
 | `ExistingAccount` | 400 | CPF já cadastrado |
+| `ResourceInUse` | 409 | Exclusão de cliente com contas ou de conta com transações |
 | `InsufficientBalance` | 400 | Saldo insuficiente |
 | `NegativeAmount` | 400 | Sem uso no código hoje (restou do saque/depósito do `AccountService`); handler mantido |
 | `MethodArgumentNotValidException` | 400 | Falha de `@Valid`; mensagem no formato `campo: mensagem`, separadas por vírgula |

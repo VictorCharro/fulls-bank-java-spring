@@ -32,6 +32,15 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(404).body(errorResponse);
     }
 
+    @ExceptionHandler(ResourceInUse.class)
+    public ResponseEntity<ErrorResponse> handleResourceInUse(ResourceInUse e) {
+        LocalDateTime timestamp = LocalDateTime.now();
+        int status = 409;
+        String message = e.getMessage();
+        ErrorResponse errorResponse = new ErrorResponse(status, message, timestamp);
+        return ResponseEntity.status(409).body(errorResponse);
+    }
+
     @ExceptionHandler(ExistingAccount.class)
     public ResponseEntity<ErrorResponse> handleExistingAccount(ExistingAccount e) {
         LocalDateTime timestamp = LocalDateTime.now();

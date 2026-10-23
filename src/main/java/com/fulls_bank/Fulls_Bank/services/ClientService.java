@@ -3,6 +3,8 @@ package com.fulls_bank.Fulls_Bank.services;
 import com.fulls_bank.Fulls_Bank.entities.Client;
 import com.fulls_bank.Fulls_Bank.exceptions.ClientNotFound;
 import com.fulls_bank.Fulls_Bank.exceptions.ExistingAccount;
+import com.fulls_bank.Fulls_Bank.exceptions.ResourceInUse;
+import com.fulls_bank.Fulls_Bank.repositories.AccountRepository;
 import com.fulls_bank.Fulls_Bank.repositories.ClientRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,6 +16,7 @@ import java.util.List;
 public class ClientService {
 
     public final ClientRepository clientRepository;
+    private final AccountRepository accountRepository;
 
     public Client createClient(Client client) {
         if (clientRepository.findClientByCpf(client.getCpf()).isPresent()){
@@ -29,6 +32,9 @@ public class ClientService {
 
     public void deleteClient(Long id) {
         searchClient(id);
+        if (accountRepository.existsByClientId(id)) {
+            throw new ResourceInUse("Client has accounts and cannot be deleted");
+        }
         clientRepository.deleteById(id);
     }
 
