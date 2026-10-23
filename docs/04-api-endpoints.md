@@ -18,7 +18,7 @@ Código: `MAIN/controllers`. Formato de erro: [06](06-erros-e-excecoes.md). Iten
 |---|---|---|---|
 | POST | `/account` | `AccountRequestDTO` | 201, `AccountResponseDTO` |
 | GET | `/account/{id}` | — | 200, `AccountResponseDTO` (listas de transações vêm nulas) ⚠️ |
-| GET | `/account/number/{num}` | — | `Account` (entidade) ⚠️ não funciona hoje |
+| GET | `/account/number/{number}` | — | 200, `AccountResponseDTO`; 404 se a conta não existir |
 | POST | `/account/withdrawal` | parâmetros `accountNumber` e `amount` | 200, sem corpo ⚠️ |
 | DELETE | `/account/{id}` | — | 200, sem corpo ⚠️ |
 

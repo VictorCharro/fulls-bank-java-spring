@@ -37,9 +37,10 @@ public class AccountController {
         return accountService.toResponseDTO(account);
     }
 
-    @GetMapping("/number/{num}")
-    public Account searchAccountByNumber(@PathVariable int number) {
-        return accountService.findAccountByAccountNumber(number);
+    @GetMapping("/number/{number}")
+    public AccountResponseDTO searchAccountByNumber(@PathVariable int number) {
+        Account account = accountService.findAccountByAccountNumber(number);
+        return accountService.toResponseDTO(account);
     }
 
     @PostMapping("/withdrawal")
