@@ -50,17 +50,17 @@ class ClientControllerTest {
                 .andExpect(jsonPath("$.message").value("Client has accounts and cannot be deleted"));
     }
 
-    private static final ClientResponseDTO ANA = new ClientResponseDTO(1L, "12345678901", "Ana", "Silva");
+    private static final ClientResponseDTO ANA = new ClientResponseDTO(1L, "52998224725", "Ana", "Silva");
 
     @Test
     void createClient_shouldIgnoreIdInBodyAndReturnDto() throws Exception {
         when(clientService.createClient(any())).thenReturn(ANA);
 
         mockMvc.perform(post("/client").contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"id\":99,\"cpf\":\"12345678901\",\"name\":\"Ana\",\"lastName\":\"Silva\"}"))
+                        .content("{\"id\":99,\"cpf\":\"52998224725\",\"name\":\"Ana\",\"lastName\":\"Silva\"}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
-                .andExpect(jsonPath("$.cpf").value("12345678901"))
+                .andExpect(jsonPath("$.cpf").value("52998224725"))
                 .andExpect(jsonPath("$.name").value("Ana"))
                 .andExpect(jsonPath("$.lastName").value("Silva"));
     }
@@ -78,12 +78,31 @@ class ClientControllerTest {
     @ValueSource(strings = {"{\"name\":\"Ana\",\"lastName\":\"Silva\"}",
             "{\"cpf\":\"\",\"name\":\"Ana\",\"lastName\":\"Silva\"}",
             "{\"cpf\":\"1234567890a\",\"name\":\"Ana\",\"lastName\":\"Silva\"}",
-            "{\"cpf\":\"123456789012\",\"name\":\"Ana\",\"lastName\":\"Silva\"}"})
+            "{\"cpf\":\"529982247252\",\"name\":\"Ana\",\"lastName\":\"Silva\"}",
+            "{\"cpf\":\"12345678901\",\"name\":\"Ana\",\"lastName\":\"Silva\"}",
+            "{\"cpf\":\"11111111111\",\"name\":\"Ana\",\"lastName\":\"Silva\"}"})
     void createClient_withMissingOrMalformedCpf_shouldReturn400AndNotCallService(String body) throws Exception {
         mockMvc.perform(post("/client").contentType(MediaType.APPLICATION_JSON).content(body))
                 .andExpect(status().isBadRequest());
 
         verify(clientService, never()).createClient(any());
+    }
+
+    @Test
+    void createClient_withMaskedCpf_shouldBeAccepted() throws Exception {
+        when(clientService.createClient(any())).thenReturn(ANA);
+
+        mockMvc.perform(post("/client").contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"cpf\":\"529.982.247-25\",\"name\":\"Ana\",\"lastName\":\"Silva\"}"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void createClient_withInvalidCheckDigits_shouldReturn400WithMessage() throws Exception {
+        mockMvc.perform(post("/client").contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"cpf\":\"12345678901\",\"name\":\"Ana\",\"lastName\":\"Silva\"}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("cpf: CPF is invalid"));
     }
 
     @Test
@@ -103,7 +122,7 @@ class ClientControllerTest {
         mockMvc.perform(put("/client/{id}", 1L).contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\":\"Ana\",\"lastName\":\"Silva\"}"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.cpf").value("12345678901"));
+                .andExpect(jsonPath("$.cpf").value("52998224725"));
 
         mockMvc.perform(put("/client/{id}", 1L).contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\":\"\",\"lastName\":\"Silva\"}"))

@@ -13,7 +13,7 @@ Código: `MAIN/services`. Erros lançados: [06](06-erros-e-excecoes.md).
 
 ## Cliente (`ClientService`)
 
-- CPF deve ter 11 caracteres (apenas tamanho, sem validar dígitos).
+- CPF precisa ser válido (`@Cpf`): 11 dígitos, com ou sem a máscara `000.000.000-00`, dígitos verificadores corretos e nem todos os dígitos iguais. Inválido: 400 (`cpf: CPF is invalid`). É gravado e comparado só com os dígitos, então `529.982.247-25` e `52998224725` são o mesmo CPF.
 - `name` e `lastName` não podem ser vazios.
 - CPF duplicado lança `ExistingAccount`.
 - Atualização altera somente `name` e `lastName`; o CPF nunca é alterado.

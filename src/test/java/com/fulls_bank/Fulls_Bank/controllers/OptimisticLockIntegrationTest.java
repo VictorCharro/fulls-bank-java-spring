@@ -33,7 +33,7 @@ class OptimisticLockIntegrationTest extends AbstractIntegrationTest {
 
     private Account saveAccount() {
         Client client = new Client();
-        client.setCpf("12345678901");
+        client.setCpf("52998224725");
         client.setName("Ana");
         client.setLastName("Silva");
         client = clientRepository.save(client);

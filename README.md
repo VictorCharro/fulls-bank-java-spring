@@ -16,7 +16,7 @@ Este é um projeto de estudo que simula um sistema bancário básico, desenvolvi
 - Buscar cliente por ID (`GET /client/{id}`)
 - Atualizar nome e sobrenome (`PUT /client/{id}`); o CPF não é alterado
 - Excluir cliente (`DELETE /client/{id}`); bloqueado com `409` se o cliente tiver contas
-- Validação de CPF único (11 caracteres)
+- Validação de CPF (dígitos verificadores, aceita máscara) e unicidade
 - Validação com Jakarta Bean Validation (`@Valid`, `@NotBlank`, `@Size`)
 
 ---
