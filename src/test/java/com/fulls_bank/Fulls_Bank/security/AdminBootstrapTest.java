@@ -11,6 +11,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -37,6 +39,16 @@ class AdminBootstrapTest {
         assertEquals("admin@example.com", captor.getValue().getEmail());
         assertEquals("hashed", captor.getValue().getPasswordHash());
         assertEquals(Role.ADMIN, captor.getValue().getRole());
+    }
+
+    @Test
+    void run_withPasswordOver72Bytes_shouldFailWithAClearMessage() {
+        AdminBootstrap bootstrap = new AdminBootstrap(appUserRepository, passwordEncoder, "admin@example.com", "é".repeat(40));
+
+        IllegalStateException error = assertThrows(IllegalStateException.class, () -> bootstrap.run(null));
+
+        assertTrue(error.getMessage().contains("ADMIN_PASSWORD"));
+        verify(appUserRepository, never()).save(any());
     }
 
     @Test

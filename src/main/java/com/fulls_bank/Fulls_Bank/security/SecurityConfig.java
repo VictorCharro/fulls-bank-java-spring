@@ -1,6 +1,7 @@
 package com.fulls_bank.Fulls_Bank.security;
 
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
+import jakarta.servlet.DispatcherType;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -39,6 +40,9 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, "/auth/register", "/auth/login").permitAll()
+                        // Erros do Spring MVC (JSON malformado, 415...) são redirecionados para /error pelo contêiner;
+                        // sem isto o status real viraria 401. Acesso direto a /error continua protegido.
+                        .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
                         // Operações destrutivas e listagens globais só para administradores
                         .requestMatchers(HttpMethod.DELETE, "/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/client", "/transaction").hasRole("ADMIN")

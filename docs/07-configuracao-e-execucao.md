@@ -58,7 +58,7 @@ O H2 está no `pom.xml`, mas a aplicação usa PostgreSQL.
 | `SPRING_PROFILES_ACTIVE` | perfil ativo (`dev` ou `test`) | `dev` |
 | `JWT_SECRET` | segredo para assinar os tokens (HS256), mínimo de 32 bytes | nenhum (obrigatória; sem ela a aplicação não sobe) |
 | `JWT_EXPIRATION_MINUTES` | validade do token | `60` |
-| `ADMIN_EMAIL`, `ADMIN_PASSWORD` | cria o primeiro administrador na inicialização, se as duas existirem e o e-mail ainda não estiver cadastrado | vazias (nenhum administrador é criado) |
+| `ADMIN_EMAIL`, `ADMIN_PASSWORD` | cria o primeiro administrador na inicialização, se as duas existirem e o e-mail ainda não estiver cadastrado; a senha tem no máximo 72 bytes em UTF-8 (a aplicação não sobe se passar disso) | vazias (nenhum administrador é criado) |
 
 Nunca coloque senha ou segredo em arquivo versionado. Os testes usam um segredo próprio, só do perfil `test`. A senha usada antes desta mudança continua no histórico do Git: troque-a no seu PostgreSQL local.
 

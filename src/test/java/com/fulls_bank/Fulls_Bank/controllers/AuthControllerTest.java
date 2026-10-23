@@ -58,6 +58,30 @@ class AuthControllerTest {
     }
 
     @Test
+    void register_withMultibytePasswordOver72Bytes_shouldReturn400() throws Exception {
+        // 40 caracteres, mas 80 bytes em UTF-8: passaria em @Size e quebraria o BCrypt
+        String password = "é".repeat(40);
+
+        mockMvc.perform(post("/auth/register").contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"email\":\"ana@example.com\",\"password\":\"" + password + "\"}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value(org.hamcrest.Matchers.containsString("72 bytes")));
+
+        verify(authService, never()).register(any());
+    }
+
+    @Test
+    void register_withMultibytePasswordWithin72Bytes_shouldReturn201() throws Exception {
+        // 36 caracteres, 72 bytes: no limite
+        String password = "é".repeat(36);
+        when(authService.register(any())).thenReturn(new AppUser(7L, "ana@example.com", "hashed", Role.USER));
+
+        mockMvc.perform(post("/auth/register").contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"email\":\"ana@example.com\",\"password\":\"" + password + "\"}"))
+                .andExpect(status().isCreated());
+    }
+
+    @Test
     void register_withExistingEmail_shouldReturn400() throws Exception {
         when(authService.register(any())).thenThrow(new EmailAlreadyRegistered("A user with this email already exists"));
 

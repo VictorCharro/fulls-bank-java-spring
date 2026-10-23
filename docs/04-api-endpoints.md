@@ -12,7 +12,7 @@ Somente `ADMIN`: todo `DELETE` e as listagens globais `GET /client` e `GET /tran
 
 | Método | Rota | Corpo | Resposta |
 |---|---|---|---|
-| POST | `/auth/register` | `RegisterRequestDTO` (`email`, `password` de 8 a 72 caracteres) | 201, `UserResponseDTO` (`id`, `email`, `role`); 400 se o e-mail já existir |
+| POST | `/auth/register` | `RegisterRequestDTO` (`email`, `password` com mínimo de 8 caracteres e máximo de 72 bytes em UTF-8) | 201, `UserResponseDTO` (`id`, `email`, `role`); 400 se o e-mail já existir |
 | POST | `/auth/login` | `LoginRequestDTO` (`email`, `password`) | 200, `TokenResponseDTO` (`accessToken`, `tokenType` `Bearer`, `expiresIn` em segundos); 401 se e-mail ou senha estiverem errados |
 
 ## Clientes — `/client` (`ClientController`)

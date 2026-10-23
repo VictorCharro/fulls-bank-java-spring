@@ -11,6 +11,7 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 
 /**
@@ -44,6 +45,10 @@ public class AdminBootstrap implements ApplicationRunner {
         String email = adminEmail.trim().toLowerCase(Locale.ROOT);
         if (appUserRepository.existsByEmail(email)) {
             return;
+        }
+        // Limite do BCrypt; falha na inicialização com uma mensagem clara em vez de um erro interno do encoder
+        if (adminPassword.getBytes(StandardCharsets.UTF_8).length > 72) {
+            throw new IllegalStateException("ADMIN_PASSWORD must have at most 72 bytes in UTF-8");
         }
         AppUser admin = new AppUser();
         admin.setEmail(email);
