@@ -16,7 +16,7 @@ Código: `MAIN/controllers`. Formato de erro: [06](06-erros-e-excecoes.md). Iten
 
 | Método | Rota | Entrada | Resposta |
 |---|---|---|---|
-| POST | `/account` | `AccountRequestDTO` | 201, `AccountResponseDTO` |
+| POST | `/account` | `AccountRequestDTO` | 201, `AccountResponseDTO`; 503 se não houver número de conta livre |
 | GET | `/account/{id}` | — | 200, `AccountResponseDTO` (listas de transações vêm nulas) ⚠️ |
 | GET | `/account/number/{number}` | — | 200, `AccountResponseDTO`; 404 se a conta não existir |
 | DELETE | `/account/{id}` | — | 200, sem corpo ⚠️; 409 se a conta tiver transações |

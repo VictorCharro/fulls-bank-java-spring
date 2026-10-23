@@ -6,6 +6,7 @@ import com.fulls_bank.Fulls_Bank.dto.TransactionResponseDTO;
 import com.fulls_bank.Fulls_Bank.entities.Account;
 import com.fulls_bank.Fulls_Bank.entities.Client;
 import com.fulls_bank.Fulls_Bank.exceptions.AccountNotFound;
+import com.fulls_bank.Fulls_Bank.exceptions.AccountNumberUnavailable;
 import com.fulls_bank.Fulls_Bank.exceptions.ClientNotFound;
 import com.fulls_bank.Fulls_Bank.exceptions.IdNotFound;
 import com.fulls_bank.Fulls_Bank.exceptions.ResourceInUse;
@@ -24,17 +25,23 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AccountService {
 
+    static final int MIN_ACCOUNT_NUMBER = 100_000;
+    static final int MAX_ACCOUNT_NUMBER = 999_999;
+    static final int MAX_NUMBER_ATTEMPTS = 20;
+
     public final AccountRepository accountRepository;
     private final ClientRepository clientRepository;
     private final TransactionRepository transactionRepository;
 
     public Integer generateUniqueAccountNumber() {
         Random random = new Random();
-        Integer number;
-        do {
-            number = 1000 + random.nextInt(9000); // número entre 1000 e 9999
-        } while (accountRepository.existsByAccountNumber(number));
-        return number;
+        for (int attempt = 0; attempt < MAX_NUMBER_ATTEMPTS; attempt++) {
+            int number = MIN_ACCOUNT_NUMBER + random.nextInt(MAX_ACCOUNT_NUMBER - MIN_ACCOUNT_NUMBER + 1);
+            if (!accountRepository.existsByAccountNumber(number)) {
+                return number;
+            }
+        }
+        throw new AccountNumberUnavailable("Could not generate a unique account number, try again later");
     }
 
     public Account findAccountByAccountNumber (int accountNumber) {
