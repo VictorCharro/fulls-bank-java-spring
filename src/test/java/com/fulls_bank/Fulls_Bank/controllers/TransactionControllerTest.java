@@ -3,6 +3,8 @@ package com.fulls_bank.Fulls_Bank.controllers;
 import com.fulls_bank.Fulls_Bank.dto.TransactionResponseDTO;
 import com.fulls_bank.Fulls_Bank.entities.Transaction;
 import com.fulls_bank.Fulls_Bank.enums.TransactionType;
+import com.fulls_bank.Fulls_Bank.exceptions.InvalidAmount;
+import com.fulls_bank.Fulls_Bank.exceptions.SameAccountTransfer;
 import com.fulls_bank.Fulls_Bank.exceptions.TransactionNotFound;
 import com.fulls_bank.Fulls_Bank.services.TransactionService;
 import org.junit.jupiter.api.Test;
@@ -90,5 +92,31 @@ class TransactionControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.status").value(404))
                 .andExpect(jsonPath("$.message").value("Transaction not found"));
+    }
+
+    @Test
+    void createTransaction_whenServiceRejectsAmount_shouldReturn400() throws Exception {
+        when(transactionService.createTransaction(any()))
+                .thenThrow(new InvalidAmount("Transaction amount must be greater than zero"));
+
+        mockMvc.perform(post("/transaction")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"type\":\"DEPOSIT\",\"receiverId\":1,\"amount\":10}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.message").value("Transaction amount must be greater than zero"));
+    }
+
+    @Test
+    void createTransaction_withSameSenderAndReceiver_shouldReturn400() throws Exception {
+        when(transactionService.createTransaction(any()))
+                .thenThrow(new SameAccountTransfer("Sender and receiver must be different accounts"));
+
+        mockMvc.perform(post("/transaction")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"type\":\"TRANSFER\",\"senderId\":1,\"receiverId\":1,\"amount\":10}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.message").value("Sender and receiver must be different accounts"));
     }
 }

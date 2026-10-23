@@ -24,11 +24,9 @@ Código: `MAIN/exceptions`. Tratamento central em `GlobalExceptionHandler` (`@Re
 | `AccountNumberUnavailable` | 503 | Não foi possível gerar um número de conta livre após 20 tentativas |
 | `ResourceInUse` | 409 | Exclusão de cliente com contas ou de conta com transações |
 | `InsufficientBalance` | 400 | Saldo insuficiente |
-| `NegativeAmount` | 400 | Sem uso no código hoje (restou do saque/depósito do `AccountService`); handler mantido |
+| `InvalidAmount` | 400 | `amount` nulo, zero ou negativo em `TransactionService.createTransaction` |
+| `SameAccountTransfer` | 400 | Transferência com origem e destino iguais |
 | `MethodArgumentNotValidException` | 400 | Falha de `@Valid`; mensagem no formato `campo: mensagem`, separadas por vírgula |
-| `IllegalArgumentException` | **500** ⚠️ | Sem handler hoje (valor inválido ou contas iguais em transação) |
-
-Itens ⚠️: ver [09](09-problemas-conhecidos.md).
 
 ## Como adicionar uma nova exceção
 
