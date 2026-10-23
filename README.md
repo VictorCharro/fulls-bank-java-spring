@@ -100,8 +100,6 @@ cd fulls-bank-java-spring
 
 ## 🚧 Em desenvolvimento:
 
-🔁 Implementar transferência entre contas com movimentação de saldo e gravação da transação (POST /account/transfer)
-
 📄 Documentação com Swagger/OpenAPI
 
 🧪 Testes unitários e de integração com JUnit e Mockito
