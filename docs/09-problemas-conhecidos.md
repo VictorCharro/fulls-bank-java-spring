@@ -15,12 +15,6 @@ Legenda de issue: `#N` = já existe; "sem issue" = ainda precisa ser criada.
 |---|---|---|
 | S2 | Sem autenticação nem autorização. | #15 |
 
-## Concorrência
-
-| # | Problema | Issue |
-|---|---|---|
-| C1 | Falta um teste que comprove o lock otimista com requisições simultâneas de saque e transferência. | #14 |
-
 ## Qualidade de código
 
 | # | Problema | Issue |

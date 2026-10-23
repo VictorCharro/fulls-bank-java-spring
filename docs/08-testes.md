@@ -9,6 +9,7 @@ Código: `TEST/*`. Ferramentas: JUnit 5 e Mockito (`spring-boot-starter-test`).
 | `AbstractIntegrationTest` | Base de integração | Contexto completo + MockMvc + PostgreSQL 16 em container (Testcontainers, precisa de Docker), compartilhado entre as classes; limpa as tabelas antes de cada teste |
 | `FullsBankApplicationTests` | Contexto Spring | Valida as migrations do Flyway contra o esquema das entidades |
 | `controllers/BankFlowIntegrationTest` | Integração (issue #12) | Fluxo criar cliente → criar conta → depositar → sacar → transferir, conferindo saldos e transações; bloqueio (409) ao excluir conta e cliente em uso |
+| `services/ConcurrencyIntegrationTest` | Integração (issue #14) | Threads reais na mesma conta: saques simultâneos e transferências em sentidos opostos; o saldo final bate com as operações que deram certo e o total entre as contas não muda |
 | `controllers/ErrorResponsesIntegrationTest` | Integração (issue #12) | Status HTTP de erro com banco real: saldo insuficiente, valor zero, mesma conta, conta inexistente, CPF duplicado ou inválido, cliente, conta e transação inexistentes |
 | `controllers/AccountControllerTest` | Web (`@WebMvcTest`, MockMvc) | Issues #25, #27, #28 e #29; `GET /account/number/{number}`, 404 por id, 409 ao excluir conta com transações e 503 sem número de conta livre |
 | `controllers/ClientControllerTest` | Web (`@WebMvcTest`, MockMvc) | Issue #28; 409 ao excluir cliente com contas |
@@ -16,8 +17,6 @@ Código: `TEST/*`. Ferramentas: JUnit 5 e Mockito (`spring-boot-starter-test`).
 | `services/TransactionServiceTest` | Unitário (Mockito) | Issue #1 |
 | `services/AccountServiceTest` | Unitário (Mockito) | Issue #2 |
 | `services/ClientServiceTest` | Unitário (Mockito) | Issue #2 |
-
-Ainda sem testes: concorrência (issue #14).
 
 ## Convenções
 
@@ -40,6 +39,4 @@ Ainda sem testes: concorrência (issue #14).
 
 ## Planejado
 
-- Teste de concorrência para saque e transferência (#14).
 - Testes de autenticação com Spring Security (#15).
-- Execução automática no CI (#20).
