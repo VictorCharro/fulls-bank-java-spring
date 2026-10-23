@@ -4,21 +4,25 @@ import com.fulls_bank.Fulls_Bank.dto.AccountResponseDTO;
 import com.fulls_bank.Fulls_Bank.entities.Account;
 import com.fulls_bank.Fulls_Bank.enums.AccountType;
 import com.fulls_bank.Fulls_Bank.exceptions.AccountNotFound;
+import com.fulls_bank.Fulls_Bank.exceptions.AccountNumberUnavailable;
 import com.fulls_bank.Fulls_Bank.exceptions.IdNotFound;
 import com.fulls_bank.Fulls_Bank.exceptions.ResourceInUse;
 import com.fulls_bank.Fulls_Bank.services.AccountService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -89,5 +93,19 @@ class AccountControllerTest {
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.status").value(409))
                 .andExpect(jsonPath("$.message").value("Account has transactions and cannot be deleted"));
+    }
+
+    @Test
+    void createAccount_whenNoAccountNumberIsAvailable_shouldReturn503() throws Exception {
+        when(accountService.createAccount(any()))
+                .thenThrow(new AccountNumberUnavailable("Could not generate a unique account number, try again later"));
+
+        mockMvc.perform(post("/account")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"type\":\"CHECKING\",\"clientId\":1}"))
+                .andExpect(status().isServiceUnavailable())
+                .andExpect(jsonPath("$.status").value(503))
+                .andExpect(jsonPath("$.message")
+                        .value("Could not generate a unique account number, try again later"));
     }
 }

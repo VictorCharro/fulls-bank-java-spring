@@ -15,7 +15,7 @@ Código: `MAIN/services`. Erros lançados: [06](06-erros-e-excecoes.md).
 
 - Só cria conta para cliente existente (`ClientNotFound` caso contrário).
 - Nova conta começa com saldo `0`.
-- O número da conta é gerado aleatoriamente entre **1000 e 9999**, sem repetir.
+- O número da conta é gerado aleatoriamente com **6 dígitos** (100000 a 999999), sem repetir. Após 20 tentativas sem achar um número livre, lança `AccountNumberUnavailable` (503).
 - Busca por número inexistente lança `AccountNotFound`; busca ou exclusão por id inexistente lança `IdNotFound`.
 - Excluir conta que participa de alguma transação (como origem ou destino) lança `ResourceInUse` (409).
 - O `AccountService` não altera saldo: depósito, saque e transferência ficam só no `TransactionService`.

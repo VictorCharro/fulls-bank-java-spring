@@ -6,6 +6,7 @@ import com.fulls_bank.Fulls_Bank.entities.Account;
 import com.fulls_bank.Fulls_Bank.entities.Client;
 import com.fulls_bank.Fulls_Bank.enums.AccountType;
 import com.fulls_bank.Fulls_Bank.exceptions.AccountNotFound;
+import com.fulls_bank.Fulls_Bank.exceptions.AccountNumberUnavailable;
 import com.fulls_bank.Fulls_Bank.exceptions.ClientNotFound;
 import com.fulls_bank.Fulls_Bank.exceptions.IdNotFound;
 import com.fulls_bank.Fulls_Bank.exceptions.ResourceInUse;
@@ -70,12 +71,12 @@ class AccountServiceTest {
     // generateUniqueAccountNumber
 
     @Test
-    void generateUniqueAccountNumber_shouldReturnNumberBetween1000And9999() {
+    void generateUniqueAccountNumber_shouldReturnSixDigitNumber() {
         when(accountRepository.existsByAccountNumber(anyInt())).thenReturn(false);
 
         Integer number = accountService.generateUniqueAccountNumber();
 
-        assertTrue(number >= 1000 && number <= 9999);
+        assertTrue(isInRange(number));
     }
 
     @Test
@@ -84,8 +85,17 @@ class AccountServiceTest {
 
         Integer number = accountService.generateUniqueAccountNumber();
 
-        assertTrue(number >= 1000 && number <= 9999);
+        assertTrue(isInRange(number));
         verify(accountRepository, times(3)).existsByAccountNumber(anyInt());
+    }
+
+    @Test
+    void generateUniqueAccountNumber_whenAllAttemptsAreTaken_shouldThrowAfterMaxAttempts() {
+        when(accountRepository.existsByAccountNumber(anyInt())).thenReturn(true);
+
+        assertThrows(AccountNumberUnavailable.class, () -> accountService.generateUniqueAccountNumber());
+
+        verify(accountRepository, times(20)).existsByAccountNumber(anyInt());
     }
 
     // buscas
@@ -180,7 +190,7 @@ class AccountServiceTest {
         assertSame(client, saved.getClient());
         assertEquals(AccountType.SAVINGS, saved.getType());
         assertEquals(0, BigDecimal.ZERO.compareTo(saved.getBalance()));
-        assertTrue(saved.getAccountNumber() >= 1000 && saved.getAccountNumber() <= 9999);
+        assertTrue(isInRange(saved.getAccountNumber()));
         assertEquals(saved.getAccountNumber(), response.getAccountNumber());
         assertEquals(AccountType.SAVINGS, response.getType());
     }
@@ -196,5 +206,9 @@ class AccountServiceTest {
         assertThrows(ClientNotFound.class, () -> accountService.createAccount(request));
 
         verify(accountRepository, never()).save(any());
+    }
+
+    private static boolean isInRange(int number) {
+        return number >= 100_000 && number <= 999_999;
     }
 }

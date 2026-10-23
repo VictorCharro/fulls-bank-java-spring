@@ -10,7 +10,6 @@ Legenda de issue: `#N` = já existe; "sem issue" = ainda precisa ser criada.
 |---|---|---|---|
 | B3 | `IllegalArgumentException` não tem handler e retorna 500. | `MAIN/exceptions/GlobalExceptionHandler` | #4 |
 | B4 | `GET /transaction/{id}` retorna a entidade, sem 404 explícito. | `TransactionController` | #3 |
-| B6 | Número da conta tem só 9000 valores possíveis (1000–9999); ao esgotar, o loop de geração não termina. | `AccountService.generateUniqueAccountNumber` | sem issue |
 
 ## Segurança e configuração
 
