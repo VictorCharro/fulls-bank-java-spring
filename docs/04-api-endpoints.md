@@ -1,6 +1,6 @@
 # 04 — API
 
-Código: `MAIN/controllers`. Formato de erro: [06](06-erros-e-excecoes.md).
+Código: `MAIN/controllers`. Formato de erro: [06](06-erros-e-excecoes.md). Limitação conhecida: ainda não há checagem de dono das contas (item S1 em [09](09-problemas-conhecidos.md)).
 
 A documentação interativa (Swagger UI) está em `/swagger-ui.html` e o OpenAPI em `/v3/api-docs`; veja [07](07-configuracao-e-execucao.md#documentação-interativa-swaggeropenapi).
 
