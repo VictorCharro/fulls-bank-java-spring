@@ -26,7 +26,7 @@ O perfil ativo vem da variável de ambiente `SPRING_PROFILES_ACTIVE` e, se ela n
 | Perfil | Arquivo | `show-sql` / `format_sql` | Uso |
 |---|---|---|---|
 | `dev` (padrão) | `application-dev.properties` | `true` / `true` | rodar localmente |
-| `test` | `application-test.properties` | `false` | testes que sobem o contexto (`FullsBankApplicationTests` usa `@ActiveProfiles("test")`); o banco é um PostgreSQL descartável do Testcontainers, nunca o de desenvolvimento |
+| `test` | `application-test.properties` | `false` | testes que sobem o contexto (`FullsBankApplicationTests` usa `@ActiveProfiles("test")`); o PostgreSQL descartável é iniciado pelo próprio teste (Testcontainers), só durante `./mvnw test`; o perfil sozinho não cria banco |
 
 ## Banco de dados (Flyway)
 
@@ -41,7 +41,7 @@ O `baselineOnMigrate` não fica ligado na configuração do projeto: em um banco
 
 Para mudar o esquema, crie uma nova migration (`V2__descricao.sql`, e assim por diante); nunca edite uma migration já aplicada.
 
-Exemplo: `SPRING_PROFILES_ACTIVE=test ./mvnw spring-boot:run`. Um perfil de produção virá com o deploy (issue #21).
+O perfil `test` é para a suíte de testes; para subir a API, use `dev`. Um perfil de produção virá com o deploy (issue #21).
 
 O H2 está no `pom.xml`, mas a aplicação usa PostgreSQL.
 
