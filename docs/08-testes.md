@@ -27,6 +27,7 @@ Ainda sem testes: concorrência (issue #14).
 - Integração: estender `AbstractIntegrationTest` (contexto, banco em container e limpeza das tabelas já prontos) e chamar a API via `MockMvc`.
 - Unitários: `@ExtendWith(MockitoExtension.class)`, `@Mock` nos repositórios, `@InjectMocks` no service. Sem subir o Spring.
 - Para erros, conferir o tipo da exceção **e** que nada foi persistido (`verify(..., never())`).
+- Em testes de integração (banco real), não há mocks: para erros, conferir o status HTTP **e** o estado do banco depois (saldo, `repository.count()`). `verify` fica só nos unitários.
 - Dinheiro sempre com `BigDecimal` criado por `new BigDecimal("...")` (string), nunca `double`.
 - Cada regra de [05](05-regras-de-negocio.md) deve ter ao menos um teste de sucesso e um de falha.
 

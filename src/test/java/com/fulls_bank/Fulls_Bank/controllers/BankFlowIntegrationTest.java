@@ -60,7 +60,14 @@ class BankFlowIntegrationTest extends AbstractIntegrationTest {
 
         mockMvc.perform(get("/transaction"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(3));
+                .andExpect(jsonPath("$.length()").value(3))
+                .andExpect(jsonPath("$[?(@.type == 'DEPOSIT')].amount").value(100.0))
+                .andExpect(jsonPath("$[?(@.type == 'DEPOSIT')].receiverId").value((int) accountIdA))
+                .andExpect(jsonPath("$[?(@.type == 'WITHDRAWAL')].amount").value(30.0))
+                .andExpect(jsonPath("$[?(@.type == 'WITHDRAWAL')].senderId").value((int) accountIdA))
+                .andExpect(jsonPath("$[?(@.type == 'TRANSFER')].amount").value(50.0))
+                .andExpect(jsonPath("$[?(@.type == 'TRANSFER')].senderId").value((int) accountIdA))
+                .andExpect(jsonPath("$[?(@.type == 'TRANSFER')].receiverId").value((int) accountIdB));
         assertEquals(3, transactionRepository.count());
     }
 
