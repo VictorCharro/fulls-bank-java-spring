@@ -1,5 +1,6 @@
 package com.fulls_bank.Fulls_Bank.exceptions;
 
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -37,6 +38,15 @@ public class GlobalExceptionHandler {
         LocalDateTime timestamp = LocalDateTime.now();
         int status = 409;
         String message = e.getMessage();
+        ErrorResponse errorResponse = new ErrorResponse(status, message, timestamp);
+        return ResponseEntity.status(409).body(errorResponse);
+    }
+
+    @ExceptionHandler(OptimisticLockingFailureException.class)
+    public ResponseEntity<ErrorResponse> handleOptimisticLockingFailure(OptimisticLockingFailureException e) {
+        LocalDateTime timestamp = LocalDateTime.now();
+        int status = 409;
+        String message = "The account was changed by another operation, please try again";
         ErrorResponse errorResponse = new ErrorResponse(status, message, timestamp);
         return ResponseEntity.status(409).body(errorResponse);
     }

@@ -36,6 +36,7 @@ Este é um projeto de estudo que simula um sistema bancário básico, desenvolvi
 - **Depósito, saque e transferência entre contas**, todos por `POST /transaction`, com saldo atualizado e a transação registrada automaticamente
 - Valor sempre validado: nulo, zero ou negativo retorna `400`
 - Operação atômica: se uma regra falhar, nenhum saldo é alterado (`@Transactional`)
+- Concorrência: lock otimista (`@Version` em `Account`). Duas operações simultâneas na mesma conta não se sobrescrevem: a segunda a gravar recebe `409` e deve ser repetida
 - Buscar transação por ID (`GET /transaction/{id}`)
 - Listar todas as transações (`GET /transaction`)
 
@@ -71,6 +72,7 @@ Tratamento centralizado com `@RestControllerAdvice` e `@ExceptionHandler`, retor
 | `ExistingAccount` (CPF já cadastrado), `InsufficientBalance`, `InvalidAmount`, `SameAccountTransfer` | 400 |
 | `MethodArgumentNotValidException` (falha de `@Valid`) | 400 |
 | `ResourceInUse` (excluir cliente com contas ou conta com transações) | 409 |
+| `OptimisticLockingFailureException` (conta alterada por outra operação ao mesmo tempo) | 409 |
 | `AccountNumberUnavailable` (sem número de conta livre) | 503 |
 
 ---
@@ -190,7 +192,7 @@ A API fica disponível em `http://localhost:8080`.
 
 O planejamento completo está nas [issues](https://github.com/VictorCharro/fulls-bank-java-spring/issues) e no [roadmap](docs/10-roadmap.md). Em resumo:
 
-- 🔒 Lock otimista (`@Version`) e teste de concorrência para saque e transferência
+- 🔒 Teste de concorrência para saque e transferência
 - 🔐 Autenticação com Spring Security e JWT
 - 📊 Extrato com filtro por data e paginação
 - 📄 Documentação com Swagger/OpenAPI

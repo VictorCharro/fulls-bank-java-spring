@@ -27,6 +27,7 @@ Client 1 ──── N Account 1 ──── N Transaction (como sender)
 | `id` | Long | PK, identity |
 | `accountNumber` | int | único |
 | `balance` | BigDecimal | `@NotNull` |
+| `version` | Long | `@Version` (lock otimista), coluna `version` |
 | `type` | AccountType | enum salvo como texto |
 | `client` | Client | `@ManyToOne`, `@NotNull`, coluna `client_id` |
 | `sentTransactions` | List\<Transaction\> | `@OneToMany(mappedBy = "sender")` |

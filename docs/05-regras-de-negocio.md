@@ -40,3 +40,4 @@ Observações:
 - Contas inexistentes lançam `AccountNotFound`.
 - Buscar transação por id inexistente lança `TransactionNotFound` (404).
 - Se qualquer regra falhar, nenhum saldo é alterado e nenhuma transação é gravada.
+- Concorrência: `Account` tem `@Version` (lock otimista). Se outra operação alterar a mesma conta entre a leitura e a gravação, a transação inteira é desfeita e a API responde `409`; o cliente deve repetir a requisição.

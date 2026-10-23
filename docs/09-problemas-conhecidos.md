@@ -19,7 +19,7 @@ Legenda de issue: `#N` = já existe; "sem issue" = ainda precisa ser criada.
 
 | # | Problema | Issue |
 |---|---|---|
-| C1 | Saldo atualizado sem lock nem `@Version`; duas operações simultâneas podem causar perda de atualização. | #13, #14 |
+| C1 | Falta um teste que comprove o lock otimista com requisições simultâneas de saque e transferência. | #14 |
 
 ## Qualidade de código
 
