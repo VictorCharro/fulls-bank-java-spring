@@ -8,7 +8,6 @@ Legenda de issue: `#N` = já existe; "sem issue" = ainda precisa ser criada.
 
 | # | Problema | Onde | Issue |
 |---|---|---|---|
-| B1 | `GET /account/number/{num}`: a variável do caminho é `num`, mas o parâmetro do método se chama `number`; a rota falha. Também devolve a entidade `Account`. | `MAIN/controllers/AccountController` | sem issue |
 | B2 | `POST /account/withdrawal`: parâmetros sem `@RequestParam`, não registra `Transaction` e não existe endpoint de depósito equivalente. Duplica a função de `POST /transaction`. | `AccountController`, `AccountService` | sem issue |
 | B3 | `IdNotFound` e `IllegalArgumentException` não têm handler e retornam 500. | `MAIN/exceptions/GlobalExceptionHandler` | parcial (#4) |
 | B4 | `GET /transaction/{id}` retorna a entidade, sem 404 explícito. | `TransactionController` | #3 |

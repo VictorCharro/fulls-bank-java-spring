@@ -1,0 +1,59 @@
+package com.fulls_bank.Fulls_Bank.controllers;
+
+import com.fulls_bank.Fulls_Bank.dto.AccountResponseDTO;
+import com.fulls_bank.Fulls_Bank.entities.Account;
+import com.fulls_bank.Fulls_Bank.enums.AccountType;
+import com.fulls_bank.Fulls_Bank.exceptions.AccountNotFound;
+import com.fulls_bank.Fulls_Bank.services.AccountService;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
+
+import java.math.BigDecimal;
+
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@WebMvcTest(AccountController.class)
+class AccountControllerTest {
+
+    private static final int ACCOUNT_NUMBER = 1234;
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockitoBean
+    private AccountService accountService;
+
+    @Test
+    void searchAccountByNumber_withExistingNumber_shouldReturnAccountDto() throws Exception {
+        Account account = new Account();
+        account.setAccountNumber(ACCOUNT_NUMBER);
+        AccountResponseDTO dto = new AccountResponseDTO();
+        dto.setAccountNumber(ACCOUNT_NUMBER);
+        dto.setType(AccountType.CHECKING);
+        dto.setBalance(new BigDecimal("100"));
+        when(accountService.findAccountByAccountNumber(ACCOUNT_NUMBER)).thenReturn(account);
+        when(accountService.toResponseDTO(account)).thenReturn(dto);
+
+        mockMvc.perform(get("/account/number/{number}", ACCOUNT_NUMBER))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.accountNumber").value(ACCOUNT_NUMBER))
+                .andExpect(jsonPath("$.type").value("CHECKING"))
+                .andExpect(jsonPath("$.balance").value(100));
+    }
+
+    @Test
+    void searchAccountByNumber_withUnknownNumber_shouldReturn404() throws Exception {
+        when(accountService.findAccountByAccountNumber(ACCOUNT_NUMBER))
+                .thenThrow(new AccountNotFound("Account not found"));
+
+        mockMvc.perform(get("/account/number/{number}", ACCOUNT_NUMBER))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("Account not found"));
+    }
+}
