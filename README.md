@@ -180,7 +180,8 @@ A API fica disponível em `http://localhost:8080`.
 ```
 
 - Testes unitários dos serviços (JUnit 5 e Mockito) e testes de camada web dos controllers (`@WebMvcTest`).
-- `FullsBankApplicationTests` carrega o contexto completo com um PostgreSQL em container (Testcontainers): precisa de Docker em execução, mas não de PostgreSQL instalado.
+- Testes de integração dos controllers: fluxo completo (cliente → conta → depósito → saque → transferência) e respostas de erro, com PostgreSQL real em container.
+- Os testes que sobem o contexto completo usam um PostgreSQL em container (Testcontainers): precisam de Docker em execução, mas não de PostgreSQL instalado.
 - O CI (GitHub Actions) roda `./mvnw verify` em cada push e pull request.
 
 ---
@@ -189,7 +190,6 @@ A API fica disponível em `http://localhost:8080`.
 
 O planejamento completo está nas [issues](https://github.com/VictorCharro/fulls-bank-java-spring/issues) e no [roadmap](docs/10-roadmap.md). Em resumo:
 
-- 🧪 Testes de integração dos controllers
 - 🔒 Lock otimista (`@Version`) e teste de concorrência para saque e transferência
 - 🔐 Autenticação com Spring Security e JWT
 - 📊 Extrato com filtro por data e paginação
