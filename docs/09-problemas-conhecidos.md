@@ -8,7 +8,6 @@ Legenda de issue: `#N` = já existe; "sem issue" = ainda precisa ser criada.
 
 | # | Problema | Onde | Issue |
 |---|---|---|---|
-| B3 | `IllegalArgumentException` não tem handler e retorna 500. | `MAIN/exceptions/GlobalExceptionHandler` | #4 |
 
 ## Segurança e configuração
 
@@ -31,7 +30,6 @@ Legenda de issue: `#N` = já existe; "sem issue" = ainda precisa ser criada.
 | Q1 | Endpoints de cliente expõem a entidade `Client` (sem DTO). | sem issue |
 | Q2 | `TransactionService` usa `jakarta.transaction.Transactional` em vez do do Spring. | #5 |
 | Q3 | Java 24 (não LTS). | #6 |
-| Q4 | `IllegalArgumentException` genérica em regras de negócio. | #4 |
 | Q5 | `Account.id` e `Account.type` públicos; `Transaction.description` sem uso; `senderId`/`receiverId` do DTO com padrão `0L` tornam `@NotNull` inócuo. | sem issue |
 | Q6 | Mapeamento manual de DTOs. | #18 |
 | Q7 | `FullsBankApplicationTests` depende de banco local. | #11 |

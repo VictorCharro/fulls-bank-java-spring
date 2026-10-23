@@ -6,6 +6,8 @@ import com.fulls_bank.Fulls_Bank.entities.Transaction;
 import com.fulls_bank.Fulls_Bank.enums.TransactionType;
 import com.fulls_bank.Fulls_Bank.exceptions.AccountNotFound;
 import com.fulls_bank.Fulls_Bank.exceptions.InsufficientBalance;
+import com.fulls_bank.Fulls_Bank.exceptions.InvalidAmount;
+import com.fulls_bank.Fulls_Bank.exceptions.SameAccountTransfer;
 import com.fulls_bank.Fulls_Bank.exceptions.TransactionNotFound;
 import com.fulls_bank.Fulls_Bank.repositories.AccountRepository;
 import com.fulls_bank.Fulls_Bank.repositories.TransactionRepository;
@@ -135,10 +137,10 @@ class TransactionServiceTest {
     }
 
     @Test
-    void transfer_toSameAccount_shouldThrow() {
+    void transfer_toSameAccount_shouldThrowSameAccountTransfer() {
         when(accountRepository.findById(SENDER_ID)).thenReturn(Optional.of(sender));
 
-        assertThrows(IllegalArgumentException.class, () -> transactionService.createTransaction(
+        assertThrows(SameAccountTransfer.class, () -> transactionService.createTransaction(
                 request(TransactionType.TRANSFER, SENDER_ID, SENDER_ID, "10")));
 
         assertEquals(new BigDecimal("50"), sender.getBalance());
@@ -146,8 +148,8 @@ class TransactionServiceTest {
     }
 
     @Test
-    void createTransaction_withZeroAmount_shouldThrow() {
-        assertThrows(IllegalArgumentException.class, () -> transactionService.createTransaction(
+    void createTransaction_withZeroAmount_shouldThrowInvalidAmount() {
+        assertThrows(InvalidAmount.class, () -> transactionService.createTransaction(
                 request(TransactionType.DEPOSIT, null, RECEIVER_ID, "0")));
 
         verify(accountRepository, never()).findById(any());
@@ -155,16 +157,16 @@ class TransactionServiceTest {
     }
 
     @Test
-    void createTransaction_withNegativeAmount_shouldThrow() {
-        assertThrows(IllegalArgumentException.class, () -> transactionService.createTransaction(
+    void createTransaction_withNegativeAmount_shouldThrowInvalidAmount() {
+        assertThrows(InvalidAmount.class, () -> transactionService.createTransaction(
                 request(TransactionType.DEPOSIT, null, RECEIVER_ID, "-10")));
 
         verify(transactionRepository, never()).save(any(Transaction.class));
     }
 
     @Test
-    void createTransaction_withNullAmount_shouldThrow() {
-        assertThrows(IllegalArgumentException.class, () -> transactionService.createTransaction(
+    void createTransaction_withNullAmount_shouldThrowInvalidAmount() {
+        assertThrows(InvalidAmount.class, () -> transactionService.createTransaction(
                 request(TransactionType.DEPOSIT, null, RECEIVER_ID, null)));
 
         verify(transactionRepository, never()).save(any(Transaction.class));

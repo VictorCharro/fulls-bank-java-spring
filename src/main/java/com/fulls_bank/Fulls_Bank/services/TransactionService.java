@@ -8,6 +8,8 @@ import com.fulls_bank.Fulls_Bank.entities.Transaction;
 import com.fulls_bank.Fulls_Bank.enums.TransactionType;
 import com.fulls_bank.Fulls_Bank.exceptions.AccountNotFound;
 import com.fulls_bank.Fulls_Bank.exceptions.InsufficientBalance;
+import com.fulls_bank.Fulls_Bank.exceptions.InvalidAmount;
+import com.fulls_bank.Fulls_Bank.exceptions.SameAccountTransfer;
 import com.fulls_bank.Fulls_Bank.exceptions.TransactionNotFound;
 import com.fulls_bank.Fulls_Bank.repositories.AccountRepository;
 import com.fulls_bank.Fulls_Bank.repositories.TransactionRepository;
@@ -44,7 +46,7 @@ public class TransactionService {
         TransactionType type = dto.getType();
 
         if (dto.getAmount() == null || dto.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("Transaction amount must be greater than zero");
+            throw new InvalidAmount("Transaction amount must be greater than zero");
         }
 
         switch (type) {
@@ -79,7 +81,7 @@ public class TransactionService {
                     throw new InsufficientBalance("Sender has insufficient balance");
                 }
                 if (sender.getId().equals(receiver.getId())) {
-                    throw new IllegalArgumentException("Sender and receiver must be different accounts");
+                    throw new SameAccountTransfer("Sender and receiver must be different accounts");
                 }
 
                 sender.setBalance(sender.getBalance().subtract(dto.getAmount()));

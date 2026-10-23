@@ -86,8 +86,17 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(400).body(errorResponse);
     }
 
-    @ExceptionHandler(NegativeAmount.class)
-    public ResponseEntity<ErrorResponse> handleNegativeAmount(NegativeAmount e) {
+    @ExceptionHandler(InvalidAmount.class)
+    public ResponseEntity<ErrorResponse> handleInvalidAmount(InvalidAmount e) {
+        LocalDateTime timestamp = LocalDateTime.now();
+        int status = 400;
+        String message = e.getMessage();
+        ErrorResponse errorResponse = new ErrorResponse(status, message, timestamp);
+        return ResponseEntity.status(400).body(errorResponse);
+    }
+
+    @ExceptionHandler(SameAccountTransfer.class)
+    public ResponseEntity<ErrorResponse> handleSameAccountTransfer(SameAccountTransfer e) {
         LocalDateTime timestamp = LocalDateTime.now();
         int status = 400;
         String message = e.getMessage();
