@@ -17,7 +17,8 @@ Arquivos: `src/main/resources/application.properties`, `application-dev.properti
 | `spring.datasource.password` | `${DB_PASSWORD}`, **obrigatória** (sem padrão; se faltar, o Spring usa o texto `${DB_PASSWORD}` como senha e a conexão falha na autenticação) |
 | `app.jwt.secret` | `${JWT_SECRET}`, **obrigatória** (mínimo de 32 bytes; se faltar ou for curta, a aplicação não sobe) |
 | `app.jwt.expiration-minutes` | `${JWT_EXPIRATION_MINUTES:60}` |
-| `spring.data.web.pageable.*` | página padrão de 20 itens, máximo de 100 e JSON de página estável (`serialization-mode=via_dto`) |
+| `spring.data.web.pageable.*` | página padrão de 20 itens e máximo de 100 |
+| `springdoc.*` | Swagger UI em `/swagger-ui.html` e OpenAPI em `/v3/api-docs` (ver abaixo) |
 | `app.admin.email`, `app.admin.password` | `${ADMIN_EMAIL:}`, `${ADMIN_PASSWORD:}`; primeiro administrador, opcional |
 | `spring.profiles.active` | `${SPRING_PROFILES_ACTIVE}`; padrão `dev` |
 
@@ -48,6 +49,14 @@ Para mudar o esquema, crie uma nova migration (`V2__descricao.sql`, e assim por 
 O perfil `test` é para a suíte de testes; para subir a API, use `dev`. Um perfil de produção virá com o deploy (issue #21).
 
 O H2 está no `pom.xml`, mas a aplicação usa PostgreSQL.
+
+## Documentação interativa (Swagger/OpenAPI)
+
+Com a aplicação rodando: Swagger UI em `http://localhost:8080/swagger-ui.html` e o JSON OpenAPI 3 em `http://localhost:8080/v3/api-docs`. As duas rotas são públicas (só `GET`); os endpoints da API continuam exigindo token.
+
+Para testar pelo Swagger UI: chame `POST /auth/login`, copie o `accessToken`, clique em **Authorize** e cole o token (sem o prefixo `Bearer`). A configuração está em `security/OpenApiConfig.java`; descrições e exemplos ficam nas anotações dos controllers e dos DTOs (`@Operation`, `@ApiResponse`, `@Schema`). As respostas de erro reutilizáveis (`BadRequest`, `Unauthorized`, `Forbidden`, `NotFound`, `Conflict`, `ServiceUnavailable`) são declaradas uma vez e referenciadas por `ref`. Importante: ao usar `@ApiResponse`, declare também a resposta de sucesso (200/201), porque o springdoc deixa de gerar a automática; `OpenApiIntegrationTest` falha se isso for esquecido.
+
+Em produção, a documentação pode ser desligada com `SPRINGDOC_APIDOCS_ENABLED=false` e `SPRINGDOC_SWAGGERUI_ENABLED=false`.
 
 ## Variáveis de ambiente
 

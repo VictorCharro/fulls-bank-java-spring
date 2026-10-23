@@ -1,6 +1,7 @@
 package com.fulls_bank.Fulls_Bank.dto;
 
 import com.fulls_bank.Fulls_Bank.enums.TransactionType;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,8 +23,11 @@ public class TransactionResponseDTO {
         this.type = type;
     }
 
+    @Schema(example = "12")
     private Long id;
+    @Schema(example = "50.00")
     private BigDecimal amount;
+    @Schema(example = "2026-03-20T08:30:00")
     private LocalDateTime timestamp;
     private TransactionType type;
 
