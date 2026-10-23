@@ -61,7 +61,7 @@ Tratamento centralizado com `@RestControllerAdvice` e `@ExceptionHandler`, retor
 - Hibernate
 - Lombok
 - Jakarta Bean Validation
-- H2 Database (banco em memória)
+- PostgreSQL (banco de dados)
 - Maven
 
 ---

@@ -30,7 +30,7 @@ Não há endpoint de depósito em `/account`. O método `AccountService.deposit`
 |---|---|---|---|
 | POST | `/transaction` | `TransactionRequestDTO` | 201, `TransactionResponseDTO` |
 | GET | `/transaction` | — | 200, lista de `TransactionResponseDTO` |
-| GET | `/transaction/{id}` | — | `Transaction` (entidade) ⚠️ |
+| GET | `/transaction/{id}` | — | 200, `Transaction` (entidade) se existir; 200 com corpo `null` se não existir ⚠️ |
 
 ### Exemplos de `POST /transaction`
 
