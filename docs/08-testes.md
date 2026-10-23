@@ -9,8 +9,10 @@ Código: `TEST/*`. Ferramentas: JUnit 5 e Mockito (`spring-boot-starter-test`).
 | `FullsBankApplicationTests` | Contexto Spring | Exige PostgreSQL local (issue #11) |
 | `controllers/AccountControllerTest` | Web (`@WebMvcTest`, MockMvc) | Issue #25; só `GET /account/number/{number}` |
 | `services/TransactionServiceTest` | Unitário (Mockito) | Issue #1 |
+| `services/AccountServiceTest` | Unitário (Mockito) | Issue #2 |
+| `services/ClientServiceTest` | Unitário (Mockito) | Issue #2 |
 
-Ainda sem testes: `AccountService`, `ClientService` (issue #2), controllers (issue #12), concorrência (issue #14).
+Ainda sem testes: controllers (issue #12), concorrência (issue #14).
 
 ## Convenções
 
