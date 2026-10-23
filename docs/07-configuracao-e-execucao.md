@@ -35,7 +35,7 @@ O perfil ativo vem da variável de ambiente `SPRING_PROFILES_ACTIVE` e, se ela n
 
 ## Banco de dados (Flyway)
 
-O esquema é criado e versionado por migrations do Flyway em `src/main/resources/db/migration` (`V1__create_initial_schema.sql` cria `client`, `account` e `transaction`). Elas rodam sozinhas ao subir a aplicação, em qualquer perfil. O Hibernate fica com `ddl-auto=validate`: se uma entidade divergir do esquema, a aplicação não sobe.
+O esquema é criado e versionado por migrations do Flyway em `src/main/resources/db/migration` (`V1__create_initial_schema.sql` cria `client`, `account` e `transaction`; `V4` remove a coluna `transaction.description`, que nunca foi usada). Elas rodam sozinhas ao subir a aplicação, em qualquer perfil. O Hibernate fica com `ddl-auto=validate`: se uma entidade divergir do esquema, a aplicação não sobe.
 
 **Banco de dev que já tinha tabelas** (criadas antes do Flyway, quando o Hibernate usava `ddl-auto=update`): o Flyway se recusa a subir em um esquema não vazio sem histórico. Há duas saídas:
 

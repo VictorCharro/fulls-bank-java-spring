@@ -30,7 +30,7 @@ public class Account {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long id;
+    private Long id;
 
     @Column(unique = true)
     private int accountNumber;
@@ -43,7 +43,7 @@ public class Account {
     private Long version;
 
     @Enumerated(EnumType.STRING)
-    public AccountType type;
+    private AccountType type;
 
     @NotNull
     @ManyToOne

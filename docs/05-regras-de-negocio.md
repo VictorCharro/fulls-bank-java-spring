@@ -46,9 +46,9 @@ Regra geral: `amount` nulo, zero ou negativo é rejeitado já na validação do 
 
 | Tipo | Campos usados | Regras | Efeito |
 |---|---|---|---|
-| `DEPOSIT` | `receiverId` | conta destino deve existir | soma ao saldo do destino |
-| `WITHDRAWAL` | `senderId` | conta origem deve existir; saldo suficiente | subtrai do saldo da origem |
-| `TRANSFER` | `senderId`, `receiverId` | ambas existem; saldo suficiente; contas diferentes (`SameAccountTransfer`, 400) | subtrai da origem e soma ao destino |
+| `DEPOSIT` | `receiverId` (ausente: 400, `receiverId: must be informed for deposits`) | conta destino deve existir | soma ao saldo do destino |
+| `WITHDRAWAL` | `senderId` (ausente: 400) | conta origem deve existir; saldo suficiente | subtrai do saldo da origem |
+| `TRANSFER` | `senderId`, `receiverId` (ausentes: 400) | ambas existem; saldo suficiente; contas diferentes (`SameAccountTransfer`, 400) | subtrai da origem e soma ao destino |
 
 Em seguida é gravado um registro `Transaction` com tipo, valor, contas envolvidas e `timestamp` atual.
 
