@@ -9,7 +9,7 @@ Código: `MAIN/services`. Erros lançados: [06](06-erros-e-excecoes.md).
 - CPF duplicado lança `ExistingAccount`.
 - Atualização altera somente `name` e `lastName`; o CPF nunca é alterado.
 - Buscar, atualizar ou excluir cliente inexistente lança `ClientNotFound`.
-- Excluir cliente que possui contas lança `ResourceInUse` (409); o cliente só pode ser excluído depois das contas.
+- Excluir cliente que possui contas lança `ResourceInUse` (409); o cliente só pode ser excluído depois das contas. Se uma conta for criada entre a checagem e a exclusão, a violação de chave estrangeira também vira `ResourceInUse`.
 
 ## Conta (`AccountService`)
 

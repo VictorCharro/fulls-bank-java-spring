@@ -19,6 +19,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -30,6 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -136,6 +138,15 @@ class AccountServiceTest {
         assertThrows(ResourceInUse.class, () -> accountService.deleteAccount(ACCOUNT_ID));
 
         verify(accountRepository, never()).deleteById(any());
+    }
+
+    @Test
+    void deleteAccount_whenForeignKeyViolationOnDelete_shouldThrowResourceInUse() {
+        when(accountRepository.findAccountById(ACCOUNT_ID)).thenReturn(Optional.of(account));
+        when(transactionRepository.existsBySenderIdOrReceiverId(ACCOUNT_ID, ACCOUNT_ID)).thenReturn(false);
+        doThrow(new DataIntegrityViolationException("fk")).when(accountRepository).deleteById(ACCOUNT_ID);
+
+        assertThrows(ResourceInUse.class, () -> accountService.deleteAccount(ACCOUNT_ID));
     }
 
     @Test

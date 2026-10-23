@@ -12,6 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -111,6 +113,15 @@ class ClientServiceTest {
         assertThrows(ResourceInUse.class, () -> clientService.deleteClient(CLIENT_ID));
 
         verify(clientRepository, never()).deleteById(any());
+    }
+
+    @Test
+    void deleteClient_whenForeignKeyViolationOnDelete_shouldThrowResourceInUse() {
+        when(clientRepository.findClientById(CLIENT_ID)).thenReturn(Optional.of(client));
+        when(accountRepository.existsByClientId(CLIENT_ID)).thenReturn(false);
+        doThrow(new DataIntegrityViolationException("fk")).when(clientRepository).deleteById(CLIENT_ID);
+
+        assertThrows(ResourceInUse.class, () -> clientService.deleteClient(CLIENT_ID));
     }
 
     @Test

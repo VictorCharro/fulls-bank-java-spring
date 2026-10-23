@@ -7,6 +7,7 @@ import com.fulls_bank.Fulls_Bank.exceptions.ResourceInUse;
 import com.fulls_bank.Fulls_Bank.repositories.AccountRepository;
 import com.fulls_bank.Fulls_Bank.repositories.ClientRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,7 +36,11 @@ public class ClientService {
         if (accountRepository.existsByClientId(id)) {
             throw new ResourceInUse("Client has accounts and cannot be deleted");
         }
-        clientRepository.deleteById(id);
+        try {
+            clientRepository.deleteById(id);
+        } catch (DataIntegrityViolationException e) {
+            throw new ResourceInUse("Client has accounts and cannot be deleted");
+        }
     }
 
     public List<Client> listClients() {

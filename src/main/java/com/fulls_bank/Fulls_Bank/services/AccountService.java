@@ -13,6 +13,7 @@ import com.fulls_bank.Fulls_Bank.repositories.AccountRepository;
 import com.fulls_bank.Fulls_Bank.repositories.ClientRepository;
 import com.fulls_bank.Fulls_Bank.repositories.TransactionRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -51,7 +52,11 @@ public class AccountService {
         if (transactionRepository.existsBySenderIdOrReceiverId(id, id)) {
             throw new ResourceInUse("Account has transactions and cannot be deleted");
         }
-        accountRepository.deleteById(id);
+        try {
+            accountRepository.deleteById(id);
+        } catch (DataIntegrityViolationException e) {
+            throw new ResourceInUse("Account has transactions and cannot be deleted");
+        }
     }
 
     public AccountResponseDTO createAccount(AccountRequestDTO dto) {
