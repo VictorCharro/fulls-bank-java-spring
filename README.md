@@ -41,10 +41,22 @@ Este é um projeto de estudo que simula um sistema bancário básico, desenvolvi
 
 Exemplos de corpo:
 
+Depósito:
+
 ```json
-{ "type": "DEPOSIT",    "receiverId": 1, "amount": 100.00 }
-{ "type": "WITHDRAWAL", "senderId": 1,   "amount": 30.00 }
-{ "type": "TRANSFER",   "senderId": 1,   "receiverId": 2, "amount": 50.00 }
+{ "type": "DEPOSIT", "receiverId": 1, "amount": 100.00 }
+```
+
+Saque:
+
+```json
+{ "type": "WITHDRAWAL", "senderId": 1, "amount": 30.00 }
+```
+
+Transferência:
+
+```json
+{ "type": "TRANSFER", "senderId": 1, "receiverId": 2, "amount": 50.00 }
 ```
 
 ---
