@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -35,8 +34,9 @@ public class TransactionController {
     }
 
     @GetMapping("/{id}")
-    public Optional<Transaction> getTransactionById(@PathVariable Long id) {
-        return transactionService.findTransactionById(id);
+    public TransactionResponseDTO getTransactionById(@PathVariable Long id) {
+        Transaction transaction = transactionService.findTransactionById(id);
+        return transactionService.toResponseDTO(transaction);
     }
 
     @PostMapping

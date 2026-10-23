@@ -29,7 +29,7 @@ Depósito, saque e transferência são feitos somente por `POST /transaction`.
 |---|---|---|---|
 | POST | `/transaction` | `TransactionRequestDTO` | 201, `TransactionResponseDTO` |
 | GET | `/transaction` | — | 200, lista de `TransactionResponseDTO` |
-| GET | `/transaction/{id}` | — | 200, `Transaction` (entidade) se existir; 200 com corpo `null` se não existir ⚠️ |
+| GET | `/transaction/{id}` | — | 200, `TransactionResponseDTO`; 404 se a transação não existir |
 
 ### Exemplos de `POST /transaction`
 

@@ -6,6 +6,7 @@ import com.fulls_bank.Fulls_Bank.entities.Transaction;
 import com.fulls_bank.Fulls_Bank.enums.TransactionType;
 import com.fulls_bank.Fulls_Bank.exceptions.AccountNotFound;
 import com.fulls_bank.Fulls_Bank.exceptions.InsufficientBalance;
+import com.fulls_bank.Fulls_Bank.exceptions.TransactionNotFound;
 import com.fulls_bank.Fulls_Bank.repositories.AccountRepository;
 import com.fulls_bank.Fulls_Bank.repositories.TransactionRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,6 +20,7 @@ import java.math.BigDecimal;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
@@ -198,5 +200,20 @@ class TransactionServiceTest {
 
         assertEquals(new BigDecimal("50"), sender.getBalance());
         verify(transactionRepository, never()).save(any(Transaction.class));
+    }
+
+    @Test
+    void findTransactionById_withExistingId_shouldReturnTransaction() {
+        Transaction transaction = new Transaction();
+        when(transactionRepository.findById(10L)).thenReturn(Optional.of(transaction));
+
+        assertSame(transaction, transactionService.findTransactionById(10L));
+    }
+
+    @Test
+    void findTransactionById_withUnknownId_shouldThrowTransactionNotFound() {
+        when(transactionRepository.findById(10L)).thenReturn(Optional.empty());
+
+        assertThrows(TransactionNotFound.class, () -> transactionService.findTransactionById(10L));
     }
 }

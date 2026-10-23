@@ -3,6 +3,7 @@ package com.fulls_bank.Fulls_Bank.controllers;
 import com.fulls_bank.Fulls_Bank.dto.TransactionResponseDTO;
 import com.fulls_bank.Fulls_Bank.entities.Transaction;
 import com.fulls_bank.Fulls_Bank.enums.TransactionType;
+import com.fulls_bank.Fulls_Bank.exceptions.TransactionNotFound;
 import com.fulls_bank.Fulls_Bank.services.TransactionService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -20,6 +21,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -60,5 +62,33 @@ class TransactionControllerTest {
         mockMvc.perform(post("/transaction").contentType(MediaType.APPLICATION_JSON).content(body))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.amount").value(10.50));
+    }
+
+    @Test
+    void getTransactionById_withExistingId_shouldReturnDto() throws Exception {
+        Transaction transaction = new Transaction();
+        TransactionResponseDTO response = new TransactionResponseDTO();
+        response.setId(10L);
+        response.setType(TransactionType.DEPOSIT);
+        response.setAmount(new BigDecimal("10.50"));
+        when(transactionService.findTransactionById(10L)).thenReturn(transaction);
+        when(transactionService.toResponseDTO(transaction)).thenReturn(response);
+
+        mockMvc.perform(get("/transaction/{id}", 10L))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(10))
+                .andExpect(jsonPath("$.type").value("DEPOSIT"))
+                .andExpect(jsonPath("$.amount").value(10.50));
+    }
+
+    @Test
+    void getTransactionById_withUnknownId_shouldReturn404() throws Exception {
+        when(transactionService.findTransactionById(99L))
+                .thenThrow(new TransactionNotFound("Transaction not found"));
+
+        mockMvc.perform(get("/transaction/{id}", 99L))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.status").value(404))
+                .andExpect(jsonPath("$.message").value("Transaction not found"));
     }
 }

@@ -9,7 +9,6 @@ Legenda de issue: `#N` = já existe; "sem issue" = ainda precisa ser criada.
 | # | Problema | Onde | Issue |
 |---|---|---|---|
 | B3 | `IllegalArgumentException` não tem handler e retorna 500. | `MAIN/exceptions/GlobalExceptionHandler` | #4 |
-| B4 | `GET /transaction/{id}` retorna a entidade, sem 404 explícito. | `TransactionController` | #3 |
 
 ## Segurança e configuração
 
