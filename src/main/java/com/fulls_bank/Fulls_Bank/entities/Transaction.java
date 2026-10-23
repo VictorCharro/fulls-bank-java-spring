@@ -34,8 +34,6 @@ public class Transaction {
 
     private LocalDateTime timestamp;
 
-    private String description;
-
     @Enumerated(EnumType.STRING)
     private TransactionType type;
 

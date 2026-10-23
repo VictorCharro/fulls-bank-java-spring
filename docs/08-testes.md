@@ -21,7 +21,7 @@ Código: `TEST/*`. Ferramentas: JUnit 5 e Mockito (`spring-boot-starter-test`).
 | `controllers/ErrorResponsesIntegrationTest` | Integração (issue #12) | Status HTTP de erro com banco real: saldo insuficiente, valor zero, mesma conta, conta inexistente, CPF duplicado ou inválido, cliente, conta e transação inexistentes |
 | `controllers/AccountControllerTest` | Web (`@WebMvcTest`, MockMvc) | Issues #25, #27, #28, #29 e #16 (extrato); `GET /account/number/{number}`, 404 por id, 409 ao excluir conta com transações e 503 sem número de conta livre |
 | `controllers/ClientControllerTest` | Web (`@WebMvcTest`, MockMvc) | Issue #28; 409 ao excluir cliente com contas |
-| `controllers/TransactionControllerTest` | Web (`@WebMvcTest`, MockMvc) | Issues #30, #3 e #4; validação de `amount`, 400 do service e `GET /transaction/{id}` (200 e 404) |
+| `controllers/TransactionControllerTest` | Web (`@WebMvcTest`, MockMvc) | Issues #30, #3, #4 e #32; validação de `amount` e das contas exigidas por tipo, 400 do service e `GET /transaction/{id}` (200 e 404) |
 | `services/TransactionServiceTest` | Unitário (Mockito) | Issue #1 |
 | `mappers/AccountMapperTest`, `mappers/ClientMapperTest`, `mappers/TransactionMapperTest` | Unitário | Issues #18 e #31; campos copiados, ids de origem/destino nulos em depósito e saque, listas de transações da conta não tocadas |
 | `services/AccountServiceTest` | Unitário (Mockito) | Issue #2 |

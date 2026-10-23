@@ -49,7 +49,6 @@ Client 1 ──── N Account 1 ──── N Transaction (como sender)
 | `id` | Long | PK, identity |
 | `amount` | BigDecimal | `@Positive` |
 | `timestamp` | LocalDateTime | preenchido no service |
-| `description` | String | não utilizado hoje |
 | `type` | TransactionType | enum salvo como texto |
 | `sender` | Account | `@ManyToOne`, coluna `sender_id`, nulo em depósito |
 | `receiver` | Account | `@ManyToOne`, coluna `receiver_id`, nulo em saque |
@@ -71,7 +70,7 @@ A conversão entidade → DTO de resposta é feita por MapStruct (`mappers/Accou
 | `ClientUpdateDTO` | `name`, `lastName` | ambos `@NotBlank` (o CPF não faz parte do `PUT`) |
 | `ClientResponseDTO` | `id`, `cpf`, `name`, `lastName` | — |
 | `AccountResponseDTO` | `accountNumber`, `type`, `balance`, `sentTransactions`, `receivedTransactions` | — |
-| `TransactionRequestDTO` | `senderId`, `receiverId`, `amount`, `type` | `senderId`/`receiverId` `@NotNull` (padrão `0L`), `amount` `@Positive`, `type` `@NotNull` |
+| `TransactionRequestDTO` | `senderId`, `receiverId`, `amount`, `type` | `type` `@NotNull`; `amount` `@NotNull` `@Positive`; `senderId`/`receiverId` sem valor padrão, exigidos conforme o tipo por `@ValidTransactionRequest` (depósito: `receiverId`; saque: `senderId`; transferência: ambos) |
 | `RegisterRequestDTO` | `email`, `password` | `email` `@NotBlank` `@Email`, até 255 caracteres; `password` `@NotBlank`, mínimo de 8 caracteres e máximo de 72 **bytes** em UTF-8 (limite do BCrypt) |
 | `LoginRequestDTO` | `email`, `password` | ambos `@NotBlank` |
 | `TokenResponseDTO` | `accessToken`, `tokenType`, `expiresIn` | — |

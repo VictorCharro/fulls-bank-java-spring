@@ -10,6 +10,7 @@ import com.fulls_bank.Fulls_Bank.mappers.TransactionMapperImpl;
 import com.fulls_bank.Fulls_Bank.security.ApiSecurityTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -58,6 +59,36 @@ class TransactionControllerTest {
                 .andExpect(jsonPath("$.message").value(containsString("amount")));
 
         verify(transactionService, never()).createTransaction(any());
+    }
+
+    @ParameterizedTest
+    @CsvSource(delimiter = '|', value = {
+            "{\"type\":\"DEPOSIT\",\"amount\":10}|receiverId: must be informed for deposits",
+            "{\"type\":\"DEPOSIT\",\"senderId\":1,\"amount\":10}|receiverId: must be informed for deposits",
+            "{\"type\":\"WITHDRAWAL\",\"receiverId\":1,\"amount\":10}|senderId: must be informed for withdrawals",
+            "{\"type\":\"TRANSFER\",\"senderId\":1,\"amount\":10}|receiverId: must be informed for transfers",
+            "{\"type\":\"TRANSFER\",\"receiverId\":2,\"amount\":10}|senderId: must be informed for transfers"})
+    void createTransaction_withoutTheAccountsTheTypeNeeds_shouldReturn400AndNotCallService(String body, String message)
+            throws Exception {
+        mockMvc.perform(post("/transaction").contentType(MediaType.APPLICATION_JSON).content(body))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value(message));
+
+        verify(transactionService, never()).createTransaction(any());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "{\"type\":\"DEPOSIT\",\"receiverId\":1,\"amount\":10}",
+            "{\"type\":\"WITHDRAWAL\",\"senderId\":1,\"amount\":10}",
+            "{\"type\":\"TRANSFER\",\"senderId\":1,\"receiverId\":2,\"amount\":10}"})
+    void createTransaction_withTheAccountsTheTypeNeeds_shouldReturn201(String body) throws Exception {
+        Transaction transaction = new Transaction();
+        transaction.setAmount(BigDecimal.TEN);
+        when(transactionService.createTransaction(any())).thenReturn(transaction);
+
+        mockMvc.perform(post("/transaction").contentType(MediaType.APPLICATION_JSON).content(body))
+                .andExpect(status().isCreated());
     }
 
     @Test
