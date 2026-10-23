@@ -13,10 +13,11 @@ Código: `TEST/*`. Ferramentas: JUnit 5 e Mockito (`spring-boot-starter-test`).
 | `security/AuthIntegrationTest` | Integração | Issue #15; cadastro e login reais, token abre os endpoints, `USER` recebe 403 em `DELETE` e listagens globais, `ADMIN` passa, token sem formato, expirado ou com outra chave recebe 401 |
 | `security/AdminBootstrapTest`, `security/SecurityConfigTest` | Unitário | Criação do primeiro administrador (e senha acima de 72 bytes); falha imediata sem `JWT_SECRET` válido |
 | `security/ErrorDispatchIntegrationTest` | Integração (servidor real) | Erros do Spring MVC (JSON malformado, 415) mantêm o status real em vez de virar 401; `/error` direto segue protegido |
+| `controllers/StatementIntegrationTest` | Integração | Issue #16; extrato com PostgreSQL real: origem e destino, depósito e saque, período inclusivo (dias de borda), só `from` ou só `to`, ordem e desempate por id, paginação sem repetir nem pular, `sort` ignorado, página vazia, limite de 100 e entradas inválidas |
 | `controllers/BankFlowIntegrationTest` | Integração (issue #12) | Fluxo criar cliente → criar conta → depositar → sacar → transferir, conferindo saldos e transações; bloqueio (409) ao excluir conta e cliente em uso |
 | `services/ConcurrencyIntegrationTest` | Integração (issue #14) | Threads reais na mesma conta: saques simultâneos e transferências em sentidos opostos; o saldo final bate com as operações que deram certo e o total entre as contas não muda |
 | `controllers/ErrorResponsesIntegrationTest` | Integração (issue #12) | Status HTTP de erro com banco real: saldo insuficiente, valor zero, mesma conta, conta inexistente, CPF duplicado ou inválido, cliente, conta e transação inexistentes |
-| `controllers/AccountControllerTest` | Web (`@WebMvcTest`, MockMvc) | Issues #25, #27, #28 e #29; `GET /account/number/{number}`, 404 por id, 409 ao excluir conta com transações e 503 sem número de conta livre |
+| `controllers/AccountControllerTest` | Web (`@WebMvcTest`, MockMvc) | Issues #25, #27, #28, #29 e #16 (extrato); `GET /account/number/{number}`, 404 por id, 409 ao excluir conta com transações e 503 sem número de conta livre |
 | `controllers/ClientControllerTest` | Web (`@WebMvcTest`, MockMvc) | Issue #28; 409 ao excluir cliente com contas |
 | `controllers/TransactionControllerTest` | Web (`@WebMvcTest`, MockMvc) | Issues #30, #3 e #4; validação de `amount`, 400 do service e `GET /transaction/{id}` (200 e 404) |
 | `services/TransactionServiceTest` | Unitário (Mockito) | Issue #1 |

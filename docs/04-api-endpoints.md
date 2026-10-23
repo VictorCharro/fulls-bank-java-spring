@@ -32,6 +32,7 @@ Somente `ADMIN`: todo `DELETE` e as listagens globais `GET /client` e `GET /tran
 | POST | `/account` | `AccountRequestDTO` | 201, `AccountResponseDTO`; 503 se não houver número de conta livre |
 | GET | `/account/{id}` | — | 200, `AccountResponseDTO` (listas de transações vêm nulas) ⚠️ |
 | GET | `/account/number/{number}` | — | 200, `AccountResponseDTO`; 404 se a conta não existir |
+| GET | `/account/{id}/statement` | Query: `from`, `to` (datas `yyyy-MM-dd`, opcionais), `page` (começa em 0), `size` (padrão 20, máximo 100) | 200, página de `TransactionResponseDTO`; 400 se `from` for depois de `to` ou a data tiver formato inválido; 404 se a conta não existir |
 | DELETE | `/account/{id}` | — | 200, sem corpo ⚠️; 409 se a conta tiver transações |
 
 Depósito, saque e transferência são feitos somente por `POST /transaction`.
@@ -43,6 +44,19 @@ Depósito, saque e transferência são feitos somente por `POST /transaction`.
 | POST | `/transaction` | `TransactionRequestDTO` | 201, `TransactionResponseDTO` |
 | GET | `/transaction` | — | 200, lista de `TransactionResponseDTO` |
 | GET | `/transaction/{id}` | — | 200, `TransactionResponseDTO`; 404 se a transação não existir |
+
+### Extrato — `GET /account/{id}/statement`
+
+Lista as transações em que a conta é origem **ou** destino (depósitos, saques e transferências nos dois sentidos), da mais recente para a mais antiga. A ordem é fixa: o parâmetro `sort` é ignorado. `from` e `to` são inclusivos e opcionais: `from=2026-03-01&to=2026-03-31` pega do primeiro instante de 1º de março ao último de 31 de março; só `from` ou só `to` filtra um lado.
+
+```json
+{
+  "content": [
+    { "id": 12, "amount": 50.00, "timestamp": "2026-03-20T08:30:00", "type": "TRANSFER", "senderId": 1, "receiverId": 2 }
+  ],
+  "page": { "size": 20, "number": 0, "totalElements": 1, "totalPages": 1 }
+}
+```
 
 ### Exemplos de `POST /transaction`
 

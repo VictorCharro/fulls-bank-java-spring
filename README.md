@@ -40,6 +40,12 @@ Este é um projeto de estudo que simula um sistema bancário básico, desenvolvi
 
 ---
 
+### 📊 Extrato
+- `GET /account/{id}/statement`: transações da conta (como origem ou destino), da mais recente para a mais antiga
+- Filtro opcional por período (`from` e `to`, datas `yyyy-MM-dd`, inclusivas) e paginação (`page`, `size`; padrão 20, máximo 100)
+
+---
+
 ### 🔄 Transações
 - **Depósito, saque e transferência entre contas**, todos por `POST /transaction`, com saldo atualizado e a transação registrada automaticamente
 - Valor sempre validado: nulo, zero ou negativo retorna `400`
@@ -222,7 +228,6 @@ curl localhost:8080/transaction/1 -H "Authorization: Bearer $TOKEN"
 
 O planejamento completo está nas [issues](https://github.com/VictorCharro/fulls-bank-java-spring/issues) e no [roadmap](docs/10-roadmap.md). Em resumo:
 
-- 📊 Extrato com filtro por data e paginação
 - 📄 Documentação com Swagger/OpenAPI
 - 🧠 Mapeamento de DTOs com MapStruct
 - 🐳 Docker e docker-compose, e deploy na AWS (RDS, CloudWatch)
