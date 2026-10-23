@@ -9,7 +9,7 @@ Legenda de issue: `#N` = já existe; "sem issue" = ainda precisa ser criada.
 | # | Problema | Onde | Issue |
 |---|---|---|---|
 | B2 | `POST /account/withdrawal`: parâmetros sem `@RequestParam`, não registra `Transaction` e não existe endpoint de depósito equivalente. Duplica a função de `POST /transaction`. | `AccountController`, `AccountService` | sem issue |
-| B3 | `IdNotFound` e `IllegalArgumentException` não têm handler e retornam 500. | `MAIN/exceptions/GlobalExceptionHandler` | parcial (#4) |
+| B3 | `IllegalArgumentException` não tem handler e retorna 500. | `MAIN/exceptions/GlobalExceptionHandler` | #4 |
 | B4 | `GET /transaction/{id}` retorna a entidade, sem 404 explícito. | `TransactionController` | #3 |
 | B5 | Excluir conta com transações, ou cliente com contas, viola chave estrangeira e retorna 500. | `AccountService`, `ClientService` | sem issue |
 | B6 | Número da conta tem só 9000 valores possíveis (1000–9999); ao esgotar, o loop de geração não termina. | `AccountService.generateUniqueAccountNumber` | sem issue |
