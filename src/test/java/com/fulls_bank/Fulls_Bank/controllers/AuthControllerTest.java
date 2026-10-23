@@ -59,7 +59,9 @@ class AuthControllerTest {
 
     @Test
     void register_withEmailLongerThanTheColumn_shouldReturn400() throws Exception {
-        String email = "a".repeat(250) + "@example.com";
+        // Válido para o @Email (parte local com 64 caracteres, rótulos de domínio com 63), mas com 261 caracteres no total
+        String domain = "b".repeat(63) + "." + "c".repeat(63) + "." + "d".repeat(63) + ".com";
+        String email = "a".repeat(64) + "@" + domain;
 
         mockMvc.perform(post("/auth/register").contentType(MediaType.APPLICATION_JSON)
                         .content("{\"email\":\"" + email + "\",\"password\":\"secret-123\"}"))
