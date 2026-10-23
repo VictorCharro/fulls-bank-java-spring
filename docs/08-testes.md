@@ -23,7 +23,7 @@ Código: `TEST/*`. Ferramentas: JUnit 5 e Mockito (`spring-boot-starter-test`).
 | `controllers/ClientControllerTest` | Web (`@WebMvcTest`, MockMvc) | Issue #28; 409 ao excluir cliente com contas |
 | `controllers/TransactionControllerTest` | Web (`@WebMvcTest`, MockMvc) | Issues #30, #3 e #4; validação de `amount`, 400 do service e `GET /transaction/{id}` (200 e 404) |
 | `services/TransactionServiceTest` | Unitário (Mockito) | Issue #1 |
-| `mappers/AccountMapperTest`, `mappers/TransactionMapperTest` | Unitário | Issue #18; campos copiados, ids de origem/destino nulos em depósito e saque, listas de transações da conta não tocadas |
+| `mappers/AccountMapperTest`, `mappers/ClientMapperTest`, `mappers/TransactionMapperTest` | Unitário | Issues #18 e #31; campos copiados, ids de origem/destino nulos em depósito e saque, listas de transações da conta não tocadas |
 | `services/AccountServiceTest` | Unitário (Mockito) | Issue #2 |
 | `services/ClientServiceTest` | Unitário (Mockito) | Issue #2 |
 

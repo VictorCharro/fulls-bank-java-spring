@@ -1,6 +1,8 @@
 package com.fulls_bank.Fulls_Bank.controllers;
 
-import com.fulls_bank.Fulls_Bank.entities.Client;
+import com.fulls_bank.Fulls_Bank.dto.ClientRequestDTO;
+import com.fulls_bank.Fulls_Bank.dto.ClientResponseDTO;
+import com.fulls_bank.Fulls_Bank.dto.ClientUpdateDTO;
 import com.fulls_bank.Fulls_Bank.services.ClientService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -30,15 +32,15 @@ public class ClientController {
     @ApiResponse(responseCode = "200", description = "Cliente criado")
     @ApiResponse(responseCode = "400", ref = "#/components/responses/BadRequest")
     @PostMapping
-    public Client createClient(@Valid @RequestBody Client client) {
-        return clientService.createClient(client);
+    public ClientResponseDTO createClient(@Valid @RequestBody ClientRequestDTO dto) {
+        return clientService.createClient(dto);
     }
 
     @Operation(summary = "Listar clientes", description = "Somente ADMIN.")
     @ApiResponse(responseCode = "200", description = "Lista de clientes")
     @ApiResponse(responseCode = "403", ref = "#/components/responses/Forbidden")
     @GetMapping
-    public List<Client> listClients() {
+    public List<ClientResponseDTO> listClients() {
         return clientService.listClients();
     }
 
@@ -46,7 +48,7 @@ public class ClientController {
     @ApiResponse(responseCode = "200", description = "Cliente encontrado")
     @ApiResponse(responseCode = "404", ref = "#/components/responses/NotFound")
     @GetMapping("/{id}")
-    public Client searchClient(@PathVariable Long id) {
+    public ClientResponseDTO searchClient(@PathVariable Long id) {
         return clientService.searchClient(id);
     }
 
@@ -65,8 +67,8 @@ public class ClientController {
     @ApiResponse(responseCode = "400", ref = "#/components/responses/BadRequest")
     @ApiResponse(responseCode = "404", ref = "#/components/responses/NotFound")
     @PutMapping("/{id}")
-    public Client updateClient(@PathVariable Long id, @Valid @RequestBody Client client) {
-        return clientService.updateClient(id, client);
+    public ClientResponseDTO updateClient(@PathVariable Long id, @Valid @RequestBody ClientUpdateDTO dto) {
+        return clientService.updateClient(id, dto);
     }
 
 }

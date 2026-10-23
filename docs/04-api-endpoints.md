@@ -21,10 +21,10 @@ Somente `ADMIN`: todo `DELETE` e as listagens globais `GET /client` e `GET /tran
 
 | Método | Rota | Corpo | Resposta |
 |---|---|---|---|
-| POST | `/client` | `Client` (`cpf`, `name`, `lastName`) | 200, `Client` ⚠️ |
-| GET | `/client` | — | 200, lista de `Client` ⚠️ |
-| GET | `/client/{id}` | — | 200, `Client` ⚠️ |
-| PUT | `/client/{id}` | `Client` (só `name` e `lastName` são atualizados) | 200, `Client` ⚠️ |
+| POST | `/client` | `ClientRequestDTO` (`cpf`, `name`, `lastName`) | 200, `ClientResponseDTO` |
+| GET | `/client` | — | 200, lista de `ClientResponseDTO` |
+| GET | `/client/{id}` | — | 200, `ClientResponseDTO` |
+| PUT | `/client/{id}` | `ClientUpdateDTO` (`name`, `lastName`; o CPF não muda) | 200, `ClientResponseDTO` |
 | DELETE | `/client/{id}` | — | 200, sem corpo; 409 se o cliente tiver contas |
 
 ## Contas — `/account` (`AccountController`)

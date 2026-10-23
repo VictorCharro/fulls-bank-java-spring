@@ -13,5 +13,4 @@ Legenda de issue: `#N` = já existe; "sem issue" = ainda precisa ser criada.
 
 | # | Problema | Issue |
 |---|---|---|
-| Q1 | Endpoints de cliente expõem a entidade `Client` (sem DTO). | sem issue |
 | Q5 | `Account.id` e `Account.type` públicos; `Transaction.description` sem uso; `senderId`/`receiverId` do DTO com padrão `0L` tornam `@NotNull` inócuo. | sem issue |
