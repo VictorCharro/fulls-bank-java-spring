@@ -28,7 +28,7 @@ public class ClientController {
 
     private final ClientService clientService;
 
-    @Operation(summary = "Criar cliente", description = "O CPF precisa ter 11 caracteres e ser único.")
+    @Operation(summary = "Criar cliente", description = "O CPF deve ser válido, com ou sem máscara, e ser único.")
     @ApiResponse(responseCode = "200", description = "Cliente criado")
     @ApiResponse(responseCode = "400", ref = "#/components/responses/BadRequest")
     @PostMapping

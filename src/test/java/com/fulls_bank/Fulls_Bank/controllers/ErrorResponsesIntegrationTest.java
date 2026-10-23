@@ -30,7 +30,7 @@ class ErrorResponsesIntegrationTest extends AbstractIntegrationTest {
     @BeforeEach
     void createAccounts() {
         Client client = new Client();
-        client.setCpf("12345678901");
+        client.setCpf("52998224725");
         client.setName("Ana");
         client.setLastName("Silva");
         client = clientRepository.save(client);
@@ -82,10 +82,36 @@ class ErrorResponsesIntegrationTest extends AbstractIntegrationTest {
     @Test
     void createClient_withDuplicateCpf_shouldReturn400() throws Exception {
         mockMvc.perform(post("/client").contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"cpf\":\"12345678901\",\"name\":\"Bia\",\"lastName\":\"Souza\"}"))
+                        .content("{\"cpf\":\"52998224725\",\"name\":\"Bia\",\"lastName\":\"Souza\"}"))
                 .andExpect(status().isBadRequest());
 
         assertEquals(1, clientRepository.count());
+    }
+
+    @Test
+    void createClient_withMaskedCpfOfAnExistingClient_shouldReturn400() throws Exception {
+        mockMvc.perform(post("/client").contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"cpf\":\"529.982.247-25\",\"name\":\"Bia\",\"lastName\":\"Souza\"}"))
+                .andExpect(status().isBadRequest());
+
+        assertEquals(1, clientRepository.count());
+    }
+
+    @Test
+    void createClient_withMaskedCpf_shouldStoreOnlyDigits() throws Exception {
+        mockMvc.perform(post("/client").contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"cpf\":\"111.444.777-35\",\"name\":\"Caio\",\"lastName\":\"Lima\"}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.cpf").value("11144477735"));
+
+        assertEquals(1, clientRepository.findAll().stream().filter(c -> "11144477735".equals(c.getCpf())).count());
+    }
+
+    @Test
+    void createClient_withCpfWithWrongCheckDigits_shouldReturn400() throws Exception {
+        mockMvc.perform(post("/client").contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"cpf\":\"12345678901\",\"name\":\"Bia\",\"lastName\":\"Souza\"}"))
+                .andExpect(status().isBadRequest());
     }
 
     @Test

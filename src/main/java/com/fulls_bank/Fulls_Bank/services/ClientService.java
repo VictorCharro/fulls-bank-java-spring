@@ -10,6 +10,7 @@ import com.fulls_bank.Fulls_Bank.exceptions.ResourceInUse;
 import com.fulls_bank.Fulls_Bank.mappers.ClientMapper;
 import com.fulls_bank.Fulls_Bank.repositories.AccountRepository;
 import com.fulls_bank.Fulls_Bank.repositories.ClientRepository;
+import com.fulls_bank.Fulls_Bank.validation.CpfValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -25,7 +26,7 @@ public class ClientService {
     private final ClientMapper clientMapper;
 
     public ClientResponseDTO createClient(ClientRequestDTO dto) {
-        if (clientRepository.findClientByCpf(dto.getCpf()).isPresent()){
+        if (clientRepository.findClientByCpf(CpfValidator.normalize(dto.getCpf())).isPresent()){
             throw new ExistingAccount("An account with this CPF already exists");
         }
         return clientMapper.toResponse(clientRepository.save(clientMapper.toEntity(dto)));

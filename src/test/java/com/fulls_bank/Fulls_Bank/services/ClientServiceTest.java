@@ -36,7 +36,7 @@ import static org.mockito.Mockito.when;
 class ClientServiceTest {
 
     private static final Long CLIENT_ID = 1L;
-    private static final String CPF = "12345678901";
+    private static final String CPF = "52998224725";
 
     @Mock
     private ClientRepository clientRepository;
@@ -73,6 +73,14 @@ class ClientServiceTest {
         assertEquals("Maria", result.getName());
         assertEquals("Silva", result.getLastName());
         verify(clientRepository).save(argThat(saved -> saved.getId() == null && CPF.equals(saved.getCpf())));
+    }
+
+    @Test
+    void createClient_withMaskedCpf_shouldLookUpAndSaveOnlyDigits() {
+        when(clientRepository.findClientByCpf(CPF)).thenReturn(Optional.of(client));
+
+        assertThrows(ExistingAccount.class,
+                () -> clientService.createClient(new ClientRequestDTO("529.982.247-25", "Maria", "Silva")));
     }
 
     @Test

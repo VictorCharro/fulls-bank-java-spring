@@ -14,20 +14,27 @@ class ClientMapperTest {
 
     @Test
     void toResponse_shouldCopyAllFields() {
-        ClientResponseDTO dto = mapper.toResponse(new Client(7L, "12345678901", "Ana", "Silva"));
+        ClientResponseDTO dto = mapper.toResponse(new Client(7L, "52998224725", "Ana", "Silva"));
 
         assertEquals(7L, dto.getId());
-        assertEquals("12345678901", dto.getCpf());
+        assertEquals("52998224725", dto.getCpf());
         assertEquals("Ana", dto.getName());
         assertEquals("Silva", dto.getLastName());
     }
 
     @Test
+    void toEntity_shouldStoreOnlyTheDigitsOfTheCpf() {
+        Client client = mapper.toEntity(new ClientRequestDTO("529.982.247-25", "Ana", "Silva"));
+
+        assertEquals("52998224725", client.getCpf());
+    }
+
+    @Test
     void toEntity_shouldCopyFieldsAndLeaveIdEmpty() {
-        Client client = mapper.toEntity(new ClientRequestDTO("12345678901", "Ana", "Silva"));
+        Client client = mapper.toEntity(new ClientRequestDTO("52998224725", "Ana", "Silva"));
 
         assertNull(client.getId());
-        assertEquals("12345678901", client.getCpf());
+        assertEquals("52998224725", client.getCpf());
         assertEquals("Ana", client.getName());
         assertEquals("Silva", client.getLastName());
     }

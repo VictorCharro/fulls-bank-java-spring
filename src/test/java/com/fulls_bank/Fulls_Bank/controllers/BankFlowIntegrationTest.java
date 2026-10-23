@@ -25,7 +25,7 @@ class BankFlowIntegrationTest extends AbstractIntegrationTest {
 
     @Test
     void fullFlow_createClientAndAccounts_depositWithdrawTransfer_shouldUpdateBalances() throws Exception {
-        long clientId = createClient("12345678901");
+        long clientId = createClient("52998224725");
         int accountNumberA = createAccount(clientId);
         int accountNumberB = createAccount(clientId);
         long accountIdA = accountRepository.findAccountByAccountNumber(accountNumberA).orElseThrow().getId();
@@ -73,7 +73,7 @@ class BankFlowIntegrationTest extends AbstractIntegrationTest {
 
     @Test
     void fullFlow_deleteAccountAndClient_shouldBeBlockedWhileTheyAreInUse() throws Exception {
-        long clientId = createClient("12345678901");
+        long clientId = createClient("52998224725");
         int accountNumber = createAccount(clientId);
         long accountId = accountRepository.findAccountByAccountNumber(accountNumber).orElseThrow().getId();
         postTransaction("{\"type\":\"DEPOSIT\",\"receiverId\":" + accountId + ",\"amount\":10.00}")

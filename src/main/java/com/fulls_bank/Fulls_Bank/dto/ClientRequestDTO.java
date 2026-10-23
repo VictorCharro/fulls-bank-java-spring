@@ -2,7 +2,7 @@ package com.fulls_bank.Fulls_Bank.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
+import com.fulls_bank.Fulls_Bank.validation.Cpf;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,9 +14,9 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ClientRequestDTO {
 
-    @Schema(description = "CPF com 11 dígitos (único)", example = "12345678901")
+    @Schema(description = "CPF válido, com ou sem máscara (é gravado só com os dígitos); único", example = "529.982.247-25")
     @NotBlank(message = "The CPF cannot be blank")
-    @Pattern(regexp = "\\d{11}", message = "CPF must have 11 digits")
+    @Cpf
     private String cpf;
 
     @Schema(example = "Ana")

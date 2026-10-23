@@ -11,6 +11,7 @@ Arquitetura em camadas, com pacote raiz `com.fulls_bank.Fulls_Bank`.
 | `repositories` | Interfaces Spring Data JPA. |
 | `entities` | Entidades JPA: `Client`, `Account`, `Transaction`. |
 | `dto` | Objetos de entrada e saída da API. |
+| `validation` | Anotações de validação próprias (`@Cpf`). |
 | `mappers` | Interfaces MapStruct que convertem entidade em DTO de resposta (`AccountMapper`, `ClientMapper`, `TransactionMapper`). |
 | `enums` | `AccountType`, `TransactionType`. |
 | `exceptions` | Exceções de negócio, `ErrorResponse` e `GlobalExceptionHandler`. |
