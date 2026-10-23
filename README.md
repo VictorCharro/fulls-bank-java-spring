@@ -53,7 +53,7 @@ Tratamento centralizado com `@RestControllerAdvice` e `@ExceptionHandler`, retor
 
 ## 🛠️ Tecnologias utilizadas
 
-- Java 24
+- Java 21 (LTS)
 - Spring Boot
 - Spring Data JPA
 - Hibernate

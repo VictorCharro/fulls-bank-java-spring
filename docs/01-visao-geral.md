@@ -15,7 +15,7 @@ Detalhes: [API](04-api-endpoints.md) e [regras de negócio](05-regras-de-negocio
 
 | Item | Uso |
 |---|---|
-| Java | 24 (planejado migrar para 21 LTS, issue #6) |
+| Java | 21 (LTS) |
 | Spring Boot | 3.5.3 (Web, Data JPA, Validation) |
 | Banco | PostgreSQL (driver 42.7.2); H2 presente no classpath, mas sem uso |
 | Build | Maven (wrapper `mvnw`) |

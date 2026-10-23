@@ -4,7 +4,7 @@ Arquivos: `src/main/resources/application.properties`, `pom.xml`.
 
 ## Pré-requisitos
 
-- JDK compatível com o `pom.xml` (hoje Java 24; migração para 21 planejada na issue #6).
+- JDK compatível com o `pom.xml` (Java 21 LTS).
 - PostgreSQL local com o banco `fulls_bank` criado.
 
 ## Configuração atual
