@@ -133,6 +133,20 @@ class AccountServiceTest {
     }
 
     @Test
+    void deposit_withZeroAmount_shouldThrowAndNotSave() {
+        assertThrows(NegativeAmount.class, () -> accountService.deposit(ACCOUNT_NUMBER, BigDecimal.ZERO));
+
+        verify(accountRepository, never()).save(any());
+    }
+
+    @Test
+    void deposit_withNullAmount_shouldThrowAndNotSave() {
+        assertThrows(NegativeAmount.class, () -> accountService.deposit(ACCOUNT_NUMBER, null));
+
+        verify(accountRepository, never()).save(any());
+    }
+
+    @Test
     void deposit_withUnknownAccount_shouldThrowAndNotSave() {
         when(accountRepository.findAccountByAccountNumber(ACCOUNT_NUMBER)).thenReturn(Optional.empty());
 
@@ -177,6 +191,20 @@ class AccountServiceTest {
     @Test
     void withdrawal_withNegativeAmount_shouldThrowAndNotSave() {
         assertThrows(NegativeAmount.class, () -> accountService.withdrawal(ACCOUNT_NUMBER, new BigDecimal("-1")));
+
+        verify(accountRepository, never()).save(any());
+    }
+
+    @Test
+    void withdrawal_withZeroAmount_shouldThrowAndNotSave() {
+        assertThrows(NegativeAmount.class, () -> accountService.withdrawal(ACCOUNT_NUMBER, BigDecimal.ZERO));
+
+        verify(accountRepository, never()).save(any());
+    }
+
+    @Test
+    void withdrawal_withNullAmount_shouldThrowAndNotSave() {
+        assertThrows(NegativeAmount.class, () -> accountService.withdrawal(ACCOUNT_NUMBER, null));
 
         verify(accountRepository, never()).save(any());
     }
