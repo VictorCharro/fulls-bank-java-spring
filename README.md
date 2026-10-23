@@ -72,7 +72,7 @@ Tratamento centralizado com `@RestControllerAdvice` e `@ExceptionHandler`, retor
 | `ExistingAccount` (CPF já cadastrado), `InsufficientBalance`, `InvalidAmount`, `SameAccountTransfer` | 400 |
 | `MethodArgumentNotValidException` (falha de `@Valid`) | 400 |
 | `ResourceInUse` (excluir cliente com contas ou conta com transações) | 409 |
-| `OptimisticLockingFailureException` (conta alterada por outra operação ao mesmo tempo) | 409 |
+| `ConcurrencyFailureException` (conta alterada por outra operação ao mesmo tempo: lock otimista ou deadlock) | 409 |
 | `AccountNumberUnavailable` (sem número de conta livre) | 503 |
 
 ---
@@ -182,6 +182,7 @@ A API fica disponível em `http://localhost:8080`.
 ```
 
 - Testes unitários dos serviços (JUnit 5 e Mockito) e testes de camada web dos controllers (`@WebMvcTest`).
+- Teste de concorrência (threads reais, PostgreSQL real): saques simultâneos e transferências em sentidos opostos nunca perdem atualização.
 - Testes de integração dos controllers: fluxo completo (cliente → conta → depósito → saque → transferência) e respostas de erro, com PostgreSQL real em container.
 - Os testes que sobem o contexto completo usam um PostgreSQL em container (Testcontainers): precisam de Docker em execução, mas não de PostgreSQL instalado.
 - O CI (GitHub Actions) roda `./mvnw verify` em cada push e pull request.
@@ -192,7 +193,6 @@ A API fica disponível em `http://localhost:8080`.
 
 O planejamento completo está nas [issues](https://github.com/VictorCharro/fulls-bank-java-spring/issues) e no [roadmap](docs/10-roadmap.md). Em resumo:
 
-- 🔒 Teste de concorrência para saque e transferência
 - 🔐 Autenticação com Spring Security e JWT
 - 📊 Extrato com filtro por data e paginação
 - 📄 Documentação com Swagger/OpenAPI

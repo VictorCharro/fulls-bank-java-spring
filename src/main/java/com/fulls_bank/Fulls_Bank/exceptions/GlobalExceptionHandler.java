@@ -1,6 +1,6 @@
 package com.fulls_bank.Fulls_Bank.exceptions;
 
-import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.dao.ConcurrencyFailureException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -42,8 +42,10 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(409).body(errorResponse);
     }
 
-    @ExceptionHandler(OptimisticLockingFailureException.class)
-    public ResponseEntity<ErrorResponse> handleOptimisticLockingFailure(OptimisticLockingFailureException e) {
+    // Cobre o lock otimista (@Version) e o deadlock do banco entre transferências em sentidos opostos:
+    // nos dois casos a transação é desfeita e a operação pode ser repetida
+    @ExceptionHandler(ConcurrencyFailureException.class)
+    public ResponseEntity<ErrorResponse> handleConcurrencyFailure(ConcurrencyFailureException e) {
         LocalDateTime timestamp = LocalDateTime.now();
         int status = 409;
         String message = "The account was changed by another operation, please try again";

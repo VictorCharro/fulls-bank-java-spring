@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.math.BigDecimal;
 
 import com.fulls_bank.Fulls_Bank.entities.Account;
+import org.springframework.dao.CannotAcquireLockException;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 
 import static org.hamcrest.Matchers.containsString;
@@ -131,6 +132,19 @@ class TransactionControllerTest {
         mockMvc.perform(post("/transaction")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"type\":\"WITHDRAWAL\",\"senderId\":1,\"amount\":10}"))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.status").value(409))
+                .andExpect(jsonPath("$.message").value("The account was changed by another operation, please try again"));
+    }
+
+    @Test
+    void createTransaction_whenDatabaseDetectsDeadlock_shouldReturn409() throws Exception {
+        when(transactionService.createTransaction(any()))
+                .thenThrow(new CannotAcquireLockException("deadlock detected"));
+
+        mockMvc.perform(post("/transaction")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"type\":\"TRANSFER\",\"senderId\":1,\"receiverId\":2,\"amount\":10}"))
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.status").value(409))
                 .andExpect(jsonPath("$.message").value("The account was changed by another operation, please try again"));
