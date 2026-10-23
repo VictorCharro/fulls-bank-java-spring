@@ -17,11 +17,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -217,5 +219,14 @@ class TransactionServiceTest {
         when(transactionRepository.findById(10L)).thenReturn(Optional.empty());
 
         assertThrows(TransactionNotFound.class, () -> transactionService.findTransactionById(10L));
+    }
+
+    @Test
+    void createTransaction_shouldRunInsideSpringTransaction() throws NoSuchMethodException {
+        Transactional transactional = TransactionService.class
+                .getMethod("createTransaction", TransactionRequestDTO.class)
+                .getAnnotation(Transactional.class);
+
+        assertNotNull(transactional);
     }
 }

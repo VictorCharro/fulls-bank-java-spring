@@ -28,7 +28,6 @@ Legenda de issue: `#N` = já existe; "sem issue" = ainda precisa ser criada.
 | # | Problema | Issue |
 |---|---|---|
 | Q1 | Endpoints de cliente expõem a entidade `Client` (sem DTO). | sem issue |
-| Q2 | `TransactionService` usa `jakarta.transaction.Transactional` em vez do do Spring. | #5 |
 | Q3 | Java 24 (não LTS). | #6 |
 | Q5 | `Account.id` e `Account.type` públicos; `Transaction.description` sem uso; `senderId`/`receiverId` do DTO com padrão `0L` tornam `@NotNull` inócuo. | sem issue |
 | Q6 | Mapeamento manual de DTOs. | #18 |

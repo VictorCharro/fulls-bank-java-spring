@@ -22,7 +22,7 @@ Código: `MAIN/services`. Erros lançados: [06](06-erros-e-excecoes.md).
 
 ## Transação (`TransactionService.createTransaction`)
 
-Executa em uma única transação de banco (`@Transactional`).
+Executa em uma única transação de banco (`@Transactional` do Spring, `org.springframework.transaction.annotation`); qualquer exceção não verificada desfaz tudo.
 
 Regra geral: `amount` nulo, zero ou negativo é rejeitado já na validação do DTO (`@NotNull` e `@Positive`), com 400. Chamado direto, o service lança `InvalidAmount` (400).
 
