@@ -5,6 +5,8 @@ import com.fulls_bank.Fulls_Bank.exceptions.ResourceInUse;
 import com.fulls_bank.Fulls_Bank.services.ClientService;
 import com.fulls_bank.Fulls_Bank.security.ApiSecurityTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
@@ -67,6 +69,18 @@ class ClientControllerTest {
     void createClient_withInvalidBody_shouldReturn400AndNotCallService() throws Exception {
         mockMvc.perform(post("/client").contentType(MediaType.APPLICATION_JSON)
                         .content("{\"cpf\":\"123\",\"name\":\" \",\"lastName\":\"Silva\"}"))
+                .andExpect(status().isBadRequest());
+
+        verify(clientService, never()).createClient(any());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"{\"name\":\"Ana\",\"lastName\":\"Silva\"}",
+            "{\"cpf\":\"\",\"name\":\"Ana\",\"lastName\":\"Silva\"}",
+            "{\"cpf\":\"1234567890a\",\"name\":\"Ana\",\"lastName\":\"Silva\"}",
+            "{\"cpf\":\"123456789012\",\"name\":\"Ana\",\"lastName\":\"Silva\"}"})
+    void createClient_withMissingOrMalformedCpf_shouldReturn400AndNotCallService(String body) throws Exception {
+        mockMvc.perform(post("/client").contentType(MediaType.APPLICATION_JSON).content(body))
                 .andExpect(status().isBadRequest());
 
         verify(clientService, never()).createClient(any());

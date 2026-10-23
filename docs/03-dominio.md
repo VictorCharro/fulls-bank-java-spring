@@ -16,7 +16,7 @@ Client 1 ──── N Account 1 ──── N Transaction (como sender)
 | Campo | Tipo | Restrições |
 |---|---|---|
 | `id` | Long | PK, identity |
-| `cpf` | String | único, exatamente 11 caracteres (`@Size`) |
+| `cpf` | String | único, exatamente 11 caracteres (`@Size`; o DTO de entrada exige 11 dígitos) |
 | `name` | String | `@NotBlank` |
 | `lastName` | String | `@NotBlank` |
 
@@ -67,7 +67,7 @@ A conversão entidade → DTO de resposta é feita por MapStruct (`mappers/Accou
 | DTO | Campos | Validações |
 |---|---|---|
 | `AccountRequestDTO` | `type`, `clientId` | ambos `@NotNull` |
-| `ClientRequestDTO` | `cpf`, `name`, `lastName` | `cpf` `@Size` 11; `name` e `lastName` `@NotBlank` |
+| `ClientRequestDTO` | `cpf`, `name`, `lastName` | `cpf` `@NotBlank` e exatamente 11 dígitos (`@Pattern`); `name` e `lastName` `@NotBlank` |
 | `ClientUpdateDTO` | `name`, `lastName` | ambos `@NotBlank` (o CPF não faz parte do `PUT`) |
 | `ClientResponseDTO` | `id`, `cpf`, `name`, `lastName` | — |
 | `AccountResponseDTO` | `accountNumber`, `type`, `balance`, `sentTransactions`, `receivedTransactions` | — |
