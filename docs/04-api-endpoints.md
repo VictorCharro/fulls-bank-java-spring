@@ -1,6 +1,6 @@
 # 04 — API
 
-Código: `MAIN/controllers`. Formato de erro: [06](06-erros-e-excecoes.md). Itens marcados com ⚠️ têm problema descrito em [09](09-problemas-conhecidos.md).
+Código: `MAIN/controllers`. Formato de erro: [06](06-erros-e-excecoes.md).
 
 A documentação interativa (Swagger UI) está em `/swagger-ui.html` e o OpenAPI em `/v3/api-docs`; veja [07](07-configuracao-e-execucao.md#documentação-interativa-swaggeropenapi).
 
@@ -32,10 +32,10 @@ Somente `ADMIN`: todo `DELETE` e as listagens globais `GET /client` e `GET /tran
 | Método | Rota | Entrada | Resposta |
 |---|---|---|---|
 | POST | `/account` | `AccountRequestDTO` | 201, `AccountResponseDTO`; 503 se não houver número de conta livre |
-| GET | `/account/{id}` | — | 200, `AccountResponseDTO` (listas de transações vêm nulas) ⚠️ |
+| GET | `/account/{id}` | — | 200, `AccountResponseDTO` (listas de transações vêm nulas) |
 | GET | `/account/number/{number}` | — | 200, `AccountResponseDTO`; 404 se a conta não existir |
 | GET | `/account/{id}/statement` | Query: `from`, `to` (datas `yyyy-MM-dd`, opcionais), `page` (começa em 0), `size` (padrão 20, máximo 100) | 200, página de `TransactionResponseDTO`; 400 se `from` for depois de `to`, a data tiver formato inválido, `page` for negativo ou `size` for menor que 1; 404 se a conta não existir |
-| DELETE | `/account/{id}` | — | 200, sem corpo ⚠️; 409 se a conta tiver transações |
+| DELETE | `/account/{id}` | — | 200, sem corpo; 409 se a conta tiver transações |
 
 Depósito, saque e transferência são feitos somente por `POST /transaction`.
 
