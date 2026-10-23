@@ -12,23 +12,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    # Postgres temporário enquanto os testes dependem de banco real (issue #11).
-    # A senha abaixo é descartável: vale só para este banco efêmero do CI.
-    services:
-      postgres:
-        image: postgres:16
-        env:
-          POSTGRES_DB: fulls_bank_test
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: ci-only-password
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd "pg_isready -U postgres"
-          --health-interval 5s
-          --health-timeout 5s
-          --health-retries 10
-
     steps:
       - uses: actions/checkout@v4
         with:
@@ -42,5 +25,3 @@ jobs:
 
       - name: Build e testes
         run: ./mvnw -B verify
-        env:
-          DB_PASSWORD: ci-only-password

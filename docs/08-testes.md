@@ -6,7 +6,7 @@ Código: `TEST/*`. Ferramentas: JUnit 5 e Mockito (`spring-boot-starter-test`).
 
 | Teste | Tipo | Observação |
 |---|---|---|
-| `FullsBankApplicationTests` | Contexto Spring | Exige PostgreSQL local (issue #11) |
+| `FullsBankApplicationTests` | Contexto Spring | Testcontainers com PostgreSQL 16 (precisa de Docker); valida as migrations do Flyway contra o esquema das entidades |
 | `controllers/AccountControllerTest` | Web (`@WebMvcTest`, MockMvc) | Issues #25, #27, #28 e #29; `GET /account/number/{number}`, 404 por id, 409 ao excluir conta com transações e 503 sem número de conta livre |
 | `controllers/ClientControllerTest` | Web (`@WebMvcTest`, MockMvc) | Issue #28; 409 ao excluir cliente com contas |
 | `controllers/TransactionControllerTest` | Web (`@WebMvcTest`, MockMvc) | Issues #30, #3 e #4; validação de `amount`, 400 do service e `GET /transaction/{id}` (200 e 404) |
@@ -35,7 +35,7 @@ Ainda sem testes: controllers (issue #12), concorrência (issue #14).
 
 ## Planejado
 
-- Testes de integração com Testcontainers e PostgreSQL (#11, #12).
+- Testes de integração dos controllers com Testcontainers (#12).
 - Teste de concorrência para saque e transferência (#14).
 - Testes de autenticação com Spring Security (#15).
 - Execução automática no CI (#20).
