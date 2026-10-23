@@ -40,6 +40,9 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, "/auth/register", "/auth/login").permitAll()
+                        // Documentação da API (Swagger UI e JSON OpenAPI): pública, para quem for consumir a API
+                        .requestMatchers(HttpMethod.GET, "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs",
+                                "/v3/api-docs/**").permitAll()
                         // Erros do Spring MVC (JSON malformado, 415...) são redirecionados para /error pelo contêiner;
                         // sem isto o status real viraria 401. Acesso direto a /error continua protegido.
                         .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()

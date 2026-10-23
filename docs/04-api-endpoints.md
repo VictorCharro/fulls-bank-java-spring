@@ -2,6 +2,8 @@
 
 Código: `MAIN/controllers`. Formato de erro: [06](06-erros-e-excecoes.md). Itens marcados com ⚠️ têm problema descrito em [09](09-problemas-conhecidos.md).
 
+A documentação interativa (Swagger UI) está em `/swagger-ui.html` e o OpenAPI em `/v3/api-docs`; veja [07](07-configuracao-e-execucao.md#documentação-interativa-swaggeropenapi).
+
 ## Autenticação
 
 Todos os endpoints exigem o cabeçalho `Authorization: Bearer <token>`, exceto `POST /auth/register` e `POST /auth/login`. Sem token (ou com token inválido ou expirado) a resposta é `401`; sem permissão, `403`. Ambas no [formato de erro](06-erros-e-excecoes.md) da API.

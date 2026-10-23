@@ -8,6 +8,7 @@ API REST de um sistema bancário simplificado, feita como **projeto de portfóli
 - Abertura de contas (corrente, poupança, salário) com número gerado automaticamente.
 - Transações de depósito, saque e transferência com atualização de saldo e registro histórico.
 - Cadastro e login de usuários com JWT; papéis `USER` e `ADMIN` protegem os endpoints.
+- Documentação interativa da API com Swagger UI (OpenAPI 3).
 - Tratamento centralizado de erros com resposta padronizada.
 
 Detalhes: [API](04-api-endpoints.md) e [regras de negócio](05-regras-de-negocio.md).

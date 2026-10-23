@@ -128,6 +128,7 @@ Mais detalhes em [`docs/02-arquitetura.md`](docs/02-arquitetura.md) e [`docs/03-
 - Spring Data JPA
 - Flyway (migrations)
 - Spring Security com JWT (OAuth2 Resource Server)
+- Swagger/OpenAPI (springdoc)
 - Testcontainers
 - Hibernate
 - Lombok
@@ -195,7 +196,7 @@ Perfis: `dev` (padrão) mostra os SQLs no log; `test` é usado pelos testes, com
 ./mvnw spring-boot:run
 ```
 
-A API fica disponível em `http://localhost:8080`. Exemplo de uso:
+A API fica disponível em `http://localhost:8080`, com a documentação interativa em **`/swagger-ui.html`** (OpenAPI em `/v3/api-docs`): faça login em `POST /auth/login`, clique em **Authorize** e cole o token para testar os endpoints pelo navegador. Exemplo de uso pela linha de comando:
 
 ```bash
 curl -X POST localhost:8080/auth/register -H 'Content-Type: application/json' \
@@ -228,6 +229,5 @@ curl localhost:8080/transaction/1 -H "Authorization: Bearer $TOKEN"
 
 O planejamento completo está nas [issues](https://github.com/VictorCharro/fulls-bank-java-spring/issues) e no [roadmap](docs/10-roadmap.md). Em resumo:
 
-- 📄 Documentação com Swagger/OpenAPI
 - 🧠 Mapeamento de DTOs com MapStruct
 - 🐳 Docker e docker-compose, e deploy na AWS (RDS, CloudWatch)
