@@ -104,6 +104,8 @@ class AccountControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"type\":\"CHECKING\",\"clientId\":1}"))
                 .andExpect(status().isServiceUnavailable())
-                .andExpect(jsonPath("$.status").value(503));
+                .andExpect(jsonPath("$.status").value(503))
+                .andExpect(jsonPath("$.message")
+                        .value("Could not generate a unique account number, try again later"));
     }
 }

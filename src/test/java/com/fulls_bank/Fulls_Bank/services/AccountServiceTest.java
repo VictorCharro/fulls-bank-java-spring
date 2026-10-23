@@ -95,7 +95,7 @@ class AccountServiceTest {
 
         assertThrows(AccountNumberUnavailable.class, () -> accountService.generateUniqueAccountNumber());
 
-        verify(accountRepository, times(AccountService.MAX_NUMBER_ATTEMPTS)).existsByAccountNumber(anyInt());
+        verify(accountRepository, times(20)).existsByAccountNumber(anyInt());
     }
 
     // buscas
