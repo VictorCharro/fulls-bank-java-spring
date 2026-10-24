@@ -9,6 +9,12 @@ Legenda de issue: `#N` = já existe; "sem issue" = ainda precisa ser criada.
 | # | Problema | Onde | Issue |
 |---|---|---|---|
 
+## Segurança
+
+| # | Problema | Onde | Issue |
+|---|---|---|---|
+| S1 | O usuário ainda não está ligado a um cliente, então qualquer usuário logado consegue consultar e movimentar qualquer conta (não há checagem de dono). Os `DELETE` e as listas completas já são só do `ADMIN`. | `AccountService`, `TransactionService`, `ClientService` | sem issue |
+
 ## Qualidade de código
 
 | # | Problema | Issue |
